@@ -35,12 +35,12 @@ export default function Landing() {
 
   return (
     <div className="max-w-md mx-auto px-4 pt-10 pb-16">
-      <div className="text-center fade-in">
-        <div className="font-logo text-4xl tracking-tight">
+      <div className="text-center fade-in pt-2">
+        <div className="font-logo text-5xl grad-text floaty leading-none">
           {lang === 'pt' ? 'MenteLivre' : 'MenteLibre'}
         </div>
-        <div className="text-[var(--gold)] font-extrabold mt-1">✨ {t('tagline')}</div>
-        <p className="text-sm text-[var(--text-dim)] mt-2">{t('subtitle')}</p>
+        <div className="text-[var(--gold)] font-extrabold mt-3 text-glow">✨ {t('tagline')}</div>
+        <p className="text-sm text-[var(--text-dim)] mt-2 max-w-xs mx-auto leading-relaxed">{t('subtitle')}</p>
       </div>
 
       <div className="card p-4 mt-6 fade-in-d1">
@@ -55,7 +55,7 @@ export default function Landing() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder={t('namePlaceholder')}
-            className="mt-1 w-full bg-white/5 border border-white/12 rounded-2xl px-4 py-3 outline-none focus:border-[var(--violet-light)]"
+            className="input mt-1"
           />
         </div>
         <div>
@@ -81,7 +81,7 @@ export default function Landing() {
             value={school}
             onChange={(e) => setSchool(e.target.value)}
             placeholder={t('schoolPlaceholder')}
-            className="mt-1 w-full bg-white/5 border border-white/12 rounded-2xl px-4 py-3 outline-none focus:border-[var(--violet-light)]"
+            className="input mt-1"
           />
         </div>
       </div>

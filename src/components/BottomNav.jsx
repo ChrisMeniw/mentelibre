@@ -21,11 +21,17 @@ export default function BottomNav() {
             <button
               key={it.to}
               onClick={() => nav(it.to)}
-              className="flex flex-col items-center gap-0.5 px-5 py-1.5 active:scale-90 transition"
+              className="relative flex flex-col items-center gap-0.5 px-5 py-1.5 active:scale-90 transition"
               style={{ color: active ? 'var(--gold)' : 'var(--text-dim)' }}
             >
-              <span className="text-xl">{it.icon}</span>
-              <span className="text-[10px] font-extrabold">{it.label}</span>
+              {active && (
+                <span
+                  className="absolute inset-0 m-auto w-11 h-9 rounded-full -z-0"
+                  style={{ background: 'radial-gradient(circle, rgba(251,191,36,0.22), transparent 70%)' }}
+                />
+              )}
+              <span className="text-xl relative">{it.icon}</span>
+              <span className="text-[10px] font-extrabold relative">{it.label}</span>
             </button>
           )
         })}

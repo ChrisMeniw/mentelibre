@@ -19,7 +19,10 @@ function PlayerHeader() {
     <div className="card p-4 fade-in">
       <div className="flex items-center gap-3">
         <div className="flex flex-col items-center shrink-0">
-          <div className="w-14 h-14 rounded-full grid place-items-center text-3xl" style={{ background: av.color }}>
+          <div
+            className="w-14 h-14 rounded-full grid place-items-center text-3xl"
+            style={{ background: av.color, boxShadow: `0 0 0 2px rgba(255,255,255,0.22), 0 0 24px -4px ${av.color}` }}
+          >
             {player.avatar}
           </div>
           <span className="text-[10px] font-extrabold text-[var(--violet-light)] mt-0.5">{player.avatarName}</span>
@@ -62,7 +65,7 @@ export default function Hub() {
             onClick={() => setTab(tb.id)}
             className="flex-1 btn text-sm py-2"
             style={tab === tb.id
-              ? { background: 'linear-gradient(135deg,var(--violet-light),var(--violet))', color: '#fff' }
+              ? { background: 'linear-gradient(135deg,var(--violet-light),var(--violet))', color: '#fff', boxShadow: '0 8px 22px -10px rgba(124,58,237,0.9), inset 0 1px 0 rgba(255,255,255,0.3)' }
               : { background: 'transparent', color: 'var(--text-dim)' }}
           >
             {tb.icon} {tb.label}

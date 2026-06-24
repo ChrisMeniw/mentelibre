@@ -22,7 +22,7 @@ export default function TeacherPortal() {
     <div className="max-w-md mx-auto px-4 pt-14 pb-28 space-y-5">
       <div className="text-center fade-in">
         <div className="text-4xl">👩‍🏫</div>
-        <h1 className="font-logo text-2xl mt-1">{t('teacherTitle')}</h1>
+        <h1 className="font-logo text-3xl mt-1 grad-text">{t('teacherTitle')}</h1>
         <p className="text-sm text-[var(--text-dim)] mt-1">{t('teacherIntro')}</p>
       </div>
 
