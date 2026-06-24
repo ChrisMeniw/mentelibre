@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --violet: #7C3AED;
+  --violet-light: #A855F7;
+  --gold: #FBBF24;
+  --emerald: #10B981;
+  --rose: #F43F5E;
+  --sky: #0EA5E9;
+  --bg-deep: #0F0A1E;
+  --text: #F1F5F9;
+  --text-dim: #94A3B8;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body, #root { height: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg-deep);
+  color: var(--text);
+  font-family: 'Nunito', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overscroll-behavior-y: none;
+}
+
+@layer components {
+  .card {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    border-radius: 18px;
+  }
+  .btn {
+    @apply font-extrabold rounded-2xl px-5 py-3 transition-all active:scale-95 select-none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--violet-light), var(--violet));
+    color: #fff;
+    box-shadow: 0 8px 24px -8px rgba(124, 58, 237, 0.7);
+  }
+  .btn-gold {
+    background: linear-gradient(135deg, #FCD34D, var(--gold));
+    color: #3B2A04;
+  }
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    color: var(--text);
+  }
+  .chip {
+    @apply inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-bold;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* ---- Animaciones ---- */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.4s ease both; }
+.fade-in-d1 { animation: fadeIn 0.4s ease 0.06s both; }
+.fade-in-d2 { animation: fadeIn 0.4s ease 0.12s both; }
+.fade-in-d3 { animation: fadeIn 0.4s ease 0.18s both; }
+
+/* Barra de XP */
+.xp-fill { transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+/* Confetti */
+@keyframes confetti-fall {
+  0%   { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(110vh) rotate(720deg); opacity: 0.9; }
+}
+.confetti-piece { position: fixed; top: 0; width: 10px; height: 16px; border-radius: 2px; z-index: 60; animation: confetti-fall linear forwards; }
+
+/* XP toast */
+@keyframes toast-in {
+  0%   { transform: translateX(120%); opacity: 0; }
+  12%  { transform: translateX(0); opacity: 1; }
+  82%  { transform: translateX(0); opacity: 1; }
+  100% { transform: translateX(120%); opacity: 0; }
+}
+.xp-toast { animation: toast-in 2.5s ease forwards; }
+
+/* Typewriter caret */
+@keyframes blink { 50% { opacity: 0; } }
+.caret::after { content: '▋'; margin-left: 2px; color: var(--violet-light); animation: blink 1s step-end infinite; }
+
+/* Scroll suave y sin barras feas en móvil */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Área segura para notch del celular */
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
