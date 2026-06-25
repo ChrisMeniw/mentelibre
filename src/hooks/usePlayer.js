@@ -160,7 +160,8 @@ export function PlayerProvider({ children }) {
     let code = ''
     for (let i = 0; i < 6; i++) {
       hash = (hash * 1103515245 + 12345) >>> 0
-      code += chars[hash % chars.length]
+      // Usar los bits ALTOS: los bits bajos de un LCG son débiles (daban siempre "AAAAAA").
+      code += chars[(hash >>> 17) % chars.length]
     }
     return code
   }, [player.school])
