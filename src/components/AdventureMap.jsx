@@ -31,7 +31,7 @@ export default function AdventureMap() {
     }
   }
 
-  const go = (worldId) => { sfxPop(); nav(`/desafio/${worldId}`) }
+  const go = (worldId) => { sfxPop(); nav(`/ronda/${worldId}`) }
   const shake = (e) => {
     sfxPop()
     const el = e.currentTarget

@@ -7,6 +7,7 @@ import FoundationBadge from './components/FoundationBadge'
 import Landing from './pages/Landing'
 import Hub from './pages/Hub'
 import Challenge from './pages/Challenge'
+import Round from './pages/Round'
 import Achievements from './pages/Achievements'
 import TeacherPortal from './pages/TeacherPortal'
 import Shop from './pages/Shop'
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/hub" element={<Hub />} />
           <Route path="/tienda" element={<Shop />} />
+          <Route path="/ronda/:world" element={<Round />} />
           <Route path="/desafio/:world" element={<Challenge />} />
           <Route path="/logros" element={<Achievements />} />
           <Route path="/docentes" element={<TeacherPortal />} />

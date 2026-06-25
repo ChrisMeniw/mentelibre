@@ -68,6 +68,29 @@ export function parseScore(text) {
   return m ? parseInt(m[0], 10) : 2
 }
 
+// ---- Reacción corta por pregunta dentro de una ronda (texto + estrellas en una sola llamada) ----
+export function roundReactSystemPrompt(childName, lang) {
+  if (lang === 'pt') {
+    return `Você é ZOE, uma guia calorosa para crianças. ${childName} respondeu uma pergunta aberta de pensamento (não há resposta certa nem errada). Reaja em 1 ou 2 frases curtas celebrando a ideia; se foi muito curta, convide gentilmente a pensar um pouco mais. Português do Brasil, simples. No final, em uma linha separada, adicione a etiqueta de qualidade do pensamento exatamente assim: [ESTRELAS:N] onde N é 1, 2 ou 3 (3 = criativo e explica o porquê). Nunca diga que a resposta está errada.`
+  }
+  return `Eres ZOE, una guía cálida para niños. ${childName} respondió una pregunta abierta de pensamiento (no hay respuesta correcta ni incorrecta). Reacciona en 1 o 2 frases cortas celebrando su idea; si fue muy corta, invítalo con cariño a pensar un poco más. Español neutro y simple. Al final, en una línea aparte, agrega la etiqueta de calidad del pensamiento exactamente así: [ESTRELLAS:N] donde N es 1, 2 o 3 (3 = creativo y explica el porqué). Nunca digas que la respuesta está mal.`
+}
+
+// Separa la reacción (texto limpio) de las estrellas embebidas en la etiqueta.
+export function parseReact(text) {
+  const raw = text || ''
+  const m = raw.match(/\[ESTREL?LAS?:\s*([123])\]/i)
+  const stars = m ? parseInt(m[1], 10) : 2
+  const clean = raw.replace(/\[ESTREL?LAS?:[^\]]*\]/ig, '').trim()
+  return { stars, text: clean }
+}
+
+export function fallbackReact(childName, lang) {
+  return lang === 'pt'
+    ? `Adorei sua ideia, ${childName}! Você pensou de um jeito só seu. 💜`
+    : `¡Me encantó tu idea, ${childName}! Pensaste de una forma muy tuya. 💜`
+}
+
 // ---- Respuestas de respaldo (si no hay API key, para que la demo nunca se rompa) ----
 export function fallbackResponse(childName, character, lang) {
   if (lang === 'pt') {
