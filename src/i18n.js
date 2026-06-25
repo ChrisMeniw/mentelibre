@@ -180,6 +180,7 @@ export const LANG_DATA = {
     poweredBy: 'Impulsado por',
 
     // Cambiar usuario
+    downloadManual: '📄 Descargar manual para docentes (PDF)',
     changeUser: 'Cambiar usuario',
     changeUserMsg: '¿Quieres cambiar de usuario? Volverás al inicio para elegir otro nombre y personaje. Tu progreso de ahora se borrará en este dispositivo.',
     changeUserYes: 'Sí, cambiar',
@@ -354,6 +355,7 @@ export const LANG_DATA = {
     soundOff: 'Música desligada',
     poweredBy: 'Desenvolvido por',
 
+    downloadManual: '📄 Baixar manual para professores (PDF)',
     changeUser: 'Trocar usuário',
     changeUserMsg: 'Quer trocar de usuário? Você voltará ao início para escolher outro nome e personagem. Seu progresso atual será apagado neste dispositivo.',
     changeUserYes: 'Sim, trocar',

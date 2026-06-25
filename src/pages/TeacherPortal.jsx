@@ -63,6 +63,16 @@ export default function TeacherPortal() {
         </a>
       </div>
 
+      <a
+        href="/Manual-Docente-MenteLibre.pdf"
+        target="_blank"
+        rel="noopener noreferrer"
+        download
+        className="btn btn-primary w-full text-sm text-center block"
+        aria-label={t('downloadManual')}
+      >
+        {t('downloadManual')}
+      </a>
       <button onClick={() => setConfirmChange(true)} className="btn btn-ghost w-full text-sm">🔁 {t('changeUser')}</button>
       <button onClick={() => nav('/hub')} className="btn btn-ghost w-full text-sm">{t('backToGame')}</button>
 
