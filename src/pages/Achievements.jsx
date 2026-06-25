@@ -1,5 +1,6 @@
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
+import { BADGES } from '../data/badges'
 import BadgeGrid from '../components/BadgeGrid'
 
 export default function Achievements() {
@@ -11,7 +12,7 @@ export default function Achievements() {
       <div className="text-center fade-in">
         <div className="text-4xl">🏅</div>
         <h1 className="font-logo text-3xl mt-1 grad-text">{t('badgesTitle')}</h1>
-        <p className="text-sm text-[var(--text-dim)]">{t('badgesSub')} · {count}/8</p>
+        <p className="text-sm text-[var(--text-dim)]">{t('badgesSub')} · {count}/{BADGES.length}</p>
       </div>
       <BadgeGrid unlocked={player.unlockedBadges || []} />
     </div>

@@ -7,10 +7,16 @@ export const BADGES = [
     check: (s) => s.totalCompleted >= 1,
   },
   {
-    id: 'streak7', emoji: '🔥',
-    name_es: 'Racha de 7', name_pt: 'Sequência de 7',
-    desc_es: '7 días seguidos pensando', desc_pt: '7 dias seguidos pensando',
-    check: (s) => s.streak >= 7,
+    id: 'streak5', emoji: '🔥',
+    name_es: 'Racha de 5', name_pt: 'Sequência de 5',
+    desc_es: '5 días seguidos pensando', desc_pt: '5 dias seguidos pensando',
+    check: (s) => s.streak >= 5,
+  },
+  {
+    id: 'rounds5', emoji: '🎯',
+    name_es: 'Maratonista', name_pt: 'Maratonista',
+    desc_es: 'Completaste 5 rondas', desc_pt: 'Você completou 5 rodadas',
+    check: (s) => s.totalCompleted >= 5,
   },
   {
     id: 'planeta5', emoji: '🌍',
@@ -25,9 +31,9 @@ export const BADGES = [
     check: (s) => s.aiInteractions >= 10,
   },
   {
-    id: 'visionary', emoji: '🔮',
-    name_es: 'Visionario', name_pt: 'Visionário',
-    desc_es: 'Llegaste al nivel 3', desc_pt: 'Você chegou ao nível 3',
+    id: 'critic', emoji: '🔮',
+    name_es: 'Pensador Crítico', name_pt: 'Pensador Crítico',
+    desc_es: 'Llegaste al nivel Crítico', desc_pt: 'Você chegou ao nível Crítico',
     check: (s) => s.level >= 3,
   },
   {
