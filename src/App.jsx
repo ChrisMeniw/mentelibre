@@ -3,6 +3,7 @@ import { useLang } from './i18n'
 import WarpBackground from './components/WarpBackground'
 import MusicEngine from './components/MusicEngine'
 import BottomNav from './components/BottomNav'
+import FoundationBadge from './components/FoundationBadge'
 import Landing from './pages/Landing'
 import Hub from './pages/Hub'
 import Challenge from './pages/Challenge'
@@ -40,6 +41,7 @@ export default function App() {
         </Routes>
       </main>
       <BottomNav />
+      <FoundationBadge />
       <MusicEngine />
     </>
   )

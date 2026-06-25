@@ -94,6 +94,7 @@ export const LANG_DATA = {
     howStep4: 'Ganas monedas 🪙 y subes de nivel. Mientras mejor pienses, más ganas. Gasta las monedas en la tienda para tu personaje.',
     howToStart: '¡A jugar! 🚀',
     howToHelp: '¿Cómo se juega?',
+    zoeName: 'ZOE · tu guía',
     tapToSpeak: '🎤 Toca y habla tu respuesta',
     listening: '🔴 Te escucho... toca para terminar',
     orTypeHint: 'o escribe aquí tu respuesta',
@@ -142,6 +143,7 @@ export const LANG_DATA = {
     // Sonido / instalar
     soundOn: 'Música encendida',
     soundOff: 'Música apagada',
+    poweredBy: 'Impulsado por',
 
     // Cambiar usuario
     changeUser: 'Cambiar usuario',
@@ -237,6 +239,7 @@ export const LANG_DATA = {
     howStep4: 'Ganhe moedas 🪙 e suba de nível. Gaste as moedas na loja para seu personagem.',
     howToStart: 'Vamos jogar! 🚀',
     howToHelp: 'Como se joga?',
+    zoeName: 'ZOE · seu guia',
     tapToSpeak: '🎤 Toque e fale sua resposta',
     listening: '🔴 Estou ouvindo... toque para terminar',
     orTypeHint: 'ou escreva aqui sua resposta',
@@ -281,6 +284,7 @@ export const LANG_DATA = {
 
     soundOn: 'Música ligada',
     soundOff: 'Música desligada',
+    poweredBy: 'Desenvolvido por',
 
     changeUser: 'Trocar usuário',
     changeUserMsg: 'Quer trocar de usuário? Você voltará ao início para escolher outro nome e personagem. Seu progresso atual será apagado neste dispositivo.',

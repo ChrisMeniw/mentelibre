@@ -1,5 +1,6 @@
 import { useLang } from '../i18n'
 import { sfxPop } from '../lib/sfx'
+import Zoe from './Zoe'
 
 // Explica el objetivo del juego. Se muestra la primera vez y se puede reabrir con "?".
 export default function HowToPlay({ onClose }) {
@@ -18,9 +19,8 @@ export default function HowToPlay({ onClose }) {
     >
       <div className="card p-6 max-w-sm w-full bounce-in" onClick={(e) => e.stopPropagation()}>
         <div className="text-center">
-          <img src="/foundation-logo.webp" alt="Chris Meniw Foundation" width="64" height="64"
-            className="w-16 h-16 mx-auto rounded-full" style={{ width: 64, height: 64, filter: 'drop-shadow(0 6px 16px rgba(124,58,237,0.5))' }} />
-          <div className="text-[9px] uppercase tracking-[0.2em] text-[var(--text-dim)] mt-1 font-extrabold">Chris Meniw Foundation</div>
+          <div className="floaty inline-block"><Zoe size={76} talking /></div>
+          <div className="text-[11px] font-extrabold text-[var(--violet-light)] -mt-1">{t('zoeName')}</div>
           <h2 className="font-logo text-2xl grad-text mt-2">{t('howToTitle')}</h2>
           <p className="text-sm font-bold text-[var(--gold)] mt-1">{t('howToObjective')}</p>
         </div>

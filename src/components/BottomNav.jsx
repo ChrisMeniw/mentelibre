@@ -15,7 +15,7 @@ export default function BottomNav() {
   ]
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 safe-bottom pointer-events-none">
-      <div className="mx-auto max-w-md m-2 card flex justify-around py-1.5 pointer-events-auto">
+      <div className="mx-auto max-w-md m-2 mb-7 card flex justify-around py-1.5 pointer-events-auto">
         {items.map((it) => {
           const active = loc.pathname === it.to
           return (
