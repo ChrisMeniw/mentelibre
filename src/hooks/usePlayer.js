@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useEffect, useCallback, createElem
 import { BADGES } from '../data/badges'
 import { levelForXP } from '../data/levels'
 import { WORLDS } from '../data/challenges'
+import { currentDaily, dailyComplete } from '../data/missions'
 
 // Paso 7 — Estado central del jugador (persistido en localStorage).
 const STORAGE_KEY = 'ml_player_v1'
@@ -12,6 +13,7 @@ const DEFAULT = {
   xp: 0, level: 0, streak: 0, lastPlayed: null, coins: 0,
   completed: {}, unlockedBadges: [], aiInteractions: 0,
   owned: [], pet: '', frame: '',
+  daily: { date: '', rounds: 0, stars: 0, answers: 0, claimed: false },
 }
 
 function load() {
@@ -88,6 +90,31 @@ export function PlayerProvider({ children }) {
     setPlayer((p) => ({ ...p, coins: Math.max(0, (p.coins || 0) + amount) }))
   }, [])
 
+  // Suma progreso a la misión diaria (resetea solo si cambió el día).
+  const trackDaily = useCallback((delta) => {
+    setPlayer((p) => {
+      const d = currentDaily(p)
+      return { ...p, daily: {
+        ...d,
+        rounds: d.rounds + (delta.rounds || 0),
+        stars: d.stars + (delta.stars || 0),
+        answers: d.answers + (delta.answers || 0),
+      } }
+    })
+  }, [])
+
+  // Reclama el premio diario (monedas) si las 3 misiones están completas. Devuelve el bono o 0.
+  const claimDaily = useCallback((bonus) => {
+    let given = 0
+    setPlayer((p) => {
+      const d = currentDaily(p)
+      if (d.claimed || !dailyComplete(d)) return { ...p, daily: d }
+      given = bonus
+      return { ...p, coins: (p.coins || 0) + bonus, daily: { ...d, claimed: true } }
+    })
+    return given
+  }, [])
+
   // Compra un ítem si alcanzan las monedas y no lo tiene. Devuelve true/false.
   const buyItem = useCallback((id, price) => {
     let ok = false
@@ -144,6 +171,7 @@ export function PlayerProvider({ children }) {
     player,
     hasProfile: !!player.name,
     saveProfile, touchStreak, addXP, completeChallenge, addCoins, buyItem, equip,
+    trackDaily, claimDaily,
     incrementAI, checkBadges, getSchoolXP, generateSchoolCode, resetPlayer,
   }
   return createElement(PlayerContext.Provider, { value }, children)

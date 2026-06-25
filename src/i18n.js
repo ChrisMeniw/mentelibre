@@ -119,6 +119,16 @@ export const LANG_DATA = {
     newBadge: '¡Nueva medalla!',
     nextRound: 'Siguiente ronda →',
     backToMap: 'Volver al mapa',
+
+    // Misión diaria
+    dailyTitle: 'Misión diaria',
+    missionRounds: 'Completa 1 ronda',
+    missionAnswers: 'Responde 8 preguntas',
+    missionStars: 'Gana 12 estrellas',
+    claimReward: '¡Reclamar premio!',
+    rewardClaimed: 'Premio reclamado ✓',
+    dailyAllDone: '¡Misión diaria completa!',
+    comeTomorrow: 'Vuelve mañana por más 🌙',
     tapToSpeak: '🎤 Toca y habla tu respuesta',
     listening: '🔴 Te escucho... toca para terminar',
     orTypeHint: 'o escribe aquí tu respuesta',
@@ -288,6 +298,16 @@ export const LANG_DATA = {
     newBadge: 'Nova medalha!',
     nextRound: 'Próxima rodada →',
     backToMap: 'Voltar ao mapa',
+
+    // Missão diária
+    dailyTitle: 'Missão diária',
+    missionRounds: 'Complete 1 rodada',
+    missionAnswers: 'Responda 8 perguntas',
+    missionStars: 'Ganhe 12 estrelas',
+    claimReward: 'Pegar prêmio!',
+    rewardClaimed: 'Prêmio pego ✓',
+    dailyAllDone: 'Missão diária completa!',
+    comeTomorrow: 'Volte amanhã por mais 🌙',
     tapToSpeak: '🎤 Toque e fale sua resposta',
     listening: '🔴 Estou ouvindo... toque para terminar',
     orTypeHint: 'ou escreva aqui sua resposta',

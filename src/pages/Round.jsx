@@ -41,7 +41,7 @@ export default function Round() {
   const { world: worldId } = useParams()
   const nav = useNavigate()
   const { t, lang } = useLang()
-  const { player, addXP, addCoins, completeChallenge, incrementAI } = usePlayer()
+  const { player, addXP, addCoins, completeChallenge, incrementAI, trackDaily } = usePlayer()
 
   const world = getWorld(worldId)
   const av = avatarByEmoji(player.avatar)
@@ -114,6 +114,7 @@ export default function Round() {
     sfxPop()
     const all = [...stars, qStars]
     setStars(all)
+    trackDaily({ answers: 1, stars: qStars }) // progreso de misión diaria por pregunta
     if (qi + 1 < N) {
       setQi(qi + 1); setAnswer(''); setReact(''); setStage('answer')
       window.scrollTo({ top: 0, behavior: 'instant' })
@@ -129,7 +130,7 @@ export default function Round() {
     const oldLevel = levelForXP(player.xp)
     const newXP = player.xp + totalXp
     const leveledUp = levelForXP(newXP) > oldLevel
-    addXP(totalXp); addCoins(totalCoins); completeChallenge(worldId)
+    addXP(totalXp); addCoins(totalCoins); completeChallenge(worldId); trackDaily({ rounds: 1 })
     sfxComplete(); if (leveledUp) sfxLevelUp()
     setResults({ totalXp, totalCoins, totalStars, leveledUp, levelName: levelName(newXP, lang) })
     setPhase('results')
