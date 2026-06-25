@@ -95,6 +95,14 @@ export const LANG_DATA = {
     howToStart: '¡A jugar! 🚀',
     howToHelp: '¿Cómo se juega?',
     zoeName: 'ZOE · tu guía',
+    skip: 'Saltar',
+    nextStep: 'Siguiente →',
+    onb1Title: '¡Hola! Soy ZOE 👋',
+    onb1Text: 'Soy tu guía para pensar jugando. Vas a avanzar por un mapa de aventura, nivel por nivel.',
+    onb2Title: 'Responde pensando',
+    onb2Text: 'Cada nivel es una ronda de 5 preguntas. Respondes hablando 🎤 o escribiendo. ¡No hay respuestas incorrectas! Un amigo de IA te ayuda a pensar más.',
+    onb3Title: 'Gana premios',
+    onb3Text: 'Mientras mejor piensas, más estrellas ⭐, monedas 🪙 y niveles ganas. Gasta las monedas en la tienda para tu personaje.',
 
     // Ronda
     roundIntroTitle: 'Ronda de pensamiento',
@@ -256,6 +264,14 @@ export const LANG_DATA = {
     howToStart: 'Vamos jogar! 🚀',
     howToHelp: 'Como se joga?',
     zoeName: 'ZOE · seu guia',
+    skip: 'Pular',
+    nextStep: 'Próximo →',
+    onb1Title: 'Olá! Eu sou a ZOE 👋',
+    onb1Text: 'Sou seu guia para pensar brincando. Você vai avançar por um mapa de aventura, nível por nível.',
+    onb2Title: 'Responda pensando',
+    onb2Text: 'Cada nível é uma rodada de 5 perguntas. Você responde falando 🎤 ou escrevendo. Não existem respostas erradas! Um amigo de IA te ajuda a pensar mais.',
+    onb3Title: 'Ganhe prêmios',
+    onb3Text: 'Quanto melhor você pensa, mais estrelas ⭐, moedas 🪙 e níveis ganha. Gaste as moedas na loja para seu personagem.',
 
     // Rodada
     roundIntroTitle: 'Rodada de pensamento',
