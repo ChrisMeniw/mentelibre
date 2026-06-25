@@ -9,8 +9,9 @@ const STORAGE_KEY = 'ml_player_v1'
 const DEFAULT = {
   name: '', avatar: '🐬', avatarName: 'Emmeline', ageGroup: '6-8',
   school: '', team: '',
-  xp: 0, level: 0, streak: 0, lastPlayed: null,
+  xp: 0, level: 0, streak: 0, lastPlayed: null, coins: 0,
   completed: {}, unlockedBadges: [], aiInteractions: 0,
+  owned: [], pet: '', frame: '',
 }
 
 function load() {
@@ -83,6 +84,32 @@ export function PlayerProvider({ children }) {
     })
   }, [])
 
+  const addCoins = useCallback((amount) => {
+    setPlayer((p) => ({ ...p, coins: Math.max(0, (p.coins || 0) + amount) }))
+  }, [])
+
+  // Compra un ítem si alcanzan las monedas y no lo tiene. Devuelve true/false.
+  const buyItem = useCallback((id, price) => {
+    let ok = false
+    setPlayer((p) => {
+      const owned = p.owned || []
+      if (owned.includes(id) || (p.coins || 0) < price) return p
+      ok = true
+      return { ...p, coins: p.coins - price, owned: [...owned, id] }
+    })
+    return ok
+  }, [])
+
+  // Equipa un ítem comprado: slot 'avatar' | 'pet' | 'frame'.
+  const equip = useCallback((slot, value, avatarName) => {
+    setPlayer((p) => {
+      if (slot === 'avatar') return { ...p, avatar: value, avatarName: avatarName || p.avatarName }
+      if (slot === 'pet') return { ...p, pet: value }
+      if (slot === 'frame') return { ...p, frame: value }
+      return p
+    })
+  }, [])
+
   const incrementAI = useCallback(() => {
     setPlayer((p) => {
       const next = { ...p, aiInteractions: (p.aiInteractions || 0) + 1 }
@@ -116,7 +143,7 @@ export function PlayerProvider({ children }) {
   const value = {
     player,
     hasProfile: !!player.name,
-    saveProfile, touchStreak, addXP, completeChallenge,
+    saveProfile, touchStreak, addXP, completeChallenge, addCoins, buyItem, equip,
     incrementAI, checkBadges, getSchoolXP, generateSchoolCode, resetPlayer,
   }
   return createElement(PlayerContext.Provider, { value }, children)

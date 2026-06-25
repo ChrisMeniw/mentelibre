@@ -11,8 +11,8 @@ export default function WarpBackground() {
     let dpr = Math.min(window.devicePixelRatio || 1, 1.8)
     let raf = 0
     let frame = 0
-    let warpSpeed = 0.2
-    let targetSpeed = 0.2
+    let warpSpeed = 0.12
+    let targetSpeed = 0.12
     let burstUntil = 0
 
     let origins = []   // 5 orígenes: centro + 4 esquinas
@@ -33,7 +33,7 @@ export default function WarpBackground() {
       return {
         ox: o.x, oy: o.y, ang,
         dist: rand(0, Math.max(W, H) * 0.5),
-        speed: rand(0.0008, 0.002),
+        speed: rand(0.00035, 0.0009),
         size: rand(0.6, 1.8),
         hue: o.color,
         tw: Math.random() * Math.PI * 2,
@@ -55,7 +55,7 @@ export default function WarpBackground() {
         { x: W, y: H, color: ORIGIN_COLORS[4] },
       ]
 
-      const count = Math.min(220, Math.floor((W * H) / 7000))
+      const count = Math.min(130, Math.floor((W * H) / 11000))
       stars = Array.from({ length: count }, makeStar)
 
       nebulas = [
@@ -159,22 +159,22 @@ export default function WarpBackground() {
 
     function drawStars() {
       for (const s of stars) {
-        s.dist += s.speed * (1 + warpSpeed * 14) * Math.max(W, H)
+        s.dist += s.speed * (1 + warpSpeed * 5) * Math.max(W, H)
         const maxd = Math.max(W, H) * 0.75
         if (s.dist > maxd) { Object.assign(s, makeStar()); s.dist = rand(0, 30) }
         const x = s.ox + Math.cos(s.ang) * s.dist
         const y = s.oy + Math.sin(s.ang) * s.dist
-        const streak = warpSpeed * 60 * (s.dist / maxd)
+        const streak = warpSpeed * 26 * (s.dist / maxd)
         const x2 = s.ox + Math.cos(s.ang) * (s.dist - streak)
         const y2 = s.oy + Math.sin(s.ang) * (s.dist - streak)
         const tw = 0.6 + Math.sin(frame * 0.05 + s.tw) * 0.4
-        if (warpSpeed > 0.35) {
-          ctx.strokeStyle = hexA(s.hue, 0.5 * tw)
+        if (warpSpeed > 0.22) {
+          ctx.strokeStyle = hexA(s.hue, 0.4 * tw)
           ctx.lineWidth = s.size
           ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x, y); ctx.stroke()
         }
         ctx.fillStyle = hexA('#FFFFFF', 0.85 * tw)
-        ctx.beginPath(); ctx.arc(x, y, s.size * (warpSpeed > 0.5 ? 1.3 : 1), 0, Math.PI * 2); ctx.fill()
+        ctx.beginPath(); ctx.arc(x, y, s.size, 0, Math.PI * 2); ctx.fill()
       }
     }
 
@@ -247,13 +247,13 @@ export default function WarpBackground() {
 
     function tick() {
       frame++
-      // control de velocidad: burst cada 600 frames
-      if (frame % 600 === 0) {
-        targetSpeed = rand(0.55, 0.80)
-        burstUntil = frame + Math.floor(rand(120, 210)) // 2-3.5s aprox
+      // control de velocidad: ráfaga suave y ocasional (~cada 16s)
+      if (frame % 1000 === 0) {
+        targetSpeed = rand(0.22, 0.32) // ráfaga suave, ocasional
+        burstUntil = frame + Math.floor(rand(80, 140))
       }
-      if (frame > burstUntil && targetSpeed > 0.3) targetSpeed = rand(0.17, 0.26)
-      warpSpeed += (targetSpeed - warpSpeed) * 0.010
+      if (frame > burstUntil && targetSpeed > 0.2) targetSpeed = rand(0.10, 0.15)
+      warpSpeed += (targetSpeed - warpSpeed) * 0.008
 
       ctx.clearRect(0, 0, W, H)
       drawBase()

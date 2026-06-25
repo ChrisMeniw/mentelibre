@@ -1,10 +1,19 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang } from '../i18n'
+import { usePlayer } from '../hooks/usePlayer'
 
 export default function TeacherPortal() {
   const { t, lang } = useLang()
+  const { resetPlayer } = usePlayer()
   const nav = useNavigate()
+  const [confirmChange, setConfirmChange] = useState(false)
   const appName = lang === 'pt' ? 'MenteLivre' : 'MenteLibre'
+  const doChangeUser = () => {
+    try { localStorage.removeItem('ml_seen_intro') } catch { /* noop */ }
+    resetPlayer()
+    nav('/')
+  }
 
   const stats = [
     { n: '20', l: t('statChallenges') },
@@ -54,7 +63,20 @@ export default function TeacherPortal() {
         </a>
       </div>
 
+      <button onClick={() => setConfirmChange(true)} className="btn btn-ghost w-full text-sm">🔁 {t('changeUser')}</button>
       <button onClick={() => nav('/hub')} className="btn btn-ghost w-full text-sm">{t('backToGame')}</button>
+
+      {confirmChange && (
+        <div className="fixed inset-0 z-[85] grid place-items-center px-6" style={{ background: 'rgba(8,4,20,0.85)', backdropFilter: 'blur(8px)' }} onClick={() => setConfirmChange(false)}>
+          <div className="card p-6 max-w-xs w-full bounce-in text-center" onClick={(e) => e.stopPropagation()}>
+            <div className="text-4xl">🔁</div>
+            <h2 className="font-logo text-xl grad-text mt-1">{t('changeUser')}</h2>
+            <p className="text-sm text-[var(--text-dim)] mt-2 leading-snug">{t('changeUserMsg')}</p>
+            <button onClick={doChangeUser} className="btn btn-gold w-full mt-5">{t('changeUserYes')}</button>
+            <button onClick={() => setConfirmChange(false)} className="btn btn-ghost w-full mt-2 text-sm">{t('cancel')}</button>
+          </div>
+        </div>
+      )}
 
       <footer className="text-center text-xs text-[var(--text-dim)] pt-2 leading-relaxed">
         {appName} · Fundación Chris Meniw ·{' '}

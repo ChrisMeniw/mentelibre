@@ -1,3 +1,5 @@
+import { PREMIUM_AVATARS } from '../data/shop'
+
 // Paso 8 — 7 personajes
 export const AVATARS = [
   { emoji: '🐬', name: 'Emmeline', color: '#0EA5E9' },
@@ -10,7 +12,9 @@ export const AVATARS = [
 ]
 
 export function avatarByEmoji(e) {
-  return AVATARS.find((a) => a.emoji === e) || AVATARS[0]
+  return AVATARS.find((a) => a.emoji === e)
+    || PREMIUM_AVATARS.find((a) => a.emoji === e)
+    || AVATARS[0]
 }
 
 export default function AvatarPicker({ value, onChange }) {

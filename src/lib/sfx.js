@@ -1,0 +1,84 @@
+// Efectos de sonido procedurales (Web Audio API). Sin archivos.
+// Se crean dentro de gestos del usuario (onClick), así cumplen la política de autoplay.
+
+let actx = null
+let enabled = true
+
+function ctx() {
+  if (typeof window === 'undefined') return null
+  if (!actx) {
+    const AC = window.AudioContext || window.webkitAudioContext
+    if (!AC) return null
+    actx = new AC()
+  }
+  if (actx.state === 'suspended') actx.resume()
+  return actx
+}
+
+export function setSfxEnabled(v) { enabled = !!v }
+export function isSfxEnabled() { return enabled }
+
+// Una nota corta con envolvente suave (y barrido opcional de frecuencia).
+function tone(freq, dur, { type = 'sine', gain = 0.16, when = 0, sweepTo = null, pan = 0 } = {}) {
+  const c = ctx()
+  if (!c || !enabled) return
+  const t0 = c.currentTime + when
+  const o = c.createOscillator()
+  o.type = type
+  o.frequency.setValueAtTime(freq, t0)
+  if (sweepTo) o.frequency.exponentialRampToValueAtTime(sweepTo, t0 + dur)
+  const g = c.createGain()
+  g.gain.setValueAtTime(0.0001, t0)
+  g.gain.exponentialRampToValueAtTime(gain, t0 + 0.012)
+  g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur)
+  let out = g
+  if (pan && c.createStereoPanner) {
+    const p = c.createStereoPanner()
+    p.pan.value = pan
+    g.connect(p)
+    out = p
+  }
+  o.connect(g)
+  out.connect(c.destination)
+  o.start(t0)
+  o.stop(t0 + dur + 0.03)
+}
+
+// Toque de botón — pop corto y burbujeante.
+export function sfxPop() {
+  tone(420, 0.12, { type: 'triangle', gain: 0.12, sweepTo: 680 })
+}
+
+// Enviar respuesta — whoosh ascendente.
+export function sfxSend() {
+  tone(300, 0.18, { type: 'sawtooth', gain: 0.09, sweepTo: 760 })
+  tone(900, 0.22, { type: 'sine', gain: 0.05, when: 0.04, sweepTo: 1500 })
+}
+
+// La IA respondió — chispas alegres ascendentes.
+export function sfxSparkle() {
+  const notes = [880, 1175, 1568]
+  notes.forEach((f, i) => tone(f, 0.26, { type: 'sine', gain: 0.07, when: i * 0.06, pan: i % 2 ? 0.3 : -0.3 }))
+}
+
+// Acierto / paso completado — dos notas felices.
+export function sfxCorrect() {
+  tone(659, 0.16, { type: 'triangle', gain: 0.14 })
+  tone(988, 0.3, { type: 'triangle', gain: 0.11, when: 0.12 })
+}
+
+// Subir de nivel — fanfarria ascendente (C–E–G–C).
+export function sfxLevelUp() {
+  const seq = [523, 659, 784, 1047]
+  seq.forEach((f, i) => {
+    tone(f, 0.32, { type: 'triangle', gain: 0.16, when: i * 0.12 })
+    tone(f * 2, 0.32, { type: 'sine', gain: 0.05, when: i * 0.12 })
+  })
+}
+
+// Desafío completado — acorde + lluvia de chispas.
+export function sfxComplete() {
+  ;[523, 659, 784].forEach((f) => tone(f, 0.5, { type: 'sine', gain: 0.1 }))
+  const notes = [1047, 1319, 1568, 2093]
+  notes.forEach((f, i) => tone(f, 0.4, { type: 'triangle', gain: 0.07, when: 0.15 + i * 0.08, pan: i % 2 ? 0.4 : -0.4 }))
+}

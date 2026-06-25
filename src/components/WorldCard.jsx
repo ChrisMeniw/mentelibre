@@ -18,7 +18,7 @@ export default function WorldCard({ world, completed = 0, onClick }) {
         style={{ background: `linear-gradient(90deg, transparent, ${world.color}, transparent)`, opacity: 0.5 }}
       />
       <div
-        className="w-12 h-12 rounded-2xl grid place-items-center text-3xl mb-2.5 relative"
+        className="w-12 h-12 rounded-2xl grid place-items-center text-3xl mb-2.5 relative world-float"
         style={{
           background: `linear-gradient(135deg, ${world.color}38, ${world.color}10)`,
           boxShadow: `0 10px 22px -10px ${world.color}, inset 0 0 0 1px ${world.color}44`,

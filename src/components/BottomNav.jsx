@@ -9,6 +9,7 @@ export default function BottomNav() {
   if (loc.pathname === '/' || loc.pathname.startsWith('/desafio')) return null
   const items = [
     { to: '/hub', icon: '🏠', label: t('navHome') },
+    { to: '/tienda', icon: '🛒', label: t('navShop') },
     { to: '/logros', icon: '🏅', label: t('navBadges') },
     { to: '/docentes', icon: '👩‍🏫', label: t('navTeacher') },
   ]
@@ -20,8 +21,8 @@ export default function BottomNav() {
           return (
             <button
               key={it.to}
-              onClick={() => nav(it.to)}
-              className="relative flex flex-col items-center gap-0.5 px-5 py-1.5 active:scale-90 transition"
+              onClick={() => { nav(it.to); window.scrollTo({ top: 0, behavior: 'instant' }) }}
+              className="relative flex flex-col items-center gap-0.5 px-3.5 py-1.5 active:scale-90 transition"
               style={{ color: active ? 'var(--gold)' : 'var(--text-dim)' }}
             >
               {active && (

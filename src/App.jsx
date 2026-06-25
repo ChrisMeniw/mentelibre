@@ -8,6 +8,7 @@ import Hub from './pages/Hub'
 import Challenge from './pages/Challenge'
 import Achievements from './pages/Achievements'
 import TeacherPortal from './pages/TeacherPortal'
+import Shop from './pages/Shop'
 
 // Toggle de idioma visible en todas las pantallas (Paso 5)
 function LangToggle() {
@@ -31,6 +32,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/hub" element={<Hub />} />
+          <Route path="/tienda" element={<Shop />} />
           <Route path="/desafio/:world" element={<Challenge />} />
           <Route path="/logros" element={<Achievements />} />
           <Route path="/docentes" element={<TeacherPortal />} />

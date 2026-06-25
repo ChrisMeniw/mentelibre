@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLang } from '../i18n'
+import { setSfxEnabled } from '../lib/sfx'
 
 // Paso 4 — Música ambiental procedural (Web Audio API). Nada de archivos de audio.
 const ROOT = 220 // A3
@@ -183,7 +184,8 @@ export default function MusicEngine() {
   }, [])
 
   function toggle() {
-    if (on) { stop(); setOn(false) } else { start(); setOn(true) }
+    if (on) { stop(); setOn(false); setSfxEnabled(false) }
+    else { start(); setOn(true); setSfxEnabled(true) }
   }
 
   return (
