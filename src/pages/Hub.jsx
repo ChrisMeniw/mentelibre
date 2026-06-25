@@ -142,7 +142,7 @@ export default function Hub() {
             <button
               onClick={() => { sfxPop(); setShowHelp(true) }}
               aria-label={t('howToHelp')}
-              className="shrink-0 w-10 h-10 rounded-full card grid place-items-center text-lg font-black active:scale-90 transition glow-violet"
+              className="shrink-0 w-11 h-11 min-h-touch rounded-full card grid place-items-center text-lg font-black active:scale-90 transition glow-violet"
             >
               ?
             </button>

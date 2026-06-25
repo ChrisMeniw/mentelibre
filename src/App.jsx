@@ -19,8 +19,8 @@ function LangToggle() {
   const off = { color: 'var(--text-dim)' }
   return (
     <div className="fixed top-3 right-3 z-50 card flex gap-1 p-1 safe-top">
-      <button onClick={() => setLang('es')} className="px-2.5 py-1 rounded-full text-xs font-extrabold" style={lang === 'es' ? on : off}>🇦🇷 ES</button>
-      <button onClick={() => setLang('pt')} className="px-2.5 py-1 rounded-full text-xs font-extrabold" style={lang === 'pt' ? on : off}>🇧🇷 PT</button>
+      <button onClick={() => setLang('es')} aria-label="Español" aria-pressed={lang === 'es'} className="px-3 py-2 rounded-full text-xs font-extrabold min-h-touch" style={lang === 'es' ? on : off}>🇦🇷 ES</button>
+      <button onClick={() => setLang('pt')} aria-label="Português" aria-pressed={lang === 'pt'} className="px-3 py-2 rounded-full text-xs font-extrabold min-h-touch" style={lang === 'pt' ? on : off}>🇧🇷 PT</button>
     </div>
   )
 }
@@ -30,7 +30,7 @@ export default function App() {
     <>
       <WarpBackground />
       <LangToggle />
-      <main className="relative z-10 min-h-screen">
+      <main className="relative z-10 min-h-dvh">
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/hub" element={<Hub />} />

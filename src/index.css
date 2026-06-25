@@ -15,7 +15,7 @@
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body, #root { height: 100%; }
+html, body, #root { height: 100%; min-height: 100dvh; }
 
 body {
   margin: 0;
@@ -59,6 +59,7 @@ body {
   .btn {
     @apply font-extrabold rounded-2xl px-5 py-3 transition-all duration-200 active:scale-[0.97] select-none relative overflow-hidden;
     letter-spacing: 0;
+    min-height: 44px; /* área táctil mínima en móvil */
   }
   .btn-primary {
     background: linear-gradient(135deg, #B06CFF 0%, var(--violet) 55%, #5B21B6 100%);
@@ -96,7 +97,11 @@ body {
     background: rgba(255,255,255,0.045);
     border: 1px solid rgba(255,255,255,0.12);
     color: var(--text);
+    font-size: 16px; /* evita el zoom automático de iOS al enfocar */
+    min-height: 48px;
   }
+  /* Todos los inputs/textarea a 16px mínimo (sin zoom en iOS) */
+  input, textarea, select { font-size: 16px; }
   .input::placeholder { color: rgba(148,163,184,0.7); }
   .input:focus {
     border-color: rgba(168,85,247,0.7);

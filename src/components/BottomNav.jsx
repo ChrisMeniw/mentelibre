@@ -22,7 +22,9 @@ export default function BottomNav() {
             <button
               key={it.to}
               onClick={() => { nav(it.to); window.scrollTo({ top: 0, behavior: 'instant' }) }}
-              className="relative flex flex-col items-center gap-0.5 px-3.5 py-1.5 active:scale-90 transition"
+              aria-label={it.label}
+              aria-current={active ? 'page' : undefined}
+              className="relative flex flex-col items-center justify-center gap-0.5 px-3.5 py-1.5 min-h-touch active:scale-90 transition"
               style={{ color: active ? 'var(--gold)' : 'var(--text-dim)' }}
             >
               {active && (
