@@ -4,6 +4,7 @@ import WarpBackground from './components/WarpBackground'
 import MusicEngine from './components/MusicEngine'
 import BottomNav from './components/BottomNav'
 import FoundationBadge from './components/FoundationBadge'
+import Home from './pages/Home'
 import Landing from './pages/Landing'
 import Hub from './pages/Hub'
 import Challenge from './pages/Challenge'
@@ -32,7 +33,8 @@ export default function App() {
       <LangToggle />
       <main className="relative z-10 min-h-dvh">
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/empezar" element={<Landing />} />
           <Route path="/hub" element={<Hub />} />
           <Route path="/tienda" element={<Shop />} />
           <Route path="/ronda/:world" element={<Round />} />

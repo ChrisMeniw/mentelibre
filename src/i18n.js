@@ -8,6 +8,11 @@ export const LANG_DATA = {
     subtitle: 'Entrena tu mente con la ayuda de la IA. Gratis para escuelas.',
 
     // Onboarding
+    homeSub: 'Un juego de pensamiento crítico con inteligencia artificial. Gratis, para escuelas y familias.',
+    homeWelcome: '¡Hola! Soy ZOE, tu guía. ¿Jugamos a pensar?',
+    playCta: '🎮 ¡Jugar!',
+    continueCta: '▶ Seguir jugando',
+    forTeachers: '👩‍🏫 Para docentes',
     chooseAvatar: 'Elige tu personaje',
     yourName: '¿Cómo te llamas?',
     namePlaceholder: 'Tu nombre',
@@ -192,6 +197,11 @@ export const LANG_DATA = {
     tagline: 'Pensar é um superpoder',
     subtitle: 'Treine sua mente com a ajuda da IA. Grátis para escolas.',
 
+    homeSub: 'Um jogo de pensamento crítico com inteligência artificial. Grátis, para escolas e famílias.',
+    homeWelcome: 'Olá! Eu sou a ZOE, seu guia. Vamos pensar?',
+    playCta: '🎮 Jogar!',
+    continueCta: '▶ Continuar jogando',
+    forTeachers: '👩‍🏫 Para professores',
     chooseAvatar: 'Escolha seu personagem',
     yourName: 'Como você se chama?',
     namePlaceholder: 'Seu nome',
