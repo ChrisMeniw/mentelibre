@@ -59,6 +59,8 @@ export default function Home() {
           {t('forTeachers')}
         </button>
       </div>
+
+      <div className="text-[10px] text-[var(--text-dim)] opacity-70 mt-6 leading-snug max-w-xs mx-auto fade-in-d3">{t('legalReg')}</div>
     </div>
   )
 }

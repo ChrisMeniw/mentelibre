@@ -58,8 +58,8 @@ export default function TeacherPortal() {
 
       <div className="card p-4 text-center fade-in-d3">
         <div className="text-xs text-[var(--text-dim)]">{t('contact')}</div>
-        <a href="mailto:fundacion@chrismeniw.com" className="font-extrabold text-[var(--sky)]">
-          fundacion@chrismeniw.com
+        <a href="mailto:info@chrismeniwfoundation.org" className="font-extrabold text-[var(--sky)]">
+          info@chrismeniwfoundation.org
         </a>
       </div>
 
@@ -86,9 +86,9 @@ export default function TeacherPortal() {
       )}
 
       <footer className="text-center text-xs text-[var(--text-dim)] pt-2 leading-relaxed">
-        {appName} · Fundación Chris Meniw ·{' '}
-        <a className="text-[var(--violet-light)]" href="https://www.chrismeniw.com" target="_blank" rel="noopener noreferrer">
-          www.chrismeniw.com
+        {appName} · Chris Meniw Foundation ·{' '}
+        <a className="text-[var(--violet-light)]" href="https://www.chrismeniwfoundation.org" target="_blank" rel="noopener noreferrer">
+          www.chrismeniwfoundation.org
         </a>
       </footer>
     </div>

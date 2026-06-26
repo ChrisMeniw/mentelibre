@@ -50,9 +50,18 @@ export default function Mission() {
         ))}
       </div>
 
-      {/* CTA */}
-      <div className="space-y-2.5 mt-6">
-        <button onClick={() => { sfxPop(); nav(hasProfile ? '/hub' : '/empezar') }} className="btn btn-gold w-full text-lg min-h-touch"
+      {/* Call to action a las ESCUELAS */}
+      <div className="card p-5 mt-6 text-center" style={{ background: 'linear-gradient(180deg, rgba(251,191,36,0.14), rgba(124,58,237,0.08))', boxShadow: 'inset 0 0 0 1px rgba(251,191,36,0.4)' }}>
+        <div className="text-3xl">🏫</div>
+        <h2 className="font-logo text-xl grad-text mt-1 leading-tight">{t('schoolCtaTitle')}</h2>
+        <p className="text-sm text-[var(--text-dim)] mt-2 leading-snug">{t('schoolCtaText')}</p>
+        <a href="mailto:info@chrismeniwfoundation.org?subject=MenteLibre%20en%20mi%20escuela" className="btn btn-gold w-full mt-3 text-base min-h-touch block text-center" aria-label={t('schoolCtaBtn')}>{t('schoolCtaBtn')}</a>
+        <div className="text-xs text-[var(--sky)] font-bold mt-2">info@chrismeniwfoundation.org</div>
+      </div>
+
+      {/* CTA jugar */}
+      <div className="space-y-2.5 mt-4">
+        <button onClick={() => { sfxPop(); nav(hasProfile ? '/hub' : '/empezar') }} className="btn btn-primary w-full text-lg min-h-touch"
           aria-label={hasProfile ? t('continueCta') : t('playCta')}>
           {hasProfile ? t('continueCta') : t('playCta')}
         </button>
@@ -61,9 +70,12 @@ export default function Mission() {
         </button>
       </div>
 
-      <footer className="text-center text-xs text-[var(--text-dim)] pt-5 leading-relaxed">
-        Fundación Chris Meniw ·{' '}
-        <a className="text-[var(--violet-light)]" href="https://www.chrismeniw.com" target="_blank" rel="noopener noreferrer">www.chrismeniw.com</a>
+      <footer className="text-center pt-5 leading-relaxed">
+        <div className="text-xs text-[var(--text-dim)]">
+          Chris Meniw Foundation ·{' '}
+          <a className="text-[var(--violet-light)]" href="https://www.chrismeniwfoundation.org" target="_blank" rel="noopener noreferrer">www.chrismeniwfoundation.org</a>
+        </div>
+        <div className="text-[10px] text-[var(--text-dim)] opacity-70 mt-2 leading-snug">{t('legalReg')}</div>
       </footer>
     </div>
   )
