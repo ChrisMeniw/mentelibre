@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useLang } from './i18n'
 import WarpBackground from './components/WarpBackground'
+import MusicEngine from './components/MusicEngine'
 import BottomNav from './components/BottomNav'
 import FoundationBadge from './components/FoundationBadge'
 import Home from './pages/Home'
@@ -49,6 +50,7 @@ export default function App() {
       </main>
       <BottomNav />
       <FoundationBadge />
+      <MusicEngine />
     </>
   )
 }
