@@ -14,6 +14,7 @@ import Mascot from '../components/Mascot'
 import AdventureMap from '../components/AdventureMap'
 import HowToPlay from '../components/HowToPlay'
 import DailyMissions from '../components/DailyMissions'
+import InstallButton from '../components/InstallButton'
 
 function PlayerHeader({ onChangeUser }) {
   const { player } = usePlayer()
@@ -148,6 +149,7 @@ export default function Hub() {
               ?
             </button>
           </div>
+          <InstallButton />
           <DailyMissions />
           <AdventureMap />
         </div>

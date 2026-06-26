@@ -178,6 +178,7 @@ export const LANG_DATA = {
     soundOn: 'Música encendida',
     soundOff: 'Música apagada',
     poweredBy: 'Impulsado por',
+    installApp: 'Instalar app en tu celular',
 
     // Cambiar usuario
     downloadManual: '📄 Descargar manual para docentes (PDF)',
@@ -354,6 +355,7 @@ export const LANG_DATA = {
     soundOn: 'Música ligada',
     soundOff: 'Música desligada',
     poweredBy: 'Desenvolvido por',
+    installApp: 'Instalar app no celular',
 
     downloadManual: '📄 Baixar manual para professores (PDF)',
     changeUser: 'Trocar usuário',

@@ -17,3 +17,10 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     </LangProvider>
   </React.StrictMode>,
 )
+
+// PWA: registrar el service worker (solo en producción) para que funcione como app e instale.
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => { /* sin SW la app igual funciona */ })
+  })
+}
