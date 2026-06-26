@@ -1,5 +1,8 @@
-// Paso 6 — 4 mundos × 3 grupos de edad × 10 preguntas, cada una en ES y PT.
-// Cada ronda saca 5 al azar (ver pickRoundQuestions), así no se repiten.
+// Paso 6 — 4 mundos × 3 grupos de edad, cada pregunta en ES y PT.
+// El banco base (10 c/u) se amplía con challengesExtra.js (20 c/u) → 30 por bucket.
+// Cada ronda saca 5 evitando las ya vistas (ver pickRoundQuestions), así no se repiten.
+import { EXTRA_CHALLENGES } from './challengesExtra'
+
 export const WORLDS = [
   { id: 'planeta',   emoji: '🌍', name_es: 'Desafíos del Planeta',  name_pt: 'Desafios do Planeta',   color: '#10B981' },
   { id: 'futuro',    emoji: '🚀', name_es: 'Inventar el Futuro',    name_pt: 'Inventar o Futuro',     color: '#FBBF24' },
@@ -169,7 +172,9 @@ export function getWorld(id) {
 }
 
 export function getQuestions(worldId, ageGroup) {
-  return CHALLENGES[worldId]?.[ageGroup] || CHALLENGES[worldId]?.['9-11'] || []
+  const base = CHALLENGES[worldId]?.[ageGroup] || CHALLENGES[worldId]?.['9-11'] || []
+  const extra = EXTRA_CHALLENGES[worldId]?.[ageGroup] || EXTRA_CHALLENGES[worldId]?.['9-11'] || []
+  return base.concat(extra)
 }
 
 export function pickQuestion(worldId, ageGroup, seed = Math.random()) {
@@ -197,7 +202,7 @@ export function pickRoundQuestions(worldId, ageGroup, n = 5, exclude = []) {
 export function pickMixedQuestions(ageGroup, n = 20) {
   const all = []
   for (const w of WORLDS) {
-    const qs = CHALLENGES[w.id]?.[ageGroup] || CHALLENGES[w.id]?.['9-11'] || []
+    const qs = getQuestions(w.id, ageGroup)
     for (const q of qs) all.push({ ...q, world: w.id, color: w.color, emoji: w.emoji })
   }
   for (let i = all.length - 1; i > 0; i--) {
