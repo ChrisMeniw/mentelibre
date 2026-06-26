@@ -187,3 +187,17 @@ export function pickRoundQuestions(worldId, ageGroup, n = 5) {
   }
   return qs.slice(0, Math.min(n, qs.length))
 }
+
+// Modo Aula: mezcla preguntas de los 4 mundos para una edad y toma n (cada una con su mundo).
+export function pickMixedQuestions(ageGroup, n = 20) {
+  const all = []
+  for (const w of WORLDS) {
+    const qs = CHALLENGES[w.id]?.[ageGroup] || CHALLENGES[w.id]?.['9-11'] || []
+    for (const q of qs) all.push({ ...q, world: w.id, color: w.color, emoji: w.emoji })
+  }
+  for (let i = all.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[all[i], all[j]] = [all[j], all[i]]
+  }
+  return all.slice(0, Math.min(n, all.length))
+}

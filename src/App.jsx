@@ -6,6 +6,7 @@ import BottomNav from './components/BottomNav'
 import FoundationBadge from './components/FoundationBadge'
 import Home from './pages/Home'
 import Mission from './pages/Mission'
+import Classroom from './pages/Classroom'
 import Landing from './pages/Landing'
 import Hub from './pages/Hub'
 import Challenge from './pages/Challenge'
@@ -36,6 +37,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/mision" element={<Mission />} />
+          <Route path="/aula" element={<Classroom />} />
           <Route path="/empezar" element={<Landing />} />
           <Route path="/hub" element={<Hub />} />
           <Route path="/tienda" element={<Shop />} />

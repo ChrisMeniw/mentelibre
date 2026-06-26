@@ -46,6 +46,11 @@ export default function Home() {
         {hasProfile ? t('continueCta') : t('playCta')}
       </button>
 
+      <button onClick={() => { sfxPop(); nav('/aula') }} className="btn btn-primary w-full mt-3 text-base min-h-touch fade-in-d3"
+        aria-label={t('classroomMode')}>
+        {t('classroomMode')}
+      </button>
+
       <div className="flex gap-2 w-full mt-3 fade-in-d3">
         <button onClick={() => { sfxPop(); nav('/mision') }} className="btn btn-ghost flex-1 text-sm min-h-touch" aria-label={t('ourMission')}>
           {t('ourMission')}
