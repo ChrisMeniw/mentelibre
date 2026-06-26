@@ -7,7 +7,7 @@ import { subscribeGameplay, isGameplay } from '../lib/musicBus'
 // Pegadiza y en bucle: suena en el menú y se calla apenas se empieza a jugar.
 const BPM = 112
 const STEP_MS = (60 / BPM / 4) * 1000 // semicorchea
-const MAX_GAIN = 0.3
+const MAX_GAIN = 0.42
 
 // Melodía pegadiza (Do mayor pentatónica), una nota cada corchea sobre 2 compases.
 const HOOK = [523.25, 659.25, 783.99, 880.0, 783.99, 659.25, 783.99, 1046.5, 880.0, 783.99, 659.25, 783.99, 659.25, 587.33, 523.25, null]
@@ -135,23 +135,32 @@ export default function MusicEngine() {
     else stop()
   }
 
-  // Primer gesto del usuario → desbloquea el audio (política de autoplay del navegador).
+  // El audio necesita un gesto del usuario (política de autoplay del navegador).
   useEffect(() => {
-    const handler = () => {
-      gestured.current = true
-      sync()
-      window.removeEventListener('pointerdown', handler)
-      window.removeEventListener('touchstart', handler)
-    }
-    window.addEventListener('pointerdown', handler)
-    window.addEventListener('touchstart', handler)
     // Estado inicial real (por si se entra directo a una pantalla de juego).
     gameplay.current = isGameplay()
     // Escucha cuándo se entra/sale del juego para callar/retomar la música.
     const unsub = subscribeGameplay((g) => { gameplay.current = g; sync() })
+
+    // Intenta arrancar en CUALQUIER interacción y reintenta hasta que suene de verdad.
+    const events = ['pointerdown', 'touchstart', 'click', 'keydown']
+    const tryStart = () => {
+      gestured.current = true
+      const r = R.current
+      if (r.ctx && r.ctx.state === 'suspended') r.ctx.resume()
+      sync()
+      if (r.ctx && r.ctx.state === 'running' && r.started) detach()
+    }
+    function detach() { events.forEach((e) => window.removeEventListener(e, tryStart)) }
+    events.forEach((e) => window.addEventListener(e, tryStart, { passive: true }))
+
+    // Al volver a la pestaña, reanuda el audio si el navegador lo suspendió.
+    const onVis = () => { const r = R.current; if (!document.hidden && r.ctx && r.ctx.state === 'suspended') r.ctx.resume() }
+    document.addEventListener('visibilitychange', onVis)
+
     return () => {
-      window.removeEventListener('pointerdown', handler)
-      window.removeEventListener('touchstart', handler)
+      detach()
+      document.removeEventListener('visibilitychange', onVis)
       unsub()
       const r = R.current
       r.timers.forEach((tm) => clearInterval(tm))
