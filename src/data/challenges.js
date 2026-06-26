@@ -178,9 +178,14 @@ export function pickQuestion(worldId, ageGroup, seed = Math.random()) {
   return qs[Math.floor(seed * qs.length) % qs.length]
 }
 
-// Saca n preguntas AL AZAR del banco (sin repetir dentro de la ronda).
-export function pickRoundQuestions(worldId, ageGroup, n = 5) {
-  const qs = [...getQuestions(worldId, ageGroup)]
+// Saca n preguntas AL AZAR del banco, evitando las ya vistas (exclude) para
+// que NO se repitan al pasar de ronda. Si no alcanzan, usa todo el banco.
+export function pickRoundQuestions(worldId, ageGroup, n = 5, exclude = []) {
+  const pool = getQuestions(worldId, ageGroup)
+  const seen = new Set(exclude)
+  let qs = pool.filter((q) => !seen.has(q.es))
+  if (qs.length < n) qs = [...pool] // banco agotado → reinicia el ciclo
+  else qs = [...qs]
   for (let i = qs.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[qs[i], qs[j]] = [qs[j], qs[i]]

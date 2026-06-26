@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
-import { getWorld, pickRoundQuestions } from '../data/challenges'
+import { getWorld, getQuestions, pickRoundQuestions } from '../data/challenges'
+import { getSeen, addSeen, resetSeen } from '../lib/seenQuestions'
 import { BADGES } from '../data/badges'
 import { levelForXP, levelName } from '../data/levels'
 import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '../lib/claude'
@@ -46,7 +47,18 @@ export default function Round() {
 
   const world = getWorld(worldId)
   const av = avatarByEmoji(player.avatar)
-  const questions = useMemo(() => pickRoundQuestions(worldId, player.ageGroup, N), [worldId, player.ageGroup])
+  // Elige y registra las preguntas UNA sola vez por ronda, evitando las ya vistas.
+  // Ref-guard: a prueba del doble render de StrictMode (no repite el registro).
+  const pickedRef = useRef(null)
+  if (pickedRef.current === null) {
+    let seen = getSeen(worldId, player.ageGroup)
+    const pool = getQuestions(worldId, player.ageGroup)
+    if (pool.length - seen.length < N) { resetSeen(worldId, player.ageGroup); seen = [] }
+    const picked = pickRoundQuestions(worldId, player.ageGroup, N, seen)
+    addSeen(worldId, player.ageGroup, picked)
+    pickedRef.current = picked
+  }
+  const questions = pickedRef.current
 
   const [phase, setPhase] = useState('intro')   // intro | playing | results
   const [qi, setQi] = useState(0)
