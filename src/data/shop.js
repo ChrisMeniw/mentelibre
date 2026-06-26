@@ -1,15 +1,15 @@
 // Tienda — se compra con monedas 🪙 ganadas jugando.
 
-// Avatares premium (los 7 base siguen siendo gratis en AvatarPicker).
+// Avatares premium tipo "skins" (los 7 base siguen siendo gratis en AvatarPicker).
 export const PREMIUM_AVATARS = [
-  { id: 'av_unicornio', emoji: '🦄', name: 'Estela', color: '#EC4899', price: 80 },
-  { id: 'av_tigre',     emoji: '🐯', name: 'Rayo',   color: '#F59E0B', price: 60 },
-  { id: 'av_rex',       emoji: '🦖', name: 'Rex',    color: '#22C55E', price: 100 },
-  { id: 'av_ballena',   emoji: '🐳', name: 'Marea',  color: '#0EA5E9', price: 70 },
-  { id: 'av_aguila',    emoji: '🦅', name: 'Vento',  color: '#92400E', price: 90 },
-  { id: 'av_pulpo',     emoji: '🐙', name: 'Octa',   color: '#A855F7', price: 50 },
-  { id: 'av_lobo',      emoji: '🐺', name: 'Nieve',  color: '#64748B', price: 60 },
-  { id: 'av_pavo',      emoji: '🦚', name: 'Iris',   color: '#14B8A6', price: 120 },
+  { id: 'av_pixel',   emoji: '👾',   name: 'Pixel',    color: '#7C3AED', price: 80 },
+  { id: 'av_ghost',   emoji: '👻',   name: 'Espectro', color: '#64748B', price: 60 },
+  { id: 'av_genie',   emoji: '🧞',   name: 'Genio',    color: '#06B6D4', price: 100 },
+  { id: 'av_heroine', emoji: '🦸‍♀️', name: 'Aurora',   color: '#EC4899', price: 70 },
+  { id: 'av_villain', emoji: '🦹‍♀️', name: 'Hiedra',   color: '#7E22CE', price: 90 },
+  { id: 'av_fae',     emoji: '🧚',   name: 'Lumina',   color: '#14B8A6', price: 50 },
+  { id: 'av_fencer',  emoji: '🤺',   name: 'Florete',  color: '#475569', price: 60 },
+  { id: 'av_elf',     emoji: '🧝',   name: 'Élfico',   color: '#22C55E', price: 120 },
 ]
 
 // Mascotas — te acompañan en el mapa y en tu perfil.

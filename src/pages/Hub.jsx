@@ -139,6 +139,9 @@ export default function Hub() {
 
       {tab === 'play' && (
         <div className="fade-in space-y-3">
+          <div className="flex items-center justify-center">
+            <span className="chip text-[11px]" style={{ background: 'rgba(251,191,36,0.12)', borderColor: 'rgba(251,191,36,0.45)', color: 'var(--gold)' }}>{t('soloBadge')}</span>
+          </div>
           <div className="flex items-center gap-2">
             <div className="flex-1"><Mascot emoji={player.avatar} color={av.color} name={av.name} mood="idle" message={greet} size={60} /></div>
             <button

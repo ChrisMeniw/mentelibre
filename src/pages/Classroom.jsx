@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { AGE_GROUPS, pickMixedQuestions } from '../data/challenges'
@@ -19,8 +19,10 @@ export default function Classroom() {
   const { t, lang } = useLang()
   const { player } = usePlayer()
   const nav = useNavigate()
+  const location = useLocation()
 
-  const [phase, setPhase] = useState('setup')   // setup | playing | results | board
+  // Si venís desde "Ranking de escuelas" en el inicio, abre directo la tabla.
+  const [phase, setPhase] = useState(location.state?.view === 'board' ? 'board' : 'setup')   // setup | playing | results | board
   const [school, setSchool] = useState(player.school || '')
   const [group, setGroup] = useState('')
   const [age, setAge] = useState(player.ageGroup || '9-11')
@@ -130,6 +132,7 @@ export default function Classroom() {
       <div className="mx-auto max-w-md px-4 pt-14 pb-32 safe-top">
         <button onClick={() => { sfxPop(); nav('/') }} aria-label={t('back')} className="btn btn-ghost px-3 py-2 text-sm min-h-touch mb-3">←</button>
         <div className="text-center fade-in">
+          <div className="chip mx-auto mb-2 text-xs" style={{ background: 'rgba(168,85,247,0.16)', borderColor: 'rgba(168,85,247,0.5)', color: '#E9D5FF' }}>{t('groupBadge')}</div>
           <div className="floaty inline-block"><Zoe size={76} talking /></div>
           <h1 className="font-logo text-3xl grad-text mt-2">{t('classroomMode')}</h1>
           <p className="text-sm text-[var(--text-dim)] mt-2 leading-relaxed">{t('classroomDesc')}</p>
@@ -155,7 +158,8 @@ export default function Classroom() {
           </div>
         </div>
 
-        <button onClick={begin} disabled={!ready} className="btn btn-gold w-full mt-5 text-lg min-h-touch disabled:opacity-40" aria-label={t('caStart')}>{t('caStart')}</button>
+        <div className="mt-4 text-xs leading-snug rounded-xl px-3 py-2 fade-in-d1" style={{ background: 'rgba(16,185,129,0.12)', border: '1px solid rgba(16,185,129,0.35)', color: '#A7F3D0' }}>🏆 {t('caSchoolNote')}</div>
+        <button onClick={begin} disabled={!ready} className="btn btn-gold w-full mt-4 text-lg min-h-touch disabled:opacity-40" aria-label={t('caStart')}>{t('caStart')}</button>
         <button onClick={() => { sfxPop(); setPhase('board') }} className="btn btn-ghost w-full mt-2 text-sm min-h-touch" aria-label={t('caViewRanking')}>{t('caViewRanking')}</button>
       </div>
     )
@@ -238,6 +242,12 @@ export default function Classroom() {
   const low = timeLeft <= 10
   return (
     <div className="mx-auto max-w-md px-4 pt-14 pb-32 min-h-dvh safe-top">
+      {/* Banner de modo: deja claro que es competencia en grupo por tu escuela */}
+      <div className="card px-3 py-1.5 mb-2 flex items-center justify-center gap-2 text-[11px] font-extrabold" style={{ background: 'rgba(168,85,247,0.14)', borderColor: 'rgba(168,85,247,0.4)' }}>
+        <span style={{ color: '#E9D5FF' }}>{t('groupBadge')}</span>
+        <span className="text-[var(--text-dim)]">·</span>
+        <span className="text-[var(--text-dim)] truncate">🏫 {school}</span>
+      </div>
       {/* Header: progreso + puntaje */}
       <div className="flex items-center justify-between gap-2 mb-3">
         <div className="font-extrabold text-sm text-[var(--text-dim)]">{group}</div>

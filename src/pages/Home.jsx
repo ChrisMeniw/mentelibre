@@ -4,7 +4,31 @@ import { usePlayer } from '../hooks/usePlayer'
 import { sfxPop } from '../lib/sfx'
 import Zoe from '../components/Zoe'
 
-// Página de inicio pública: bienvenida + botón JUGAR. Lo primero que ve cualquiera.
+// Tarjeta de modo: ícono + título + descripción, con color propio. Deja clarísimo
+// si entrás a jugar solo, a la competencia de grupos o al ranking de escuelas.
+function ModeCard({ icon, title, desc, accent, onClick, primary }) {
+  return (
+    <button
+      onClick={onClick}
+      className="w-full card p-3.5 flex items-center gap-3 text-left active:scale-[0.98] transition min-h-touch"
+      style={{
+        borderColor: `${accent}66`,
+        boxShadow: primary ? `0 0 0 1px ${accent}66, 0 12px 28px -12px ${accent}` : undefined,
+        background: `linear-gradient(135deg, ${accent}1f, rgba(255,255,255,0.02))`,
+      }}
+    >
+      <span className="shrink-0 w-12 h-12 rounded-2xl grid place-items-center text-2xl"
+        style={{ background: `${accent}26`, border: `1px solid ${accent}55` }}>{icon}</span>
+      <span className="flex-1 min-w-0">
+        <span className="block font-extrabold text-[15px] leading-tight">{title}</span>
+        <span className="block text-[11px] text-[var(--text-dim)] leading-snug mt-0.5">{desc}</span>
+      </span>
+      <span className="shrink-0 text-[var(--text-dim)] text-xl">›</span>
+    </button>
+  )
+}
+
+// Página de inicio pública: bienvenida + elegir modo. Lo primero que ve cualquiera.
 export default function Home() {
   const { t, lang } = useLang()
   const { hasProfile } = usePlayer()
@@ -40,18 +64,23 @@ export default function Home() {
         <div className="text-left text-sm font-bold leading-snug">{t('homeWelcome')}</div>
       </div>
 
-      {/* CTA principal */}
-      <button onClick={play} className="btn btn-gold w-full mt-6 text-xl py-4 min-h-touch fade-in-d3 glow-pulse"
-        aria-label={hasProfile ? t('continueCta') : t('playCta')}>
-        {hasProfile ? t('continueCta') : t('playCta')}
-      </button>
+      {/* Elige cómo jugar — 3 modos bien diferenciados */}
+      <div className="w-full mt-6 fade-in-d3">
+        <div className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[var(--text-dim)] mb-2 text-center">{t('chooseHowToPlay')}</div>
+        <div className="space-y-2.5">
+          <ModeCard icon="🎮" accent="#FBBF24" primary
+            title={hasProfile ? t('continueCta') : t('modeSoloTitle')} desc={t('modeSoloDesc')}
+            onClick={play} />
+          <ModeCard icon="⚔️" accent="#A855F7"
+            title={t('modeGroupTitle')} desc={t('modeGroupDesc')}
+            onClick={() => { sfxPop(); nav('/aula') }} />
+          <ModeCard icon="🏆" accent="#10B981"
+            title={t('modeRankingTitle')} desc={t('modeRankingDesc')}
+            onClick={() => { sfxPop(); nav('/aula', { state: { view: 'board' } }) }} />
+        </div>
+      </div>
 
-      <button onClick={() => { sfxPop(); nav('/aula') }} className="btn btn-primary w-full mt-3 text-base min-h-touch fade-in-d3"
-        aria-label={t('classroomMode')}>
-        {t('classroomMode')}
-      </button>
-
-      <div className="flex gap-2 w-full mt-3 fade-in-d3">
+      <div className="flex gap-2 w-full mt-4 fade-in-d3">
         <button onClick={() => { sfxPop(); nav('/mision') }} className="btn btn-ghost flex-1 text-sm min-h-touch" aria-label={t('ourMission')}>
           {t('ourMission')}
         </button>

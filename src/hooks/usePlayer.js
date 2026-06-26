@@ -8,7 +8,7 @@ import { currentDaily, dailyComplete } from '../data/missions'
 const STORAGE_KEY = 'ml_player_v1'
 
 const DEFAULT = {
-  name: '', avatar: '🐬', avatarName: 'Emmeline', ageGroup: '6-8',
+  name: '', avatar: '🥷', avatarName: 'Sombra', ageGroup: '6-8',
   school: '', team: '',
   xp: 0, level: 0, streak: 0, lastPlayed: null, coins: 0,
   completed: {}, unlockedBadges: [], aiInteractions: 0,

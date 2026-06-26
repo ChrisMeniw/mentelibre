@@ -1,14 +1,14 @@
 import { PREMIUM_AVATARS } from '../data/shop'
 
-// Paso 8 — 7 personajes
+// Paso 8 — 7 personajes tipo "skins" (estilo Fortnite, no animales)
 export const AVATARS = [
-  { emoji: '🐬', name: 'Emmeline', color: '#0EA5E9' },
-  { emoji: '👨‍🚀', name: 'Orion', color: '#1E3A5F' },
-  { emoji: '🦁', name: 'Leo', color: '#F59E0B' },
-  { emoji: '🦊', name: 'Zara', color: '#F97316' },
-  { emoji: '🐧', name: 'Polo', color: '#64748B' },
-  { emoji: '🦋', name: 'Luma', color: '#A855F7' },
-  { emoji: '🐉', name: 'Drako', color: '#10B981' },
+  { emoji: '🥷', name: 'Sombra', color: '#6D28D9' },
+  { emoji: '🤖', name: 'Robo', color: '#0EA5E9' },
+  { emoji: '👽', name: 'Nova', color: '#22C55E' },
+  { emoji: '🦸', name: 'Titán', color: '#2563EB' },
+  { emoji: '🦹', name: 'Vórtex', color: '#A21CAF' },
+  { emoji: '🧑‍🚀', name: 'Cosmo', color: '#1E3A5F' },
+  { emoji: '🧙', name: 'Magnus', color: '#F59E0B' },
 ]
 
 export function avatarByEmoji(e) {
