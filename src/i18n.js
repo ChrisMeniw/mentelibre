@@ -223,6 +223,9 @@ export const LANG_DATA = {
 
     // Cambiar usuario
     downloadManual: '📄 Descargar manual para docentes (PDF)',
+    manualsTitle: 'Manual de usuario (PDF)',
+    manualEs: '📄 Español',
+    manualPt: '📄 Português',
     changeUser: 'Cambiar usuario',
     changeUserMsg: '¿Quieres cambiar de usuario? Volverás al inicio para elegir otro nombre y personaje. Tu progreso de ahora se borrará en este dispositivo.',
     changeUserYes: 'Sí, cambiar',
@@ -440,6 +443,9 @@ export const LANG_DATA = {
     installApp: 'Instalar app no celular',
 
     downloadManual: '📄 Baixar manual para professores (PDF)',
+    manualsTitle: 'Manual do usuário (PDF)',
+    manualEs: '📄 Espanhol',
+    manualPt: '📄 Português',
     changeUser: 'Trocar usuário',
     changeUserMsg: 'Quer trocar de usuário? Você voltará ao início para escolher outro nome e personagem. Seu progresso atual será apagado neste dispositivo.',
     changeUserYes: 'Sim, trocar',

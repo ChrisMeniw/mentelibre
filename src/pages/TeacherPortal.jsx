@@ -63,16 +63,13 @@ export default function TeacherPortal() {
         </a>
       </div>
 
-      <a
-        href="/Manual-Docente-MenteLibre.pdf"
-        target="_blank"
-        rel="noopener noreferrer"
-        download
-        className="btn btn-primary w-full text-sm text-center block"
-        aria-label={t('downloadManual')}
-      >
-        {t('downloadManual')}
-      </a>
+      <div className="card p-3">
+        <div className="text-xs font-extrabold text-[var(--text-dim)] text-center mb-2">📄 {t('manualsTitle')}</div>
+        <div className="flex gap-2">
+          <a href="/manual-usuario-es.pdf" target="_blank" rel="noopener noreferrer" download className="btn btn-primary flex-1 text-sm text-center block" aria-label={t('manualsTitle') + ' Español'}>{t('manualEs')}</a>
+          <a href="/manual-usuario-pt.pdf" target="_blank" rel="noopener noreferrer" download className="btn btn-primary flex-1 text-sm text-center block" aria-label={t('manualsTitle') + ' Português'}>{t('manualPt')}</a>
+        </div>
+      </div>
       <button onClick={() => setConfirmChange(true)} className="btn btn-ghost w-full text-sm">🔁 {t('changeUser')}</button>
       <button onClick={() => nav('/hub')} className="btn btn-ghost w-full text-sm">{t('backToGame')}</button>
 

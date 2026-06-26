@@ -131,10 +131,10 @@ export const CHALLENGES = {
       { es: '¿Qué hay más allá del cielo?', pt: 'O que existe além do céu?' },
       { es: 'Si pudieras ser invisible un día, ¿qué cosa buena harías?', pt: 'Se você pudesse ser invisível por um dia, que coisa boa faria?' },
       { es: '¿Los sueños son reales mientras duermes?', pt: 'Os sonhos são reais enquanto você dorme?' },
-      { es: '¿Qué forma tendría una idea si pudieras tocarla?', pt: 'Que forma teria uma ideia se você pudesse tocá-la?' },
+      { es: 'Si pudieras elegir tus sueños, ¿qué soñarías esta noche?', pt: 'Se você pudesse escolher seus sonhos, com o que sonharia esta noite?' },
       { es: 'Si las nubes fueran de algodón, ¿a qué sabrían?', pt: 'Se as nuvens fossem de algodão, com que gosto seriam?' },
       { es: '¿Por qué tenemos que dormir?', pt: 'Por que precisamos dormir?' },
-      { es: '¿De dónde vienen las palabras?', pt: 'De onde vêm as palavras?' },
+      { es: 'Si pudieras inventar un animal nuevo, ¿cómo sería?', pt: 'Se você pudesse inventar um animal novo, como ele seria?' },
       { es: 'Si pudieras pintar el cielo de otro color, ¿cuál elegirías y por qué?', pt: 'Se você pudesse pintar o céu de outra cor, qual escolheria e por quê?' },
     ],
     '9-11': [
