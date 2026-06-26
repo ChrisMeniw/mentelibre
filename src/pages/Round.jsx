@@ -10,6 +10,7 @@ import { avatarByEmoji } from '../components/AvatarPicker'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp } from '../lib/sfx'
+import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import Zoe from '../components/Zoe'
 
 const N = 5
@@ -60,6 +61,9 @@ export default function Round() {
   const badgesBefore = useRef(player.unlockedBadges || [])
 
   const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+
+  // Estás jugando → la música del menú se calla mientras dura la ronda.
+  useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
 
   const q = questions[qi]
   const qText = q ? (lang === 'pt' ? q.pt : q.es) : ''

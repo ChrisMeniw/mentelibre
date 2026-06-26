@@ -7,6 +7,7 @@ import { callClaude, responseSystemPrompt, hintSystemPrompt, scoreSystemPrompt, 
 import { avatarByEmoji } from '../components/AvatarPicker'
 import { levelForXP, levelName } from '../data/levels'
 import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp } from '../lib/sfx'
+import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import AIResponse from '../components/AIResponse'
@@ -41,6 +42,9 @@ export default function Challenge() {
   const [score, setScore] = useState(2)
 
   const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+
+  // Estás jugando → la música del menú se calla mientras dura el desafío.
+  useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
 
   // Leer la pregunta en voz alta para los más chicos (6-8) al entrar.
   useEffect(() => {

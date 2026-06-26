@@ -7,6 +7,7 @@ import { callClaude, scoreSystemPrompt, parseScore } from '../lib/claude'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxComplete } from '../lib/sfx'
+import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import { loadScores, saveScore, schoolRanking } from '../lib/classroom'
 import Zoe from '../components/Zoe'
 
@@ -57,6 +58,13 @@ export default function Classroom() {
   }, [qi, phase, stage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => stopSpeak(), [])
+
+  // La música del menú se calla mientras se está jugando la tanda.
+  useEffect(() => {
+    if (phase !== 'playing') return
+    enterGameplay()
+    return () => exitGameplay()
+  }, [phase])
 
   const begin = () => {
     if (school.trim().length < 2 || group.trim().length < 1) return

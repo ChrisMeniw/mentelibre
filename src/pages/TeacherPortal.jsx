@@ -8,7 +8,7 @@ export default function TeacherPortal() {
   const { resetPlayer } = usePlayer()
   const nav = useNavigate()
   const [confirmChange, setConfirmChange] = useState(false)
-  const appName = lang === 'pt' ? 'MenteLivre' : 'MenteLibre'
+  const appName = lang === 'pt' ? 'Mente Livre' : 'Mente Libre'
   const doChangeUser = () => {
     try { localStorage.removeItem('ml_seen_intro') } catch { /* noop */ }
     resetPlayer()

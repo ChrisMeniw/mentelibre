@@ -9,7 +9,7 @@ export default function Home() {
   const { t, lang } = useLang()
   const { hasProfile } = usePlayer()
   const nav = useNavigate()
-  const appName = lang === 'pt' ? 'MenteLivre' : 'MenteLibre'
+  const appName = lang === 'pt' ? 'Mente Livre' : 'Mente Libre'
 
   const play = () => {
     sfxPop()

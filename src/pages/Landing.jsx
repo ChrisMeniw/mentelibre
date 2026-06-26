@@ -48,7 +48,7 @@ export default function Landing() {
           Chris Meniw Foundation
         </div>
         <div className="font-logo text-5xl grad-text floaty leading-none mt-4">
-          {lang === 'pt' ? 'MenteLivre' : 'MenteLibre'}
+          {lang === 'pt' ? 'Mente Livre' : 'Mente Libre'}
         </div>
         <div className="text-[var(--gold)] font-extrabold mt-3 text-glow">✨ {t('tagline')}</div>
         <p className="text-sm text-[var(--text-dim)] mt-2 max-w-xs mx-auto leading-relaxed">{t('subtitle')}</p>

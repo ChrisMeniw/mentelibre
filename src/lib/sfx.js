@@ -83,11 +83,16 @@ export function sfxComplete() {
   notes.forEach((f, i) => tone(f, 0.4, { type: 'triangle', gain: 0.07, when: 0.15 + i * 0.08, pan: i % 2 ? 0.4 : -0.4 }))
 }
 
-// Monedas — tintineo metálico en cascada (cha-ching).
+// Monedas — JACKPOT de casino: cascada de monedas metálicas cayendo a la bandeja.
 export function sfxCoins() {
-  const notes = [1318, 1568, 1976, 2349] // E6 G6 B6 D7
-  notes.forEach((f, i) => {
-    tone(f, 0.16, { type: 'triangle', gain: 0.09, when: i * 0.05, pan: i % 2 ? 0.35 : -0.35 })
-    tone(f * 1.012, 0.16, { type: 'sine', gain: 0.045, when: i * 0.05 }) // detune para brillo metálico
-  })
+  const notes = [1568, 1976, 2349, 2093, 1760, 2637] // notas brillantes de "ting"
+  const COUNT = 16
+  for (let i = 0; i < COUNT; i++) {
+    const f = notes[i % notes.length]
+    tone(f, 0.12, { type: 'triangle', gain: 0.075, when: i * 0.04, pan: i % 2 ? 0.4 : -0.4 })
+    tone(f * 2, 0.08, { type: 'sine', gain: 0.028, when: i * 0.04 }) // armónico = brillo de campana
+  }
+  // Campana final tipo "jackpot" que corona la lluvia de monedas.
+  const end = COUNT * 0.04
+  ;[1568, 2093, 2637].forEach((f, i) => tone(f, 0.5, { type: 'sine', gain: 0.06, when: end + i * 0.02 }))
 }

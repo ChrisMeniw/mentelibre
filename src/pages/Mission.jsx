@@ -55,7 +55,7 @@ export default function Mission() {
         <div className="text-3xl">🏫</div>
         <h2 className="font-logo text-xl grad-text mt-1 leading-tight">{t('schoolCtaTitle')}</h2>
         <p className="text-sm text-[var(--text-dim)] mt-2 leading-snug">{t('schoolCtaText')}</p>
-        <a href="mailto:info@chrismeniwfoundation.org?subject=MenteLibre%20en%20mi%20escuela" className="btn btn-gold w-full mt-3 text-base min-h-touch block text-center" aria-label={t('schoolCtaBtn')}>{t('schoolCtaBtn')}</a>
+        <a href="mailto:info@chrismeniwfoundation.org?subject=Mente%20Libre%20en%20mi%20escuela" className="btn btn-gold w-full mt-3 text-base min-h-touch block text-center" aria-label={t('schoolCtaBtn')}>{t('schoolCtaBtn')}</a>
         <div className="text-xs text-[var(--sky)] font-bold mt-2">info@chrismeniwfoundation.org</div>
       </div>
 
