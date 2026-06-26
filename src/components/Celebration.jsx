@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import Mascot from './Mascot'
 import { useLang } from '../i18n'
+import { sfxCoins } from '../lib/sfx'
 
 const COLORS = ['#7C3AED', '#A855F7', '#FBBF24', '#10B981', '#F43F5E', '#0EA5E9', '#FB6424']
 
@@ -66,8 +67,10 @@ export default function Celebration({ xp, coins = 0, stars = 0, leveledUp, level
 
   useEffect(() => {
     const tm = setTimeout(onClose, leveledUp ? 4600 : 3200)
-    return () => clearTimeout(tm)
-  }, [leveledUp, onClose])
+    // Sonido de monedas cuando aparece la recompensa.
+    const coinTm = coins > 0 ? setTimeout(() => sfxCoins(), 450) : null
+    return () => { clearTimeout(tm); if (coinTm) clearTimeout(coinTm) }
+  }, [leveledUp, onClose, coins])
 
   return (
     <div

@@ -141,11 +141,11 @@ export default function MusicEngine() {
     if (ctx.state === 'suspended') ctx.resume()
     r.started = true
     buildLayers()
-    // fadeIn 2.5s
+    // fadeIn rápido (~1s) para que la música se escuche apenas arranca, desde el principio
     const now = ctx.currentTime
     r.master.gain.cancelScheduledValues(now)
     r.master.gain.setValueAtTime(Math.max(0.0001, r.master.gain.value), now)
-    r.master.gain.linearRampToValueAtTime(MAX_GAIN, now + 2.5)
+    r.master.gain.linearRampToValueAtTime(MAX_GAIN, now + 1.0)
   }
 
   function stop() {

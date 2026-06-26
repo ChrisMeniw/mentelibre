@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { currentDaily, dailyComplete, dailyMissions, DAILY_BONUS } from '../data/missions'
-import { sfxPop, sfxComplete, sfxLevelUp } from '../lib/sfx'
+import { sfxPop, sfxComplete, sfxCoins } from '../lib/sfx'
 
 export default function DailyMissions() {
   const { t } = useLang()
@@ -15,7 +15,7 @@ export default function DailyMissions() {
 
   const claim = () => {
     const got = claimDaily(DAILY_BONUS)
-    if (got > 0) { sfxComplete(); sfxLevelUp(); setBurst(true); setTimeout(() => setBurst(false), 1200) }
+    if (got > 0) { sfxComplete(); setTimeout(() => sfxCoins(), 350); setBurst(true); setTimeout(() => setBurst(false), 1200) }
     else sfxPop()
   }
 
