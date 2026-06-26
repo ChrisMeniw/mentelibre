@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
-import { getWorld, getQuestions } from '../data/challenges'
+import { getWorld, pickRoundQuestions } from '../data/challenges'
 import { BADGES } from '../data/badges'
 import { levelForXP, levelName } from '../data/levels'
 import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '../lib/claude'
@@ -45,7 +45,7 @@ export default function Round() {
 
   const world = getWorld(worldId)
   const av = avatarByEmoji(player.avatar)
-  const questions = useMemo(() => getQuestions(worldId, player.ageGroup).slice(0, N), [worldId, player.ageGroup])
+  const questions = useMemo(() => pickRoundQuestions(worldId, player.ageGroup, N), [worldId, player.ageGroup])
 
   const [phase, setPhase] = useState('intro')   // intro | playing | results
   const [qi, setQi] = useState(0)
