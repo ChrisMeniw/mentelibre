@@ -248,3 +248,24 @@ body {
 /* barras de sonido animadas mientras escucha */
 @keyframes sound-bar { 0%,100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
 .sound-bar { width: 4px; height: 20px; border-radius: 4px; background: #fff; transform-origin: center; animation: sound-bar 0.7s ease-in-out infinite; }
+
+/* ---- Accesibilidad (WCAG): foco visible por teclado ---- */
+:focus-visible {
+  outline: 3px solid var(--violet-light);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+/* el foco solo se muestra al navegar con teclado, no al tocar/click */
+:focus:not(:focus-visible) { outline: none; }
+
+/* ---- Respetar "reducir movimiento" del sistema (accesibilidad / mareo) ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  /* el fondo de estrellas en movimiento se detiene */
+  .floaty, .glow-pulse, .world-float, .mascot-idle, .pulse-ring { animation: none !important; }
+}

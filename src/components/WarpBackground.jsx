@@ -265,16 +265,21 @@ export default function WarpBackground() {
       drawLensFlare()
       drawScanLine()
       drawHUD()
-      raf = requestAnimationFrame(tick)
+      if (!reduceMotion) raf = requestAnimationFrame(tick)
     }
+
+    // Respeta "reducir movimiento": dibuja un cuadro estático y no anima.
+    const reduceMotion = typeof window !== 'undefined' && window.matchMedia
+      ? window.matchMedia('(prefers-reduced-motion: reduce)').matches : false
 
     function onResize() {
       dpr = Math.min(window.devicePixelRatio || 1, 1.8)
       setup()
+      if (reduceMotion) tick() // redibuja un único cuadro sin loop
     }
 
     setup()
-    raf = requestAnimationFrame(tick)
+    raf = requestAnimationFrame(tick) // primer cuadro; con reduceMotion no se reprograma
     window.addEventListener('resize', onResize)
     return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', onResize) }
   }, [])

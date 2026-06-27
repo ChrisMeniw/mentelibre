@@ -290,6 +290,7 @@ export default function Round() {
           </div>
 
           <div className="relative card p-5 text-center overflow-hidden"
+            role="status" aria-live="polite"
             style={{ background: loading ? undefined : (qStars >= 2 ? 'linear-gradient(180deg, rgba(16,185,129,0.16), rgba(255,255,255,0.03))' : 'linear-gradient(180deg, rgba(251,191,36,0.14), rgba(255,255,255,0.03))') }}>
             {!loading && qStars >= 3 && <Confetti n={28} />}
             <div className="grid place-items-center"><Zoe size={72} talking={!loading} /></div>

@@ -296,7 +296,7 @@ export default function Classroom() {
       )}
 
       {stage === 'feedback' && (
-        <div className="card p-5 mt-3 text-center fade-in" style={{ background: fb.timeout ? 'linear-gradient(180deg, rgba(244,63,94,0.16), rgba(255,255,255,0.03))' : (fb.stars >= 2 ? 'linear-gradient(180deg, rgba(16,185,129,0.16), rgba(255,255,255,0.03))' : 'linear-gradient(180deg, rgba(251,191,36,0.14), rgba(255,255,255,0.03))') }}>
+        <div className="card p-5 mt-3 text-center fade-in" role="status" aria-live="polite" style={{ background: fb.timeout ? 'linear-gradient(180deg, rgba(244,63,94,0.16), rgba(255,255,255,0.03))' : (fb.stars >= 2 ? 'linear-gradient(180deg, rgba(16,185,129,0.16), rgba(255,255,255,0.03))' : 'linear-gradient(180deg, rgba(251,191,36,0.14), rgba(255,255,255,0.03))') }}>
           {fb.timeout ? (
             <div className="font-extrabold text-[var(--rose)] text-lg">{t('caTimeUp')}</div>
           ) : (
