@@ -2,9 +2,12 @@
 // Para que los más chicos escuchen la pregunta sin tener que leer.
 const LANGS = { es: 'es-US', pt: 'pt-BR' } // es-US = español neutro latino, pt-BR = portugués de Brasil
 
-// Voces naturales y femeninas preferidas por idioma (cálidas, estilo ZOE).
+// Dialectos LATAM (NUNCA España es-ES). Se prioriza esto para que NO suene "española".
+const LATAM = ['es-us', 'es-mx', 'es-419', 'es-ar', 'es-co', 'es-cl', 'es-pe', 'es-uy', 'es-ve', 'es-la', 'es-do', 'es-gt']
+
+// Nombres de voces LATAM femeninas/neutras frecuentes (macOS / Windows / Chrome).
 const PREFERRED = {
-  es: ['mónica', 'monica', 'paulina', 'esperanza', 'google español', 'sabina', 'helena', 'laura'],
+  es: ['paulina', 'sabina', 'dalia', 'angélica', 'angelica', 'estados unidos', 'jimena', 'juan'],
   pt: ['luciana', 'google português', 'google portugues', 'maria', 'francisca', 'joana', 'fernanda', 'camila'],
 }
 
@@ -20,26 +23,30 @@ function refreshVoices() {
 }
 if (speakSupported()) {
   refreshVoices()
-  // La lista de voces suele cargar asincrónicamente: la actualizamos cuando llega.
   try { window.speechSynthesis.onvoiceschanged = refreshVoices } catch { /* noop */ }
 }
 
-// Elige la mejor voz para el idioma. Clave para que en portugués hable EN PORTUGUÉS.
+const norm = (v) => (v.lang || '').toLowerCase().replace('_', '-')
+
+// Elige la mejor voz para el idioma.
 function pickVoice(lang) {
   const voices = cachedVoices.length ? cachedVoices : refreshVoices()
   if (!voices.length) return null
-  const prefix = lang === 'pt' ? 'pt' : 'es'
-  const matches = voices.filter((v) => (v.lang || '').toLowerCase().startsWith(prefix))
-  if (!matches.length) return null
-  // 1) por nombre preferido (voces femeninas naturales)
-  for (const name of (PREFERRED[lang] || [])) {
-    const m = matches.find((v) => (v.name || '').toLowerCase().includes(name))
-    if (m) return m
+
+  if (lang === 'pt') {
+    const m = voices.filter((v) => norm(v).startsWith('pt'))
+    if (!m.length) return null
+    for (const name of PREFERRED.pt) { const f = m.find((v) => (v.name || '').toLowerCase().includes(name)); if (f) return f }
+    return m.find((v) => norm(v) === 'pt-br') || m[0]
   }
-  // 2) prioriza el dialecto exacto (pt-BR / es-US) sobre pt-PT / es-ES
-  const want = (lang === 'pt' ? 'pt-br' : 'es-us')
-  const exact = matches.find((v) => (v.lang || '').toLowerCase().replace('_', '-') === want)
-  return exact || matches[0]
+
+  // ESPAÑOL: priorizar LATAM y EVITAR España (es-ES). Solo usa es-ES si no hay nada más.
+  const es = voices.filter((v) => norm(v).startsWith('es'))
+  if (!es.length) return null
+  const latam = es.filter((v) => LATAM.includes(norm(v)))
+  const pool = latam.length ? latam : es
+  for (const name of PREFERRED.es) { const f = pool.find((v) => (v.name || '').toLowerCase().includes(name)); if (f) return f }
+  return pool.find((v) => norm(v) === 'es-us') || pool.find((v) => norm(v) === 'es-mx') || pool[0]
 }
 
 export function speak(text, lang = 'es') {
@@ -49,7 +56,7 @@ export function speak(text, lang = 'es') {
     const u = new SpeechSynthesisUtterance(text)
     u.lang = LANGS[lang] || 'es-US'
     const v = pickVoice(lang)
-    if (v) u.voice = v // fija la voz del idioma correcto explícitamente
+    if (v) u.voice = v // fija explícitamente una voz LATAM (no española)
     u.rate = 0.95
     u.pitch = 1.08
     window.speechSynthesis.speak(u)
