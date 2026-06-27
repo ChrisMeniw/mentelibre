@@ -49,17 +49,34 @@ function pickVoice(lang) {
   return pool.find((v) => norm(v) === 'es-us') || pool.find((v) => norm(v) === 'es-mx') || pool[0]
 }
 
+function speakNow(text, lang) {
+  const synth = window.speechSynthesis
+  try { synth.cancel() } catch { /* noop */ }
+  const u = new SpeechSynthesisUtterance(text)
+  u.lang = LANGS[lang] || 'es-US'
+  const v = pickVoice(lang)
+  if (v) u.voice = v // voz LATAM (es) o pt-BR (pt); si no hay, queda u.lang
+  u.rate = 0.95
+  u.pitch = 1.08
+  synth.speak(u)
+  try { synth.resume() } catch { /* iOS a veces queda en pausa */ }
+}
+
 export function speak(text, lang = 'es') {
   if (!speakSupported() || !text) return
   try {
-    window.speechSynthesis.cancel() // corta lo anterior
-    const u = new SpeechSynthesisUtterance(text)
-    u.lang = LANGS[lang] || 'es-US'
-    const v = pickVoice(lang)
-    if (v) u.voice = v // fija explícitamente una voz LATAM (no española)
-    u.rate = 0.95
-    u.pitch = 1.08
-    window.speechSynthesis.speak(u)
+    // Si las voces todavía no cargaron, esperá UNA vez al evento (clave en Safari/iOS).
+    if (!cachedVoices.length) {
+      refreshVoices()
+      if (!cachedVoices.length) {
+        let said = false
+        const go = () => { if (said) return; said = true; try { speakNow(text, lang) } catch { /* noop */ } }
+        try { window.speechSynthesis.addEventListener('voiceschanged', go, { once: true }) } catch { /* noop */ }
+        setTimeout(go, 350) // respaldo si el evento nunca llega
+        return
+      }
+    }
+    speakNow(text, lang)
   } catch { /* noop */ }
 }
 

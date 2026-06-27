@@ -9,17 +9,24 @@ function unduck() {
   if (ducking) { ducking = false; exitGameplay() } // devuelve la música del menú
 }
 
+function ensureAudio() {
+  if (!audio && typeof window !== 'undefined') {
+    audio = new Audio('/zoe-voz.mp3')
+    audio.preload = 'auto'
+    audio.addEventListener('ended', unduck)
+    audio.load()
+  }
+  return audio
+}
+
 export function playZoeVoice() {
-  if (typeof window === 'undefined') return
+  const a = ensureAudio()
+  if (!a) return
   try {
-    if (!audio) {
-      audio = new Audio('/zoe-voz.mp3')
-      audio.addEventListener('ended', unduck)
-      audio.addEventListener('pause', unduck)
-    }
-    audio.currentTime = 0
+    a.currentTime = 0
     if (!ducking) { enterGameplay(); ducking = true } // baja la música mientras ZOE habla
-    audio.play().catch(() => unduck())
+    const p = a.play()
+    if (p && p.catch) p.catch(() => unduck()) // si el navegador bloquea, devolvemos la música
   } catch { unduck() }
 }
 

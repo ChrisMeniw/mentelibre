@@ -1,7 +1,7 @@
 // Service Worker de MenteLibre — hace que funcione como app (instalable + offline).
 // Estrategia: navegación con RED primero (siempre trae la última versión); assets con caché.
-const CACHE = 'mentelibre-v1'
-const CORE = ['/', '/index.html', '/manifest.json', '/icon-192.png', '/icon-512.png', '/foundation-logo.webp']
+const CACHE = 'mentelibre-v2'
+const CORE = ['/', '/index.html', '/manifest.json', '/icon-192.png', '/icon-512.png', '/foundation-logo.webp', '/zoe-voz.mp3']
 
 self.addEventListener('install', (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting()))
