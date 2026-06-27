@@ -14,6 +14,7 @@ import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp } from
 import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import Zoe from '../components/Zoe'
 import StarsReveal from '../components/StarsReveal'
+import CharacterSystem, { characterName, levelTitle } from '../components/characters/CharacterSystem'
 
 const N = 5
 const ROUND_REWARD = { 1: { xp: 6, coins: 1 }, 2: { xp: 12, coins: 2 }, 3: { xp: 18, coins: 3 } }
@@ -180,7 +181,11 @@ export default function Round() {
       <div className="relative mx-auto max-w-md px-4 pt-16 pb-32 min-h-dvh flex flex-col items-center justify-center text-center safe-top">
         <Confetti n={56} />
         <div className="card p-6 w-full bounce-in">
-          <div className="grid place-items-center"><Zoe size={96} talking /></div>
+          <div className="grid place-items-center">
+            {results.leveledUp
+              ? <div className="char-evolve"><CharacterSystem ageGroup={player.ageGroup} level={levelForXP(player.xp)} mood="excited" size={96} /></div>
+              : <Zoe size={96} talking />}
+          </div>
           <Stars value={Math.round(results.totalStars / N)} size="text-3xl" />
           <div className="font-logo text-2xl grad-text mt-2">{t('roundDoneTitle')}</div>
           <div className="text-sm font-extrabold text-[var(--gold)] mt-1">⭐ {results.totalStars}/{N * 3} {t('roundStarsLabel')}</div>
@@ -193,7 +198,8 @@ export default function Round() {
           {results.leveledUp && (
             <div className="mt-3">
               <div className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-[var(--gold)]">{t('newLevel')}</div>
-              <div className="font-logo text-2xl grad-text">{results.levelName}</div>
+              <div className="font-logo text-2xl grad-text">{characterName(player.ageGroup, levelForXP(player.xp))}</div>
+              <div className="text-xs text-[var(--text-dim)] font-bold">{levelTitle(player.ageGroup, levelForXP(player.xp))}</div>
             </div>
           )}
 
