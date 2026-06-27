@@ -10,6 +10,7 @@ export const LANG_DATA = {
     // Onboarding
     homeSub: 'Un juego de pensamiento crítico con inteligencia artificial. Gratis, para escuelas y familias.',
     homeWelcome: '¡Hola! Soy ZOE, tu guía. ¿Jugamos a pensar?',
+    zoeTapHint: '🔊 Tócame para escucharme',
     playCta: '🎮 ¡Jugar!',
     continueCta: '▶ Seguir jugando',
     forTeachers: '👩‍🏫 Para docentes',
@@ -276,6 +277,7 @@ export const LANG_DATA = {
 
     homeSub: 'Um jogo de pensamento crítico com inteligência artificial. Grátis, para escolas e famílias.',
     homeWelcome: 'Olá! Eu sou a ZOE, sua guia. Vamos pensar?',
+    zoeTapHint: '🔊 Toque para me ouvir',
     playCta: '🎮 Jogar!',
     continueCta: '▶ Continuar jogando',
     forTeachers: '👩‍🏫 Para professores',

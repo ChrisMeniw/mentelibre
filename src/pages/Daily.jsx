@@ -104,7 +104,7 @@ export default function Daily() {
 
       <div className="text-center fade-in">
         <div className="chip mx-auto mb-2 text-xs" style={{ background: 'rgba(251,191,36,0.16)', borderColor: 'rgba(251,191,36,0.5)', color: 'var(--gold)' }}>{t('retoBadge')}</div>
-        <div className="floaty inline-block"><Zoe size={72} talking /></div>
+        <div className="floaty inline-block"><Zoe size={72} talking speakable /></div>
         <h1 className="font-logo text-3xl grad-text mt-2">{t('retoTitle')}</h1>
         <p className="text-sm text-[var(--text-dim)] mt-1">{t('retoSub')}</p>
         <div className="text-[11px] text-[var(--text-dim)] mt-1">{prettyDate()}</div>

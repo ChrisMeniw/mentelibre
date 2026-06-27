@@ -133,7 +133,7 @@ export default function Classroom() {
         <button onClick={() => { sfxPop(); nav('/') }} aria-label={t('back')} className="btn btn-ghost px-3 py-2 text-sm min-h-touch mb-3">←</button>
         <div className="text-center fade-in">
           <div className="chip mx-auto mb-2 text-xs" style={{ background: 'rgba(168,85,247,0.16)', borderColor: 'rgba(168,85,247,0.5)', color: '#E9D5FF' }}>{t('groupBadge')}</div>
-          <div className="floaty inline-block"><Zoe size={76} talking /></div>
+          <div className="floaty inline-block"><Zoe size={76} talking speakable /></div>
           <h1 className="font-logo text-3xl grad-text mt-2">{t('classroomMode')}</h1>
           <p className="text-sm text-[var(--text-dim)] mt-2 leading-relaxed">{t('classroomDesc')}</p>
         </div>
