@@ -5,11 +5,21 @@ const LANGS = { es: 'es-US', pt: 'pt-BR' } // es-US = español neutro latino, pt
 // Dialectos LATAM (NUNCA España es-ES). Se prioriza esto para que NO suene "española".
 const LATAM = ['es-us', 'es-mx', 'es-419', 'es-ar', 'es-co', 'es-cl', 'es-pe', 'es-uy', 'es-ve', 'es-la', 'es-do', 'es-gt']
 
-// Nombres de voces LATAM femeninas/neutras frecuentes (macOS / Windows / Chrome).
-const PREFERRED = {
-  es: ['paulina', 'sabina', 'dalia', 'angélica', 'angelica', 'estados unidos', 'jimena', 'juan'],
-  pt: ['luciana', 'google português', 'google portugues', 'maria', 'francisca', 'joana', 'fernanda', 'camila'],
-}
+// ZOE es MUJER → la voz debe ser femenina. La Web Speech API no da el género
+// de forma fiable, así que lo forzamos por nombre: preferir femeninas, excluir masculinas.
+const FEMALE = [
+  'paulina', 'angelica', 'angélica', 'sabina', 'dalia', 'monica', 'mónica', 'helena', 'laura',
+  'esperanza', 'marisol', 'catalina', 'florencia', 'isabela', 'jimena', 'lucia', 'lucía',
+  'luciana', 'francisca', 'maria', 'maría', 'joana', 'fernanda', 'camila', 'vitória', 'vitoria',
+  'female', 'femenina', 'mujer', 'feminino', 'google español', 'google português', 'google portugues',
+]
+const MALE = [
+  'juan', 'jorge', 'diego', 'carlos', 'miguel', 'pablo', 'roberto', 'andres', 'andrés', 'felipe',
+  'ricardo', 'daniel', 'pedro', 'antonio', 'raul', 'raúl', 'gonzalo', 'mateo', 'thiago', 'fabio',
+  'male', 'masculin', 'hombre', 'masculino',
+]
+const isMale = (v) => MALE.some((m) => (v.name || '').toLowerCase().includes(m))
+const isFemale = (v) => FEMALE.some((f) => (v.name || '').toLowerCase().includes(f))
 
 export function speakSupported() {
   return typeof window !== 'undefined' && 'speechSynthesis' in window
@@ -32,38 +42,41 @@ const norm = (v) => (v.lang || '').toLowerCase().replace('_', '-')
 // tenerlas instaladas. macOS/iOS/Android traen variantes "enhanced/premium/natural".
 const NATURAL = ['premium', 'enhanced', 'natural', 'neural', 'siri', 'google', 'wavenet', 'multilingual']
 
-// Puntúa una voz: cuanto más natural y mejor dialecto, mayor puntaje.
-function scoreVoice(v, prefNames) {
-  const n = (v.name || '').toLowerCase()
+// Puntúa una voz: MUJER primero, luego natural (no robótica), luego dialecto.
+function scoreVoice(v) {
   const l = norm(v)
+  const n = (v.name || '').toLowerCase()
   let s = 0
-  if (NATURAL.some((k) => n.includes(k))) s += 6      // voz natural (lo más importante: no robótica)
-  if (v.localService === false) s += 3                // voces de red suelen ser más naturales
-  if (prefNames.some((p) => n.includes(p))) s += 2    // nombre femenino LATAM conocido
+  if (isFemale(v)) s += 20                             // ZOE es mujer → priorizar voz femenina
+  if (NATURAL.some((k) => n.includes(k))) s += 6       // voz natural (no robótica)
+  if (v.localService === false) s += 3                 // voces de red suelen ser más naturales
   if (l === 'es-us' || l === 'pt-br') s += 1
   if (l === 'es-mx') s += 1
   return s
 }
-function bestVoice(pool, prefNames) {
+function bestVoice(pool) {
   if (!pool.length) return null
-  return [...pool].sort((a, b) => scoreVoice(b, prefNames) - scoreVoice(a, prefNames))[0]
+  // Saca las voces masculinas; si por algún motivo no quedara ninguna, usa el pool completo.
+  const noMale = pool.filter((v) => !isMale(v))
+  const use = noMale.length ? noMale : pool
+  return [...use].sort((a, b) => scoreVoice(b) - scoreVoice(a))[0]
 }
 
-// Elige la mejor voz para el idioma: la MÁS NATURAL disponible (no robótica).
+// Elige la mejor voz FEMENINA y natural para el idioma.
 function pickVoice(lang) {
   const voices = cachedVoices.length ? cachedVoices : refreshVoices()
   if (!voices.length) return null
 
   if (lang === 'pt') {
     const m = voices.filter((v) => norm(v).startsWith('pt'))
-    return bestVoice(m, PREFERRED.pt)
+    return bestVoice(m)
   }
 
   // ESPAÑOL: priorizar LATAM (evitar España es-ES); dentro de eso, la más natural.
   const es = voices.filter((v) => norm(v).startsWith('es'))
   if (!es.length) return null
   const latam = es.filter((v) => LATAM.includes(norm(v)))
-  return bestVoice(latam.length ? latam : es, PREFERRED.es)
+  return bestVoice(latam.length ? latam : es)
 }
 
 function speakNow(text, lang) {
