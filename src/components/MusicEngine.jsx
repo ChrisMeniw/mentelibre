@@ -19,8 +19,10 @@ const BELLS = [1568, 2093, 2349]
 
 export default function MusicEngine() {
   const { t } = useLang()
-  const [on, setOn] = useState(true) // música ON: arranca al entrar al juego (menú); se calla al jugar
-  const onRef = useRef(true)         // misma intención, leída en vivo por la lógica de audio
+  // Música APAGADA por defecto; recuerda la elección del usuario (localStorage 'ml_music').
+  const initialOn = (() => { try { return localStorage.getItem('ml_music') === 'on' } catch { return false } })()
+  const [on, setOn] = useState(initialOn)
+  const onRef = useRef(initialOn) // misma intención, leída en vivo por la lógica de audio
   const R = useRef({ ctx: null, master: null, timers: [], started: false, noiseBuf: null, step: 0 })
   const gestured = useRef(false)
   const gameplay = useRef(isGameplay())
@@ -174,6 +176,7 @@ export default function MusicEngine() {
     const next = !on
     setOn(next)
     onRef.current = next
+    try { localStorage.setItem('ml_music', next ? 'on' : 'off') } catch { /* noop */ }
     setSfxEnabled(next)
     gestured.current = true
     sync()
