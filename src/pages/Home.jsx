@@ -77,6 +77,9 @@ export default function Home() {
           <ModeCard icon="🏆" accent="#10B981"
             title={t('modeRankingTitle')} desc={t('modeRankingDesc')}
             onClick={() => { sfxPop(); nav('/aula', { state: { view: 'board' } }) }} />
+          <ModeCard icon="🔥" accent="#FB7185"
+            title={t('modeDailyTitle')} desc={t('modeDailyDesc')}
+            onClick={() => { sfxPop(); nav('/reto') }} />
         </div>
       </div>
 

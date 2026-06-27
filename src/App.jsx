@@ -5,6 +5,7 @@ import MusicEngine from './components/MusicEngine'
 import BottomNav from './components/BottomNav'
 import FoundationBadge from './components/FoundationBadge'
 import Home from './pages/Home'
+import Daily from './pages/Daily'
 import Mission from './pages/Mission'
 import Classroom from './pages/Classroom'
 import Landing from './pages/Landing'
@@ -36,6 +37,7 @@ export default function App() {
       <main className="relative z-10 min-h-dvh">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/reto" element={<Daily />} />
           <Route path="/mision" element={<Mission />} />
           <Route path="/aula" element={<Classroom />} />
           <Route path="/empezar" element={<Landing />} />
