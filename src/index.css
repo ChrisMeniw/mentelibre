@@ -278,6 +278,16 @@ body {
   pointer-events: none; animation: particleBurst 0.6s ease-out forwards;
 }
 
+/* ---- Personajes anime (animaciones idle) ---- */
+@keyframes charFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+.char-idle, .char-aura-strong { animation: charFloat 4s ease-in-out infinite; }
+@keyframes charSway { 0%,100% { transform: translateY(0) rotate(-1.2deg); } 50% { transform: translateY(-3px) rotate(1.2deg); } }
+.char-sway { animation: charSway 3.6s ease-in-out infinite; transform-origin: 60px 70px; }
+@keyframes charAura { 0%,100% { opacity: 0.35; transform: scale(1); } 50% { opacity: 0.7; transform: scale(1.035); } }
+.char-aura { transform-origin: center; animation: charAura 2.6s ease-in-out infinite; }
+@keyframes charTear { 0% { transform: translateY(0); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateY(15px); opacity: 0; } }
+.char-tear { animation: charTear 2.4s ease-in infinite; }
+
 /* ---- Accesibilidad (WCAG): foco visible por teclado ---- */
 :focus-visible {
   outline: 3px solid var(--violet-light);

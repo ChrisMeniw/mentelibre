@@ -7,6 +7,7 @@ import FoundationBadge from './components/FoundationBadge'
 import Home from './pages/Home'
 import Daily from './pages/Daily'
 import Ask from './pages/Ask'
+import Characters from './pages/Characters'
 import Mission from './pages/Mission'
 import Classroom from './pages/Classroom'
 import Landing from './pages/Landing'
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/reto" element={<Daily />} />
           <Route path="/preguntar" element={<Ask />} />
+          <Route path="/personajes" element={<Characters />} />
           <Route path="/mision" element={<Mission />} />
           <Route path="/aula" element={<Classroom />} />
           <Route path="/empezar" element={<Landing />} />
