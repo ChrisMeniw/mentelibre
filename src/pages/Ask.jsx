@@ -7,6 +7,7 @@ import { callClaude, askReactSystemPrompt, parseReact, fallbackAskReact } from '
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxComplete, sfxLevelUp, sfxCoins } from '../lib/sfx'
+import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import { levelForXP, levelName } from '../data/levels'
 import Zoe from '../components/Zoe'
 import Celebration from '../components/Celebration'
@@ -61,6 +62,9 @@ export default function Ask() {
   }, [ti, phase, stage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => stopSpeak(), [])
+
+  // Estás jugando → la música del menú se calla (quedan los efectos de sonido).
+  useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
 
   const toggleVoice = () => {
     if (listening) { sfxPop(); stopListen(); return }

@@ -6,6 +6,7 @@ import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '.
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxCoins } from '../lib/sfx'
+import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import { dailyQuestion, dailyStatus, markDailyDone, prettyDate, todayKey } from '../lib/dailyChallenge'
 import Zoe from '../components/Zoe'
 
@@ -39,6 +40,9 @@ export default function Daily() {
   const [toast, setToast] = useState('')
 
   const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+
+  // Estás jugando el reto → la música del menú se calla (quedan los efectos de sonido).
+  useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
 
   // Lee la pregunta en voz alta a los más chicos al entrar.
   useEffect(() => {

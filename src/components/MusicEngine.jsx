@@ -19,8 +19,8 @@ const BELLS = [1568, 2093, 2349]
 
 export default function MusicEngine() {
   const { t } = useLang()
-  const [on, setOn] = useState(false) // música APAGADA por defecto (no autoarranca); se prende con el botón
-  const onRef = useRef(false)         // misma intención, leída en vivo por la lógica de audio
+  const [on, setOn] = useState(true) // música ON: arranca al entrar al juego (menú); se calla al jugar
+  const onRef = useRef(true)         // misma intención, leída en vivo por la lógica de audio
   const R = useRef({ ctx: null, master: null, timers: [], started: false, noiseBuf: null, step: 0 })
   const gestured = useRef(false)
   const gameplay = useRef(isGameplay())
