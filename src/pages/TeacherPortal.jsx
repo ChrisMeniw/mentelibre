@@ -16,11 +16,12 @@ export default function TeacherPortal() {
   }
 
   const stats = [
-    { n: '20', l: t('statChallenges') },
-    { n: '3', l: t('statLevels') },
-    { n: '4', l: t('statWorlds') },
+    { n: '+360', l: t('statChallenges') },
+    { n: '5', l: t('statLevels') },
+    { n: '5', l: t('statWorlds') },
     { n: '$0', l: t('statCost') },
   ]
+  const features = [t('tfSolo'), t('tfAula'), t('tfReto'), t('tfAsk'), t('tfOpen'), t('tfZoe'), t('tfAccess')]
   const steps = [
     { title: t('cStep1Title'), d: t('cStep1') },
     { title: t('cStep2Title'), d: t('cStep2') },
@@ -42,6 +43,15 @@ export default function TeacherPortal() {
             <div className="text-[10px] text-[var(--text-dim)] leading-tight mt-0.5">{s.l}</div>
           </div>
         ))}
+      </div>
+
+      <div className="card p-4 fade-in-d1">
+        <div className="font-extrabold mb-3">{t('teacherFeaturesTitle')}</div>
+        <ul className="space-y-2.5">
+          {features.map((f, i) => (
+            <li key={i} className="text-sm leading-snug text-[var(--text)]">{f}</li>
+          ))}
+        </ul>
       </div>
 
       <div className="card p-4 fade-in-d2">
