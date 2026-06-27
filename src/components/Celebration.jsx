@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import Mascot from './Mascot'
+import StarsReveal from './StarsReveal'
 import { useLang } from '../i18n'
 import { sfxCoins } from '../lib/sfx'
 
@@ -90,12 +91,10 @@ export default function Celebration({ xp, coins = 0, stars = 0, leveledUp, level
           </div>
         </div>
 
-        {/* Estrellas según cuánto pensó — premia al que mejor piensa */}
+        {/* Estrellas que aparecen una por una (EFECTO 1) — premia al que mejor piensa */}
         {stars > 0 && (
-          <div className="flex items-center justify-center gap-1 mb-1">
-            {[1, 2, 3].map((s) => (
-              <span key={s} className="text-3xl count-pop" style={{ animationDelay: `${0.15 + s * 0.12}s`, filter: s <= stars ? 'none' : 'grayscale(1) opacity(0.3)' }}>⭐</span>
-            ))}
+          <div className="flex items-center justify-center mb-1">
+            <StarsReveal stars={stars} />
           </div>
         )}
         {stars > 0 && <div className="text-sm font-extrabold text-[var(--violet-light)] mb-1">{thinkMsg}</div>}

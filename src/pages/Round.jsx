@@ -13,6 +13,7 @@ import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp } from '../lib/sfx'
 import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import Zoe from '../components/Zoe'
+import StarsReveal from '../components/StarsReveal'
 
 const N = 5
 const ROUND_REWARD = { 1: { xp: 6, coins: 1 }, 2: { xp: 12, coins: 2 }, 3: { xp: 18, coins: 3 } }
@@ -298,7 +299,7 @@ export default function Round() {
               <div className="text-[var(--text-dim)] text-sm caret mt-2">{t('aiThinking')}</div>
             ) : (
               <>
-                <div className="mt-2"><Stars value={qStars} /></div>
+                <div className="mt-2"><StarsReveal stars={qStars} /></div>
                 <p className="mt-2 text-[15px] font-bold leading-snug">{react}</p>
               </>
             )}

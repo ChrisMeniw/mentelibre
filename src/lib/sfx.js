@@ -83,6 +83,15 @@ export function sfxComplete() {
   notes.forEach((f, i) => tone(f, 0.4, { type: 'triangle', gain: 0.07, when: 0.15 + i * 0.08, pan: i % 2 ? 0.4 : -0.4 }))
 }
 
+// ---- EFECTO 1: estrellas que aparecen una por una ----
+export function sfxStar1() { tone(880, 0.09, { type: 'sine', gain: 0.18 }) }        // ding agudo
+export function sfxStar2() { tone(660, 0.09, { type: 'sine', gain: 0.18 }) }        // ding medio
+export function sfxStar3() { ;[523, 659, 784].forEach((f) => tone(f, 0.16, { type: 'triangle', gain: 0.12 })) } // acorde mayor
+// Fanfarria corta Do-Mi-Sol ascendente (bonus de 3 estrellas).
+export function sfxStarsFanfare() { ;[523, 659, 784].forEach((f, i) => tone(f, 0.2, { type: 'triangle', gain: 0.15, when: i * 0.1 })) }
+// Pop suave del +XP flotante.
+export function sfxXp() { tone(400, 0.07, { type: 'triangle', gain: 0.12, sweepTo: 640 }) }
+
 // Monedas — JACKPOT de casino: cascada de monedas metálicas cayendo a la bandeja.
 export function sfxCoins() {
   const notes = [1568, 1976, 2349, 2093, 1760, 2637] // notas brillantes de "ting"

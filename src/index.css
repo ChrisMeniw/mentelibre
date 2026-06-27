@@ -249,6 +249,35 @@ body {
 @keyframes sound-bar { 0%,100% { transform: scaleY(0.35); } 50% { transform: scaleY(1); } }
 .sound-bar { width: 4px; height: 20px; border-radius: 4px; background: #fff; transform-origin: center; animation: sound-bar 0.7s ease-in-out infinite; }
 
+/* ---- EFECTO 1: estrellas que aparecen una por una ---- */
+@keyframes starPop {
+  0%   { transform: scale(0) translateY(10px); opacity: 0; }
+  60%  { transform: scale(1.4) translateY(-4px); opacity: 1; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+.star-pop { animation: starPop 0.3s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+@keyframes xpFloat { 0% { transform: translate(-50%,0); opacity: 1; } 100% { transform: translate(-50%,-40px); opacity: 0; } }
+.xp-float {
+  position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
+  font-weight: 900; color: var(--gold); text-shadow: 0 0 10px rgba(251,191,36,0.7);
+  pointer-events: none; white-space: nowrap; animation: xpFloat 0.8s ease-out forwards;
+}
+
+@keyframes screenFlashGold { 0% { opacity: 0; } 20% { opacity: 0.3; } 100% { opacity: 0; } }
+.screen-flash-gold {
+  position: fixed; inset: 0; z-index: 75; pointer-events: none;
+  background: radial-gradient(circle at center, rgba(251,191,36,0.55), rgba(251,191,36,0.12) 60%, transparent);
+  animation: screenFlashGold 0.4s ease-out forwards;
+}
+
+@keyframes particleBurst { 0% { transform: translate(0,0) scale(1); opacity: 1; } 100% { transform: translate(var(--tx),var(--ty)) scale(0); opacity: 0; } }
+.star-particle {
+  position: absolute; top: 50%; left: 50%; width: 7px; height: 7px; margin: -3.5px;
+  border-radius: 50%; background: var(--gold); box-shadow: 0 0 7px var(--gold);
+  pointer-events: none; animation: particleBurst 0.6s ease-out forwards;
+}
+
 /* ---- Accesibilidad (WCAG): foco visible por teclado ---- */
 :focus-visible {
   outline: 3px solid var(--violet-light);

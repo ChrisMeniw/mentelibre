@@ -11,6 +11,7 @@ import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import { levelForXP, levelName } from '../data/levels'
 import Zoe from '../components/Zoe'
 import Celebration from '../components/Celebration'
+import StarsReveal from '../components/StarsReveal'
 
 const N = 3
 const ACCENT = '#8B5CF6'
@@ -198,7 +199,7 @@ export default function Ask() {
               <div className="text-[var(--text-dim)] text-sm caret mt-2">{t('aiThinking')}</div>
             ) : (
               <>
-                <div className="mt-2"><Stars value={qStars} /></div>
+                <div className="mt-2"><StarsReveal stars={qStars} /></div>
                 <p className="mt-2 text-[15px] font-bold leading-snug">{react}</p>
               </>
             )}

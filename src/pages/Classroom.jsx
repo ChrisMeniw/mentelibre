@@ -10,6 +10,7 @@ import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxComplete } from '../lib/sfx
 import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import { loadScores, saveScore, schoolRanking } from '../lib/classroom'
 import Zoe from '../components/Zoe'
+import StarsReveal from '../components/StarsReveal'
 
 const N = 20
 const SECONDS = 30
@@ -301,9 +302,7 @@ export default function Classroom() {
             <div className="font-extrabold text-[var(--rose)] text-lg">{t('caTimeUp')}</div>
           ) : (
             <>
-              <div className="flex items-center justify-center gap-1">
-                {[1, 2, 3].map((s) => <span key={s} className="text-2xl count-pop" style={{ animationDelay: `${s * 0.1}s`, filter: s <= fb.stars ? 'none' : 'grayscale(1) opacity(0.3)' }}>⭐</span>)}
-              </div>
+              <div className="flex items-center justify-center"><StarsReveal stars={fb.stars} size="text-2xl" /></div>
               <div className="font-logo text-3xl text-[var(--gold)] text-glow mt-1 count-pop">+{fb.points}</div>
               <div className="text-xs text-[var(--text-dim)]">{t('caPoints')}</div>
             </>
