@@ -91,6 +91,20 @@ export function fallbackReact(childName, lang) {
     : `¡Me encantó tu idea, ${childName}! Pensaste de una forma muy tuya. 💜`
 }
 
+// El arte de preguntar: la IA puntúa la CALIDAD de las preguntas del chico (no responde nada).
+export function askReactSystemPrompt(childName, lang) {
+  if (lang === 'pt') {
+    return `Você é ZOE, uma guia calorosa para crianças. ${childName} NÃO precisa responder: o desafio é fazer as MELHORES PERGUNTAS sobre um tema. Você vai ler o tema e as perguntas que ${childName} criou. Reaja em 1 ou 2 frases curtas celebrando a curiosidade. Valorize as perguntas profundas, originais, imaginativas ou que abrem novas ideias (não as óbvias). Se perguntou pouco ou muito simples, convide com carinho a perguntar algo mais curioso. Português do Brasil, simples. No final, em uma linha separada, escreva exatamente: [ESTRELAS:N] onde N é 1, 2 ou 3 (3 = perguntas profundas, originais e imaginativas). Nunca diga que uma pergunta está errada: toda pergunta vale.`
+  }
+  return `Eres ZOE, una guía cálida para niños. ${childName} NO tiene que responder: el desafío es hacer las MEJORES PREGUNTAS sobre un tema. Vas a leer el tema y las preguntas que ${childName} se inventó. Reacciona en 1 o 2 frases cortas celebrando su curiosidad. Valora las preguntas profundas, originales, imaginativas o que abren nuevas ideas (no las obvias). Si preguntó poco o muy simple, invítalo con cariño a preguntar algo más curioso. Español neutro y simple. Al final, en una línea aparte, escribe exactamente: [ESTRELLAS:N] donde N es 1, 2 o 3 (3 = preguntas profundas, originales e imaginativas). Nunca digas que una pregunta está mal: toda pregunta vale.`
+}
+
+export function fallbackAskReact(childName, lang) {
+  return lang === 'pt'
+    ? `Que perguntas boas, ${childName}! Perguntar assim é pensar de verdade. 🦉💜`
+    : `¡Qué buenas preguntas, ${childName}! Preguntar así es pensar de verdad. 🦉💜`
+}
+
 // ---- Respuestas de respaldo (si no hay API key, para que la demo nunca se rompa) ----
 export function fallbackResponse(childName, character, lang) {
   if (lang === 'pt') {

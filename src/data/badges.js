@@ -49,6 +49,12 @@ export const BADGES = [
     check: (s) => s.worldCompleted('preguntas') >= 10,
   },
   {
+    id: 'preguntar3', emoji: '🦉',
+    name_es: 'Gran Preguntador', name_pt: 'Grande Perguntador',
+    desc_es: 'Dominaste el arte de preguntar', desc_pt: 'Você dominou a arte de perguntar',
+    check: (s) => s.worldCompleted('preguntar') >= 3,
+  },
+  {
     id: 'allworlds', emoji: '🏆',
     name_es: 'Explorador Total', name_pt: 'Explorador Total',
     desc_es: 'Jugaste los 4 mundos', desc_pt: 'Você jogou os 4 mundos',

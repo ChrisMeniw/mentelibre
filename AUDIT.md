@@ -5,6 +5,40 @@ Fecha: 2026-06-27 · Sitio: https://mentelibre.chrismeniwfoundation.org
 
 ---
 
+## ⭐ ACTUALIZACIÓN (lo más importante, leer primero)
+
+### Decisiones ya confirmadas por Chris
+- **Modelo de juego = PENSAMIENTO ABIERTO + IMAGINACIÓN** (no quiz). ZOE puntúa la *calidad*
+  del pensamiento con ⭐1–3. **No hay respuestas correctas/incorrectas.** → Por eso **NO** se
+  implementan las partes del plan que asumen quiz (FASE 2 "+10/−2", FASE 3 "mostrar la respuesta
+  correcta + explicación", FASE 5 "mockup con opciones"). Se **adaptan** al modelo abierto.
+- **Modo Aula = local** + **Reto Diario compartible** (sin backend, sin costos).
+
+### Ya IMPLEMENTADO y EN VIVO desde la 1ª auditoría (no rehacer)
+- ✅ **Accesibilidad WCAG** (Fase 8/3): `:focus-visible`, `prefers-reduced-motion` (apaga
+  animaciones + frena el fondo), `aria-live`/`role="status"` en feedback.
+- ✅ **Reto del Día compartible** (Fase 6): pregunta del día determinística por fecha, igual para
+  todos; responder por voz/texto; ZOE puntúa; **Web Share API + copiar**; ruta `/reto`; 4ª tarjeta
+  en el inicio. (`src/lib/dailyChallenge.js`, `src/pages/Daily.jsx`)
+- ✅ **SEO + OpenGraph** (Fase 7): el link se ve con tarjeta al compartirlo.
+- ✅ **Onboarding "Saltar" siempre visible** (Fase 5) ya existía (`HowToPlay.jsx`).
+
+### 🆕 NUEVO pedido de Chris — "ganar por saber PREGUNTAR"
+> *"es pensamiento crítico e imaginación; en el último nivel los chicos ganan por saber preguntar:
+> los que mejor pregunten sobre algo son los que mejor puntúan."*
+
+**Propuesta (compatible con el modelo abierto):** un modo/mundo nuevo **"🦉 El arte de preguntar"**
+donde se invierte el juego: ZOE muestra un **tema/escena** y el chico, en vez de responder, **escribe
+o dice las MEJORES preguntas** que se le ocurran sobre eso. La IA puntúa la **calidad de las
+preguntas** (profundidad, originalidad, curiosidad, imaginación) con ⭐1–3 — gana quien mejor pregunta.
+Se desbloquea/realza al llegar al nivel más alto (**Filósofo 🦉**), que es "el último nivel".
+Decisión de presentación pendiente (ver §6 · B3).
+
+---
+
+
+---
+
 ## 0. Resumen ejecutivo
 
 **El proyecto YA es una plataforma con game loop completo, progresión, badges, feedback
