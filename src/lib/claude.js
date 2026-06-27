@@ -109,9 +109,18 @@ export function fallbackReact(childName, lang) {
 // El arte de preguntar: la IA puntúa la CALIDAD de las preguntas del chico (no responde nada).
 export function askReactSystemPrompt(childName, lang, ageGroup) {
   if (lang === 'pt') {
-    return `Você é ZOE, uma guia calorosa para crianças. ${childName} NÃO precisa responder: o desafio é fazer as MELHORES PERGUNTAS sobre um tema. Você vai ler o tema e as perguntas que ${childName} criou. Reaja em 1 ou 2 frases curtas celebrando a curiosidade. Valorize as perguntas profundas, originais, imaginativas ou que abrem novas ideias (não as óbvias). Se perguntou pouco ou muito simples, convide com carinho a perguntar algo mais curioso. Português do Brasil, simples. No final, em uma linha separada, escreva exatamente: [ESTRELAS:N] onde N é 1, 2 ou 3 (3 = perguntas profundas, originais e imaginativas). Nunca diga que uma pergunta está errada: toda pergunta vale.${toneFor(ageGroup, lang)}`
+    return `Você é ZOE, uma guia calorosa e socrática para crianças. ${childName} NÃO responde: o desafio é fazer as MELHORES PERGUNTAS sobre um tema. Leia o tema e as perguntas e pontue a QUALIDADE delas: ⭐ = pergunta superficial ou óbvia; ⭐⭐ = pergunta interessante que vai além do óbvio; ⭐⭐⭐ = pergunta profunda, filosófica, imaginativa e original. Critérios: profundidade, originalidade, curiosidade e imaginação. Em 1 ou 2 frases calorosas EXPLIQUE POR QUE essa pergunta foi boa (ou, com carinho, como poderia ir mais fundo), de forma socrática e sem dar respostas. Nunca diga que uma pergunta está errada: toda pergunta vale. No final, em uma linha separada, escreva exatamente: [ESTRELAS:N] com N = 1, 2 ou 3.${toneFor(ageGroup, lang)}`
   }
-  return `Eres ZOE, una guía cálida para niños. ${childName} NO tiene que responder: el desafío es hacer las MEJORES PREGUNTAS sobre un tema. Vas a leer el tema y las preguntas que ${childName} se inventó. Reacciona en 1 o 2 frases cortas celebrando su curiosidad. Valora las preguntas profundas, originales, imaginativas o que abren nuevas ideas (no las obvias). Si preguntó poco o muy simple, invítalo con cariño a preguntar algo más curioso. Español neutro y simple. Al final, en una línea aparte, escribe exactamente: [ESTRELLAS:N] donde N es 1, 2 o 3 (3 = preguntas profundas, originales e imaginativas). Nunca digas que una pregunta está mal: toda pregunta vale.${NEUTRO}${toneFor(ageGroup, lang)}`
+  return `Eres ZOE, una guía cálida y socrática para niños. ${childName} NO responde: el desafío es hacer las MEJORES PREGUNTAS sobre un tema. Lee el tema y sus preguntas y puntúa la CALIDAD de las preguntas así: ⭐ = pregunta superficial u obvia; ⭐⭐ = pregunta interesante que va más allá de lo obvio; ⭐⭐⭐ = pregunta profunda, filosófica, imaginativa y original. Criterios: profundidad, originalidad, curiosidad e imaginación. En 1 o 2 frases cálidas EXPLICA POR QUÉ esa pregunta fue buena (o, con cariño, cómo podría ir más profundo), al estilo socrático y sin dar respuestas. Nunca digas que una pregunta está mal: toda pregunta vale. Al final, en una línea aparte, escribe exactamente: [ESTRELLAS:N] con N = 1, 2 o 3.${NEUTRO}${toneFor(ageGroup, lang)}`
+}
+
+// evaluateQuestion(tema, pregunta, ageGroup) → { stars: 1|2|3, feedback }.
+// Puntúa la calidad de las preguntas del chico (modelo abierto, sin respuesta correcta).
+export async function evaluateQuestion(tema, pregunta, ageGroup, lang = 'es', childName = '') {
+  const res = await callClaude(askReactSystemPrompt(childName, lang, ageGroup), `Tema: ${tema}\nPreguntas: ${pregunta}`, 140)
+  if (!res) return { stars: 2, feedback: fallbackAskReact(childName, lang) }
+  const parsed = parseReact(res)
+  return { stars: parsed.stars || 2, feedback: parsed.text || fallbackAskReact(childName, lang) }
 }
 
 export function fallbackAskReact(childName, lang) {

@@ -3,20 +3,20 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { pickAskTopics } from '../data/askTopics'
-import { callClaude, askReactSystemPrompt, parseReact, fallbackAskReact } from '../lib/claude'
+import { evaluateQuestion } from '../lib/claude'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxComplete, sfxLevelUp, sfxCoins } from '../lib/sfx'
 import { enterGameplay, exitGameplay } from '../lib/musicBus'
-import { levelForXP, levelName } from '../data/levels'
+import { levelForXP, levelName, isAskUnlocked } from '../data/levels'
 import Zoe from '../components/Zoe'
 import Celebration from '../components/Celebration'
 import StarsReveal from '../components/StarsReveal'
 
-const N = 3
+const N = 5
 const ACCENT = '#8B5CF6'
-// Premia más que una ronda normal: preguntar bien es la habilidad más alta.
-const REWARD = { 1: { xp: 8, coins: 2 }, 2: { xp: 16, coins: 3 }, 3: { xp: 26, coins: 5 } }
+// XP por estrella (spec): ⭐=5, ⭐⭐=10, ⭐⭐⭐=20. Preguntar bien es la habilidad más alta.
+const REWARD = { 1: { xp: 5, coins: 2 }, 2: { xp: 10, coins: 3 }, 3: { xp: 20, coins: 5 } }
 
 function Stars({ value }) {
   return (
@@ -67,6 +67,9 @@ export default function Ask() {
   // Estás jugando → la música del menú se calla (quedan los efectos de sonido).
   useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
 
+  // Bloqueado hasta Filósofo (1400 XP): si no llegó, vuelve al Hub.
+  useEffect(() => { if (!isAskUnlocked(player.xp)) nav('/hub') }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
   const toggleVoice = () => {
     if (listening) { sfxPop(); stopListen(); return }
     sfxPop()
@@ -78,12 +81,11 @@ export default function Ask() {
     if (!answer.trim()) return
     sfxSend(); if (listening) stopListen(); stopSpeak()
     setStage('feedback'); setLoading(true); setReact(''); incrementAI()
-    const res = await callClaude(askReactSystemPrompt(childName, lang, player.ageGroup), `Tema: ${topicText}\nPreguntas de ${childName}: ${answer}`, 120)
-    const parsed = res ? parseReact(res) : { stars: 2, text: fallbackAskReact(childName, lang) }
-    setReact(parsed.text || fallbackAskReact(childName, lang))
-    setQStars(parsed.stars)
+    const { stars: qs, feedback } = await evaluateQuestion(topicText, answer, player.ageGroup, lang, childName)
+    setReact(feedback)
+    setQStars(qs)
     setLoading(false)
-    if (parsed.stars >= 2) sfxCorrect(); else sfxSparkle()
+    if (qs >= 2) sfxCorrect(); else sfxSparkle()
   }
 
   const next = () => {

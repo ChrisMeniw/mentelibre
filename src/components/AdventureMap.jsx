@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { WORLDS } from '../data/challenges'
+import { isAskUnlocked, ASK_UNLOCK_XP } from '../data/levels'
 import { avatarByEmoji } from '../components/AvatarPicker'
 import { petById } from '../data/shop'
 import { sfxPop } from '../lib/sfx'
@@ -141,6 +142,41 @@ export default function AdventureMap() {
             </div>
           )
         })}
+
+        {/* PINÁCULO: El arte de preguntar — se desbloquea en Filósofo (1400 XP) */}
+        {(() => {
+          const unlocked = isAskUnlocked(player.xp)
+          return (
+            <div className="relative space-y-3">
+              <div className="relative z-10 mx-auto w-fit px-4 py-1.5 rounded-full chip text-sm font-extrabold pop-in"
+                style={{ background: 'linear-gradient(135deg,#8B5CF633,#FBBF2411)', borderColor: '#8B5CF688', boxShadow: '0 0 24px -6px #8B5CF6' }}>
+                <span className="text-lg mr-1">🦉</span> {t('modeAskTitle')}
+              </div>
+              <div className="relative flex justify-center" style={{ minHeight: 84 }}>
+                <button
+                  type="button"
+                  onClick={unlocked ? () => { sfxPop(); nav('/preguntar') } : shake}
+                  aria-label={t('modeAskTitle')}
+                  className={'relative grid place-items-center rounded-full active:scale-90 transition ' + (unlocked ? 'glow-pulse' : '')}
+                  style={{
+                    width: 84, height: 84,
+                    background: unlocked
+                      ? 'radial-gradient(circle at 35% 28%, #A78BFA, #7C3AED)'
+                      : 'radial-gradient(circle at 35% 30%, #2A2440, #141022)',
+                    boxShadow: unlocked
+                      ? 'inset 0 -6px 14px rgba(0,0,0,0.32), inset 0 5px 12px rgba(255,255,255,0.3), 0 0 30px -4px #8B5CF6'
+                      : 'inset 0 -5px 12px rgba(0,0,0,0.5)',
+                    opacity: unlocked ? 1 : 0.65,
+                  }}>
+                  <span className="text-3xl" style={{ filter: unlocked ? 'none' : 'grayscale(1)' }}>{unlocked ? '🦉' : '🔒'}</span>
+                </button>
+              </div>
+              {!unlocked && (
+                <div className="text-center text-[11px] text-[var(--text-dim)] font-bold">{t('askLockedHint')}</div>
+              )}
+            </div>
+          )
+        })()}
 
         {/* Meta final */}
         <div className="text-center pt-1 pb-4">

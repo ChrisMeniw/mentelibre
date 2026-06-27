@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
+import { isAskUnlocked } from '../data/levels'
 import { sfxPop } from '../lib/sfx'
 import Zoe from '../components/Zoe'
 
@@ -31,9 +32,10 @@ function ModeCard({ icon, title, desc, accent, onClick, primary }) {
 // Página de inicio pública: bienvenida + elegir modo. Lo primero que ve cualquiera.
 export default function Home() {
   const { t, lang } = useLang()
-  const { hasProfile } = usePlayer()
+  const { hasProfile, player } = usePlayer()
   const nav = useNavigate()
   const appName = lang === 'pt' ? 'Mente Livre' : 'Mente Libre'
+  const askUnlocked = isAskUnlocked(player.xp)
 
   const play = () => {
     sfxPop()
@@ -80,9 +82,9 @@ export default function Home() {
           <ModeCard icon="🏆" accent="#10B981"
             title={t('modeRankingTitle')} desc={t('modeRankingDesc')}
             onClick={() => { sfxPop(); nav('/aula', { state: { view: 'board' } }) }} />
-          <ModeCard icon="🦉" accent="#8B5CF6"
-            title={t('modeAskTitle')} desc={t('modeAskDesc')}
-            onClick={() => { sfxPop(); nav('/preguntar') }} />
+          <ModeCard icon={askUnlocked ? '🦉' : '🔒'} accent="#8B5CF6"
+            title={t('modeAskTitle')} desc={askUnlocked ? t('modeAskDesc') : t('askLockedHint')}
+            onClick={() => { sfxPop(); if (askUnlocked) nav('/preguntar') }} />
           <ModeCard icon="🔥" accent="#FB7185"
             title={t('modeDailyTitle')} desc={t('modeDailyDesc')}
             onClick={() => { sfxPop(); nav('/reto') }} />

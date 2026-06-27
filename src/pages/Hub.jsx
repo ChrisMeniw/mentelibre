@@ -178,15 +178,6 @@ export default function Hub() {
           </div>
           <InstallButton />
           <DailyMissions />
-          {/* Mundo especial: el arte de preguntar (ganar por saber preguntar) */}
-          <button onClick={() => { sfxPop(); nav('/preguntar') }} className="card w-full p-3.5 flex items-center gap-3 text-left active:scale-[0.98] transition min-h-touch" style={{ borderColor: '#8B5CF666', background: 'linear-gradient(135deg,#8B5CF61f,rgba(255,255,255,0.02))' }} aria-label={t('askTitle')}>
-            <span className="shrink-0 w-12 h-12 rounded-2xl grid place-items-center text-2xl world-float" style={{ background: '#8B5CF626', border: '1px solid #8B5CF555' }}>🦉</span>
-            <span className="flex-1 min-w-0">
-              <span className="block font-extrabold text-[15px] leading-tight">{t('modeAskTitle')}</span>
-              <span className="block text-[11px] text-[var(--text-dim)] leading-snug mt-0.5">{t('modeAskDesc')}</span>
-            </span>
-            <span className="shrink-0 text-[var(--text-dim)] text-xl">›</span>
-          </button>
           <AdventureMap />
         </div>
       )}

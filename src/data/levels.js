@@ -7,6 +7,10 @@ export const LEVELS = [
   { name_es: 'Filósofo', name_pt: 'Filósofo', min: 1400, max: Infinity },
 ]
 
+// El mundo "El arte de preguntar" se desbloquea al llegar a Filósofo (1400 XP).
+export const ASK_UNLOCK_XP = 1400
+export function isAskUnlocked(xp) { return (xp || 0) >= ASK_UNLOCK_XP }
+
 // Índice de nivel (0..4) para una cantidad de XP
 export function levelForXP(xp) {
   let idx = 0
