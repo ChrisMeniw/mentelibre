@@ -80,7 +80,7 @@ export default function Daily() {
     const stxt = '⭐'.repeat(Math.max(1, stars))
     return lang === 'pt'
       ? `Resolvi o Desafio do Dia (${prettyDate()}) com ${stxt} no Mente Livre 🧠 Jogue você:`
-      : `Resolví el Reto del Día (${prettyDate()}) con ${stxt} en Mente Libre 🧠 Jugá vos:`
+      : `Resolví el Reto del Día (${prettyDate()}) con ${stxt} en Mente Libre 🧠 Juega tú:`
   }
 
   const share = async () => {
