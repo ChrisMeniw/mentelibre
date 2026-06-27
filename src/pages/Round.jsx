@@ -119,7 +119,7 @@ export default function Round() {
     sfxSend(); if (listening) stopListen(); stopSpeak()
     setStage('feedback'); setLoading(true); setReact('')
     incrementAI()
-    const res = await callClaude(roundReactSystemPrompt(childName, lang), `Pregunta: ${qText}\nRespuesta: ${answer}`, 120)
+    const res = await callClaude(roundReactSystemPrompt(childName, lang, player.ageGroup), `Pregunta: ${qText}\nRespuesta: ${answer}`, 120)
     const parsed = res ? parseReact(res) : { stars: 2, text: fallbackReact(childName, lang) }
     setReact(parsed.text || fallbackReact(childName, lang))
     setQStars(parsed.stars)

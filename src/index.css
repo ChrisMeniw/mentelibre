@@ -287,6 +287,9 @@ body {
 .char-aura { transform-origin: center; animation: charAura 2.6s ease-in-out infinite; }
 @keyframes charTear { 0% { transform: translateY(0); opacity: 0; } 25% { opacity: 1; } 100% { transform: translateY(15px); opacity: 0; } }
 .char-tear { animation: charTear 2.4s ease-in infinite; }
+/* evolución (estilo Pokémon): destello + aparición dramática */
+@keyframes charEvolve { 0% { transform: scale(0.2); opacity: 0; filter: brightness(4); } 50% { transform: scale(1.18); filter: brightness(2); } 100% { transform: scale(1); opacity: 1; filter: brightness(1); } }
+.char-evolve { animation: charEvolve 0.9s cubic-bezier(0.34,1.56,0.64,1) both; }
 
 /* ---- Accesibilidad (WCAG): foco visible por teclado ---- */
 :focus-visible {

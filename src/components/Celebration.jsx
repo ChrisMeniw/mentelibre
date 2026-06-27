@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import Mascot from './Mascot'
 import StarsReveal from './StarsReveal'
+import CharacterSystem from './characters/CharacterSystem'
 import { useLang } from '../i18n'
 import { sfxCoins } from '../lib/sfx'
 
@@ -62,9 +63,10 @@ function StarBurst() {
   )
 }
 
-export default function Celebration({ xp, coins = 0, stars = 0, leveledUp, levelName, avatar, color, onClose }) {
+export default function Celebration({ xp, coins = 0, stars = 0, leveledUp, levelName, avatar, color, ageGroup, level, onClose }) {
   const { t } = useLang()
   const thinkMsg = stars >= 3 ? t('think3') : stars === 2 ? t('think2') : t('think1')
+  const showChar = leveledUp && ageGroup != null && level != null // evolución de personaje
 
   useEffect(() => {
     const tm = setTimeout(onClose, leveledUp ? 4600 : 3200)
@@ -87,7 +89,9 @@ export default function Celebration({ xp, coins = 0, stars = 0, leveledUp, level
         <div className="relative grid place-items-center mb-2 h-28">
           <StarBurst />
           <div className="relative z-10">
-            <Mascot emoji={avatar} color={color} mood="celebrate" size={104} />
+            {showChar
+              ? <div className="char-evolve"><CharacterSystem ageGroup={ageGroup} level={level} mood="excited" size={104} /></div>
+              : <Mascot emoji={avatar} color={color} mood="celebrate" size={104} />}
           </div>
         </div>
 

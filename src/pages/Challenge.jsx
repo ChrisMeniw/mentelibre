@@ -83,7 +83,7 @@ export default function Challenge() {
     stopSpeak()
     setStep(2); setLoadingAI(true); setAiText('')
     incrementAI()
-    const sys = responseSystemPrompt(childName, `${av.name} ${player.avatar}`, lang)
+    const sys = responseSystemPrompt(childName, `${av.name} ${player.avatar}`, lang, player.ageGroup)
     const userMsg = `Pregunta: ${qText}\nRespuesta: ${answer}`
     // Puntaje del pensamiento EN SEGUNDO PLANO (no bloquea la respuesta; se usa recién al terminar).
     setScore(2)
@@ -112,7 +112,7 @@ export default function Challenge() {
     addXP(xp); completeChallenge(worldId); addCoins(coins)
     sfxComplete()
     if (leveledUp) sfxLevelUp()
-    setCeleb({ xp, coins, stars: score, leveledUp, levelName: levelName(newXP, lang) })
+    setCeleb({ xp, coins, stars: score, leveledUp, levelName: levelName(newXP, lang), ageGroup: player.ageGroup, level: levelForXP(newXP) })
   }
 
   const reflectReady = changedMind && hardest
@@ -126,6 +126,8 @@ export default function Challenge() {
           stars={celeb.stars}
           leveledUp={celeb.leveledUp}
           levelName={celeb.levelName}
+          ageGroup={celeb.ageGroup}
+          level={celeb.level}
           avatar={player.avatar}
           color={av.color}
           onClose={() => nav('/hub')}

@@ -78,7 +78,7 @@ export default function Ask() {
     if (!answer.trim()) return
     sfxSend(); if (listening) stopListen(); stopSpeak()
     setStage('feedback'); setLoading(true); setReact(''); incrementAI()
-    const res = await callClaude(askReactSystemPrompt(childName, lang), `Tema: ${topicText}\nPreguntas de ${childName}: ${answer}`, 120)
+    const res = await callClaude(askReactSystemPrompt(childName, lang, player.ageGroup), `Tema: ${topicText}\nPreguntas de ${childName}: ${answer}`, 120)
     const parsed = res ? parseReact(res) : { stars: 2, text: fallbackAskReact(childName, lang) }
     setReact(parsed.text || fallbackAskReact(childName, lang))
     setQStars(parsed.stars)
@@ -107,7 +107,7 @@ export default function Ask() {
     const leveledUp = levelForXP(player.xp + xp) > levelBefore.current
     setResults({ xp, coins, totalStars, leveledUp })
     sfxComplete(); if (leveledUp) setTimeout(() => sfxLevelUp(), 500)
-    setCeleb({ xp, coins, stars: Math.round(totalStars / N), leveledUp, levelName: levelName(player.xp + xp, lang) })
+    setCeleb({ xp, coins, stars: Math.round(totalStars / N), leveledUp, levelName: levelName(player.xp + xp, lang), ageGroup: player.ageGroup, level: levelForXP(player.xp + xp) })
     setPhase('results')
     window.scrollTo({ top: 0, behavior: 'instant' })
   }

@@ -15,6 +15,8 @@ import AdventureMap from '../components/AdventureMap'
 import HowToPlay from '../components/HowToPlay'
 import DailyMissions from '../components/DailyMissions'
 import InstallButton from '../components/InstallButton'
+import CharacterSystem, { characterName, levelTitle } from '../components/characters/CharacterSystem'
+import { levelForXP } from '../data/levels'
 
 function PlayerHeader({ onChangeUser }) {
   const { player } = usePlayer()
@@ -142,6 +144,28 @@ export default function Hub() {
           <div className="flex items-center justify-center">
             <span className="chip text-[11px]" style={{ background: 'rgba(251,191,36,0.12)', borderColor: 'rgba(251,191,36,0.45)', color: 'var(--gold)' }}>{t('soloBadge')}</span>
           </div>
+
+          {/* Tu personaje (cambia al subir de nivel) */}
+          {(() => {
+            const lvl = levelForXP(player.xp)
+            const nextLvl = Math.min(4, lvl + 1)
+            return (
+              <div className="card p-4 flex items-center gap-4">
+                <CharacterSystem ageGroup={player.ageGroup} level={lvl} size={76} />
+                <div className="min-w-0 flex-1">
+                  <div className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-dim)] font-extrabold">Tu personaje</div>
+                  <div className="font-logo text-xl grad-text leading-tight">{characterName(player.ageGroup, lvl)}</div>
+                  <div className="text-xs text-[var(--text-dim)]">{levelTitle(player.ageGroup, lvl)} · Nivel {lvl + 1}</div>
+                </div>
+                {lvl < 4 && (
+                  <div className="flex flex-col items-center shrink-0 opacity-50">
+                    <div className="text-[9px] text-[var(--text-dim)] font-bold mb-0.5">próximo</div>
+                    <div style={{ filter: 'grayscale(0.6)' }}><CharacterSystem ageGroup={player.ageGroup} level={nextLvl} size={36} animated={false} /></div>
+                  </div>
+                )}
+              </div>
+            )
+          })()}
           <div className="flex items-center gap-2">
             <div className="flex-1"><Mascot emoji={player.avatar} color={av.color} name={av.name} mood="idle" message={greet} size={60} /></div>
             <button

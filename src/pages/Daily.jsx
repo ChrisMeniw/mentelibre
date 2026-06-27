@@ -64,7 +64,7 @@ export default function Daily() {
     if (!answer.trim()) return
     sfxSend(); if (listening) stopListen(); stopSpeak()
     setPhase('scoring'); incrementAI()
-    const res = await callClaude(roundReactSystemPrompt(childName, lang), `Pregunta: ${qText}\nRespuesta: ${answer}`, 120)
+    const res = await callClaude(roundReactSystemPrompt(childName, lang, player.ageGroup), `Pregunta: ${qText}\nRespuesta: ${answer}`, 120)
     const parsed = res ? parseReact(res) : { stars: 2, text: fallbackReact(childName, lang) }
     const st = parsed.stars || 2
     setStars(st); setReact(parsed.text || fallbackReact(childName, lang))
