@@ -28,25 +28,42 @@ if (speakSupported()) {
 
 const norm = (v) => (v.lang || '').toLowerCase().replace('_', '-')
 
-// Elige la mejor voz para el idioma.
+// Señales de voz NATURAL (no robótica). Estas voces son gratis; solo hay que
+// tenerlas instaladas. macOS/iOS/Android traen variantes "enhanced/premium/natural".
+const NATURAL = ['premium', 'enhanced', 'natural', 'neural', 'siri', 'google', 'wavenet', 'multilingual']
+
+// Puntúa una voz: cuanto más natural y mejor dialecto, mayor puntaje.
+function scoreVoice(v, prefNames) {
+  const n = (v.name || '').toLowerCase()
+  const l = norm(v)
+  let s = 0
+  if (NATURAL.some((k) => n.includes(k))) s += 6      // voz natural (lo más importante: no robótica)
+  if (v.localService === false) s += 3                // voces de red suelen ser más naturales
+  if (prefNames.some((p) => n.includes(p))) s += 2    // nombre femenino LATAM conocido
+  if (l === 'es-us' || l === 'pt-br') s += 1
+  if (l === 'es-mx') s += 1
+  return s
+}
+function bestVoice(pool, prefNames) {
+  if (!pool.length) return null
+  return [...pool].sort((a, b) => scoreVoice(b, prefNames) - scoreVoice(a, prefNames))[0]
+}
+
+// Elige la mejor voz para el idioma: la MÁS NATURAL disponible (no robótica).
 function pickVoice(lang) {
   const voices = cachedVoices.length ? cachedVoices : refreshVoices()
   if (!voices.length) return null
 
   if (lang === 'pt') {
     const m = voices.filter((v) => norm(v).startsWith('pt'))
-    if (!m.length) return null
-    for (const name of PREFERRED.pt) { const f = m.find((v) => (v.name || '').toLowerCase().includes(name)); if (f) return f }
-    return m.find((v) => norm(v) === 'pt-br') || m[0]
+    return bestVoice(m, PREFERRED.pt)
   }
 
-  // ESPAÑOL: priorizar LATAM y EVITAR España (es-ES). Solo usa es-ES si no hay nada más.
+  // ESPAÑOL: priorizar LATAM (evitar España es-ES); dentro de eso, la más natural.
   const es = voices.filter((v) => norm(v).startsWith('es'))
   if (!es.length) return null
   const latam = es.filter((v) => LATAM.includes(norm(v)))
-  const pool = latam.length ? latam : es
-  for (const name of PREFERRED.es) { const f = pool.find((v) => (v.name || '').toLowerCase().includes(name)); if (f) return f }
-  return pool.find((v) => norm(v) === 'es-us') || pool.find((v) => norm(v) === 'es-mx') || pool[0]
+  return bestVoice(latam.length ? latam : es, PREFERRED.es)
 }
 
 function speakNow(text, lang) {
