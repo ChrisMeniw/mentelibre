@@ -20,6 +20,7 @@ import Round from './pages/Round'
 import Achievements from './pages/Achievements'
 import TeacherPortal from './pages/TeacherPortal'
 import Shop from './pages/Shop'
+import MyUniverse from './pages/MyUniverse'
 
 // Al pasar de un planeta a otro (auto-avance), `key` fuerza remontar la ronda
 // para que reinicie limpia (preguntas, tiempo, racha).
@@ -60,6 +61,7 @@ export default function App() {
           <Route path="/empezar" element={<Landing />} />
           <Route path="/hub" element={<Hub />} />
           <Route path="/tienda" element={<Shop />} />
+          <Route path="/universo" element={<MyUniverse />} />
           <Route path="/ronda/:world" element={<RoundRoute />} />
           <Route path="/desafio/:world" element={<Challenge />} />
           <Route path="/logros" element={<Achievements />} />

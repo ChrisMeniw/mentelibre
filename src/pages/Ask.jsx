@@ -31,7 +31,7 @@ function Stars({ value }) {
 
 export default function Ask() {
   const { t, lang } = useLang()
-  const { player, addXP, addCoins, completeChallenge, incrementAI, trackDaily } = usePlayer()
+  const { player, addXP, addCoins, completeChallenge, incrementAI, trackDaily, addLights } = usePlayer()
   const nav = useNavigate()
 
   const ageGroup = player.ageGroup || '9-11'
@@ -127,7 +127,7 @@ export default function Ask() {
     const xp = all.reduce((a, s) => a + (REWARD[s]?.xp || 0), 0)
     const coins = all.reduce((a, s) => a + (REWARD[s]?.coins || 0), 0)
     const totalStars = all.reduce((a, s) => a + s, 0)
-    addXP(xp); addCoins(coins); completeChallenge('preguntar')
+    addXP(xp); addCoins(coins); completeChallenge('preguntar'); addLights(totalStars)
     const leveledUp = levelForXP(player.xp + xp) > levelBefore.current
     setResults({ xp, coins, totalStars, leveledUp })
     sfxComplete(); if (leveledUp) setTimeout(() => sfxLevelUp(), 500)

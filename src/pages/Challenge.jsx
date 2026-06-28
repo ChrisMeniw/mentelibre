@@ -23,7 +23,7 @@ export default function Challenge() {
   const { world: worldId } = useParams()
   const nav = useNavigate()
   const { t, lang } = useLang()
-  const { player, addXP, completeChallenge, incrementAI, addCoins } = usePlayer()
+  const { player, addXP, completeChallenge, incrementAI, addCoins, addLights } = usePlayer()
 
   const world = getWorld(worldId)
   const av = avatarByEmoji(player.avatar)
@@ -109,7 +109,7 @@ export default function Challenge() {
     const oldLevel = levelForXP(player.xp)
     const newXP = player.xp + xp
     const leveledUp = levelForXP(newXP) > oldLevel
-    addXP(xp); completeChallenge(worldId); addCoins(coins)
+    addXP(xp); completeChallenge(worldId); addCoins(coins); addLights(score)
     sfxComplete()
     if (leveledUp) sfxLevelUp()
     setCeleb({ xp, coins, stars: score, leveledUp, levelName: levelName(newXP, lang), ageGroup: player.ageGroup, level: levelForXP(newXP) })

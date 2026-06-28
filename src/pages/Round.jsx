@@ -46,7 +46,7 @@ export default function Round() {
   const { world: worldId } = useParams()
   const nav = useNavigate()
   const { t, lang } = useLang()
-  const { player, addXP, addCoins, completeChallenge, incrementAI, trackDaily } = usePlayer()
+  const { player, addXP, addCoins, completeChallenge, incrementAI, trackDaily, addLights } = usePlayer()
 
   const world = getWorld(worldId)
   const av = avatarByEmoji(player.avatar)
@@ -182,6 +182,7 @@ export default function Round() {
     const newXP = player.xp + totalXp
     const leveledUp = levelForXP(newXP) > oldLevel
     addXP(totalXp); addCoins(totalCoins); completeChallenge(worldId); trackDaily({ rounds: 1 })
+    addLights(totalStars) // cada estrella de pensamiento enciende una estrella en tu universo
     sfxComplete(); if (leveledUp) sfxLevelUp()
     setResults({ totalXp, totalCoins, comboBonus, bestCombo, totalStars, leveledUp, levelName: levelName(newXP, lang) })
     setPhase('results')
@@ -233,6 +234,15 @@ export default function Round() {
               style={{ background: 'linear-gradient(135deg,#FBBF24,#F43F5E)', color: '#1a0b2e' }}>
               🔥 {t('comboBest')} x{results.bestCombo} · +{results.comboBonus} 🪙
             </div>
+          )}
+
+          {/* Estrellas encendidas en tu universo */}
+          {results.totalStars > 0 && (
+            <button onClick={() => { sfxPop(); nav('/universo') }} className="bounce-in mt-3 w-full rounded-2xl px-4 py-2.5 flex items-center justify-center gap-2 active:scale-[0.98] transition"
+              style={{ background: 'rgba(168,85,247,0.16)', border: '1px solid rgba(168,85,247,0.5)' }}>
+              <span className="text-sm font-extrabold text-white">🌟 +{results.totalStars} {t('universeAdded')}</span>
+              <span className="text-xs text-[var(--violet-light)] font-bold">{t('universeSee')} ›</span>
+            </button>
           )}
 
           {results.leveledUp && (

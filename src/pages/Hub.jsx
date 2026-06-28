@@ -16,6 +16,7 @@ import HowToPlay from '../components/HowToPlay'
 import DailyMissions from '../components/DailyMissions'
 import InstallButton from '../components/InstallButton'
 import CharacterSystem, { characterName, levelTitle } from '../components/characters/CharacterSystem'
+import Universe, { universeRank } from '../components/Universe'
 import { levelForXP } from '../data/levels'
 
 function PlayerHeader({ onChangeUser }) {
@@ -166,6 +167,20 @@ export default function Hub() {
               </div>
             )
           })()}
+
+          {/* Tu Universo — crece con cada respuesta (toca para verlo en grande) */}
+          <button onClick={() => { sfxPop(); nav('/universo') }} className="card p-3 flex items-center gap-3 text-left active:scale-[0.98] transition min-h-touch w-full" aria-label={t('universeTitle')}>
+            <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 64, height: 64, boxShadow: '0 0 26px -6px rgba(124,58,237,0.7)' }}>
+              <Universe lights={player.lights || 0} size={64} animated />
+            </div>
+            <div className="min-w-0 flex-1">
+              <div className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-dim)] font-extrabold">{t('universeTitle')}</div>
+              <div className="font-logo text-xl grad-text leading-tight">🌟 {player.lights || 0} <span className="text-sm">{t('universeStars')}</span></div>
+              <div className="text-xs text-[var(--text-dim)]">{universeRank(player.lights || 0, lang).rank} · {t('universeTapHint')}</div>
+            </div>
+            <span className="shrink-0 text-[var(--text-dim)] text-lg">›</span>
+          </button>
+
           <div className="flex items-center gap-2">
             <div className="flex-1"><Mascot emoji={player.avatar} color={av.color} name={characterName(player.ageGroup, levelForXP(player.xp))} mood="idle" message={greet} size={60} /></div>
             <button

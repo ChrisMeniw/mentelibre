@@ -11,6 +11,7 @@ const DEFAULT = {
   name: '', avatar: '🥷', avatarName: 'Sombra', ageGroup: '6-8',
   school: '', team: '',
   xp: 0, level: 0, streak: 0, lastPlayed: null, coins: 0,
+  lights: 0, // estrellas encendidas en "Tu Universo" (1 por cada estrella de pensamiento)
   completed: {}, unlockedBadges: [], aiInteractions: 0,
   owned: [], pet: '', frame: '',
   daily: { date: '', rounds: 0, stars: 0, answers: 0, claimed: false },
@@ -88,6 +89,11 @@ export function PlayerProvider({ children }) {
 
   const addCoins = useCallback((amount) => {
     setPlayer((p) => ({ ...p, coins: Math.max(0, (p.coins || 0) + amount) }))
+  }, [])
+
+  // Enciende N estrellas en "Tu Universo" (1 por cada estrella de pensamiento ganada).
+  const addLights = useCallback((n) => {
+    setPlayer((p) => ({ ...p, lights: (p.lights || 0) + Math.max(0, n || 0) }))
   }, [])
 
   // Suma progreso a la misión diaria (resetea solo si cambió el día).
@@ -171,7 +177,7 @@ export function PlayerProvider({ children }) {
   const value = {
     player,
     hasProfile: !!player.name,
-    saveProfile, touchStreak, addXP, completeChallenge, addCoins, buyItem, equip,
+    saveProfile, touchStreak, addXP, completeChallenge, addCoins, addLights, buyItem, equip,
     trackDaily, claimDaily,
     incrementAI, checkBadges, getSchoolXP, generateSchoolCode, resetPlayer,
   }
