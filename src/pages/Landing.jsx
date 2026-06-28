@@ -25,7 +25,7 @@ export default function Landing() {
 
   useEffect(() => { if (hasProfile) nav('/hub', { replace: true }) }, [hasProfile, nav])
 
-  const ready = name.trim().length >= 2 && team
+  const ready = name.trim().length >= 2
 
   const start = () => {
     if (!ready) return
@@ -94,26 +94,6 @@ export default function Landing() {
             placeholder={t('schoolPlaceholder')}
             className="input mt-1"
           />
-        </div>
-      </div>
-
-      <div className="card p-4 mt-4 fade-in-d3">
-        <div className="font-extrabold mb-3">{t('chooseTeam')}</div>
-        <div className="grid grid-cols-2 gap-3">
-          {TEAMS.map((tm) => {
-            const sel = team === tm.id
-            return (
-              <button
-                key={tm.id}
-                onClick={() => setTeam(tm.id)}
-                className="card p-3 flex items-center gap-2 active:scale-95 transition"
-                style={{ boxShadow: sel ? `0 0 0 2px ${tm.color}` : `inset 0 0 0 1px ${tm.color}33` }}
-              >
-                <span className="text-2xl">{tm.emoji}</span>
-                <span className="font-extrabold" style={{ color: tm.color }}>{tm.id}</span>
-              </button>
-            )
-          })}
         </div>
       </div>
 
