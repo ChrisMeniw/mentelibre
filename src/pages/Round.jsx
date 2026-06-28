@@ -232,9 +232,9 @@ export default function Round() {
           <div className="font-logo text-2xl grad-text mt-2">{t('roundDoneTitle')}</div>
           <div className="text-sm font-extrabold text-[var(--gold)] mt-1">⭐ {results.totalStars}/{N * 3} {t('roundStarsLabel')}</div>
 
-          <div className="count-pop mt-4 flex items-center justify-center gap-3">
-            <span className="text-3xl font-logo text-[var(--gold)] text-glow">+{results.totalXp} XP</span>
-            <span className="chip text-lg" style={{ background: 'linear-gradient(135deg,rgba(251,191,36,0.25),rgba(251,191,36,0.08))', borderColor: 'rgba(251,191,36,0.6)' }}>🪙 <span className="text-[var(--gold)] font-black">+{results.totalCoins}</span></span>
+          <div className="mt-4 flex items-center justify-center gap-3">
+            <span className="pop-bounce text-4xl font-logo text-[var(--gold)] text-glow">+{results.totalXp} XP</span>
+            <span className="pop-bounce chip text-lg" style={{ background: 'linear-gradient(135deg,rgba(251,191,36,0.25),rgba(251,191,36,0.08))', borderColor: 'rgba(251,191,36,0.6)' }}><span className="coin-spin">🪙</span> <span className="text-[var(--gold)] font-black">+{results.totalCoins}</span></span>
           </div>
 
           {results.comboBonus > 0 && (
@@ -366,7 +366,7 @@ export default function Round() {
             <blockquote className="mt-1 border-l-2 pl-3 italic text-[var(--text-dim)] text-sm" style={{ borderColor: world.color }}>{answer}</blockquote>
           </div>
 
-          <div className="relative card p-5 text-center overflow-hidden"
+          <div className={'relative card p-5 text-center overflow-hidden' + (!loading && qStars >= 2 ? ' happy-shake' : '')}
             role="status" aria-live="polite"
             style={{ background: loading ? undefined : (qStars >= 2 ? 'linear-gradient(180deg, rgba(16,185,129,0.16), rgba(255,255,255,0.03))' : 'linear-gradient(180deg, rgba(251,191,36,0.14), rgba(255,255,255,0.03))') }}>
             {!loading && qStars >= 3 && <Confetti n={28} />}

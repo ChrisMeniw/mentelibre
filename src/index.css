@@ -59,10 +59,14 @@ body {
   }
 
   .btn {
-    @apply font-extrabold rounded-2xl px-5 py-3 transition-all duration-200 active:scale-[0.97] select-none relative overflow-hidden;
+    @apply font-extrabold rounded-2xl px-5 py-3 select-none relative overflow-hidden;
     letter-spacing: 0;
     min-height: 44px; /* área táctil mínima en móvil */
+    /* Rebote estilo Roblox: se aplasta al apretar y vuelve con un saltito (overshoot). */
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease, background 0.2s ease;
+    will-change: transform;
   }
+  .btn:active { transform: scale(0.9); }
   .btn-primary {
     background: linear-gradient(135deg, #B06CFF 0%, var(--violet) 55%, #5B21B6 100%);
     color: #fff;
@@ -308,6 +312,27 @@ body {
 /* evolución (estilo Pokémon): destello + aparición dramática */
 @keyframes charEvolve { 0% { transform: scale(0.2); opacity: 0; filter: brightness(4); } 50% { transform: scale(1.18); filter: brightness(2); } 100% { transform: scale(1); opacity: 1; filter: brightness(1); } }
 .char-evolve { animation: charEvolve 0.9s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+/* ---- JUICE estilo ROBLOX (rebotes, jelly, premios) ---- */
+/* Tarjetas táctiles: se aplastan al tocar y vuelven con un saltito. */
+.jelly-tap { transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1); will-change: transform; }
+.jelly-tap:active { transform: scale(0.94); }
+/* Entrada con rebote grande (elementos que "aparecen" de golpe). */
+@keyframes popBounce { 0% { transform: scale(0.5); opacity: 0; } 60% { transform: scale(1.12); opacity: 1; } 80% { transform: scale(0.96); } 100% { transform: scale(1); } }
+.pop-bounce { animation: popBounce 0.55s cubic-bezier(0.34,1.56,0.64,1) both; }
+/* Latido "gelatina" continuo para llamar la atención (CTA, premios). */
+@keyframes jellyIdle { 0%,100% { transform: scale(1,1); } 25% { transform: scale(1.07,0.93); } 50% { transform: scale(0.95,1.06); } 75% { transform: scale(1.03,0.97); } }
+.jelly-idle { animation: jellyIdle 2.2s ease-in-out infinite; }
+/* Moneda/estrella que gira (premios brillan). */
+@keyframes coinSpin { 0% { transform: rotateY(0deg); } 100% { transform: rotateY(360deg); } }
+.coin-spin { display: inline-block; animation: coinSpin 1.3s linear infinite; }
+/* Sacudón corto de alegría (al acertar / subir de nivel). */
+@keyframes happyShake { 0%,100% { transform: translateX(0) rotate(0); } 20% { transform: translateX(-4px) rotate(-2deg); } 40% { transform: translateX(4px) rotate(2deg); } 60% { transform: translateX(-3px) rotate(-1deg); } 80% { transform: translateX(3px) rotate(1deg); } }
+.happy-shake { animation: happyShake 0.5s ease-in-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .jelly-idle, .coin-spin, .pop-bounce, .happy-shake { animation: none; }
+  .jelly-tap:active { transform: none; }
+}
 
 /* ---- Accesibilidad (WCAG): foco visible por teclado ---- */
 :focus-visible {

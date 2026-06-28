@@ -11,10 +11,10 @@ function ModeCard({ iconName, title, desc, accent, onClick, primary }) {
   return (
     <button
       onClick={onClick}
-      className="group w-full card p-3.5 flex items-center gap-3.5 text-left active:scale-[0.98] transition min-h-touch"
+      className="group w-full card p-3.5 flex items-center gap-3.5 text-left jelly-tap min-h-touch"
       style={primary ? { boxShadow: `0 0 0 1.5px ${accent}77, 0 16px 34px -16px ${accent}, 0 18px 50px -24px rgba(0,0,0,0.85)` } : undefined}
     >
-      <span className="shrink-0 w-12 h-12 rounded-2xl grid place-items-center"
+      <span className={'shrink-0 w-12 h-12 rounded-2xl grid place-items-center' + (primary ? ' jelly-idle' : '')}
         style={{
           background: primary
             ? `linear-gradient(140deg, ${accent}, #E59409)`

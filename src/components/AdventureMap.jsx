@@ -85,7 +85,7 @@ export default function AdventureMap() {
                         type="button"
                         onClick={state === 'locked' ? shake : () => go(w.id)}
                         aria-label={`${wName} ${ni + 1}`}
-                        className={'relative grid place-items-center rounded-full active:scale-90 transition ' + (isActive ? 'glow-pulse' : '')}
+                        className={'relative grid place-items-center rounded-full jelly-tap ' + (isActive ? 'glow-pulse' : '')}
                         style={{
                           width: isActive ? 76 : 62,
                           height: isActive ? 76 : 62,

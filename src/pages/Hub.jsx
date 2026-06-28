@@ -169,7 +169,7 @@ export default function Hub() {
           })()}
 
           {/* Tu Universo — crece con cada respuesta (toca para verlo en grande) */}
-          <button onClick={() => { sfxPop(); nav('/universo') }} className="card p-3 flex items-center gap-3 text-left active:scale-[0.98] transition min-h-touch w-full" aria-label={t('universeTitle')}>
+          <button onClick={() => { sfxPop(); nav('/universo') }} className="card p-3 flex items-center gap-3 text-left jelly-tap min-h-touch w-full" aria-label={t('universeTitle')}>
             <div className="shrink-0 rounded-full overflow-hidden" style={{ width: 64, height: 64, boxShadow: '0 0 26px -6px rgba(124,58,237,0.7)' }}>
               <Universe lights={player.lights || 0} size={64} animated />
             </div>
