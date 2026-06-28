@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import Mascot from './Mascot'
 import StarsReveal from './StarsReveal'
-import CharacterSystem from './characters/CharacterSystem'
+import CharacterSystem, { levelTitle } from './characters/CharacterSystem'
 import { useLang } from '../i18n'
 import { sfxCoins } from '../lib/sfx'
 
@@ -108,7 +108,7 @@ export default function Celebration({ xp, coins = 0, stars = 0, leveledUp, level
             <div className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-[var(--gold)]">
               {t('newLevel')}
             </div>
-            <div className="font-logo text-3xl mt-1 grad-text leading-tight">{levelName}</div>
+            <div className="font-logo text-3xl mt-1 grad-text leading-tight">{showChar ? levelTitle(ageGroup, level) : levelName}</div>
           </>
         ) : (
           <div className="font-logo text-2xl grad-text">{t('greatJob')}</div>

@@ -36,13 +36,13 @@ function PlayerHeader({ onChangeUser }) {
                 ? { background: frame.ring, boxShadow: `0 0 22px -4px ${frame.glow}` }
                 : { background: 'transparent', boxShadow: `0 0 0 2px rgba(255,255,255,0.22), 0 0 24px -4px ${av.color}` }}
             >
-              <div className="w-full h-full rounded-full grid place-items-center text-3xl" style={{ background: av.color }}>
-                {player.avatar}
+              <div className="w-full h-full rounded-full overflow-hidden grid place-items-center" style={{ background: av.color }}>
+                <CharacterSystem ageGroup={player.ageGroup} level={levelForXP(player.xp)} size={50} animated={false} />
               </div>
             </div>
             {pet && <span className="absolute -top-1.5 -right-2 text-lg floaty">{pet.emoji}</span>}
           </div>
-          <span className="text-[10px] font-extrabold text-[var(--violet-light)] mt-0.5">{player.avatarName}</span>
+          <span className="text-[10px] font-extrabold text-[var(--violet-light)] mt-0.5">{characterName(player.ageGroup, levelForXP(player.xp))}</span>
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between gap-2">
@@ -64,7 +64,7 @@ function PlayerHeader({ onChangeUser }) {
               <span className="text-[var(--gold)] ml-0.5">🛒</span>
             </button>
           </div>
-          <div className="mt-1"><XPBar xp={player.xp} /></div>
+          <div className="mt-1"><XPBar xp={player.xp} ageGroup={player.ageGroup} /></div>
         </div>
         <div className="text-center shrink-0">
           <div className="text-2xl">🔥</div>
@@ -167,7 +167,7 @@ export default function Hub() {
             )
           })()}
           <div className="flex items-center gap-2">
-            <div className="flex-1"><Mascot emoji={player.avatar} color={av.color} name={av.name} mood="idle" message={greet} size={60} /></div>
+            <div className="flex-1"><Mascot emoji={player.avatar} color={av.color} name={characterName(player.ageGroup, levelForXP(player.xp))} mood="idle" message={greet} size={60} /></div>
             <button
               onClick={() => { sfxPop(); setShowHelp(true) }}
               aria-label={t('howToHelp')}
