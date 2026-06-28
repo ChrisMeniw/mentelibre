@@ -196,6 +196,7 @@ export const LANG_DATA = {
     nextRound: 'Siguiente ronda →',
     nextPlanet: 'Siguiente planeta →',
     backToMap: 'Volver al mapa',
+    reelHint: 'Se desliza solo… o tocá',
     backToMap: 'Volver al mapa',
 
     // Misión diaria
@@ -491,6 +492,7 @@ export const LANG_DATA = {
     nextRound: 'Próxima rodada →',
     nextPlanet: 'Próximo planeta →',
     backToMap: 'Voltar ao mapa',
+    reelHint: 'Passa sozinho… ou toque',
     backToMap: 'Voltar ao mapa',
 
     // Missão diária

@@ -115,6 +115,14 @@ export default function Round() {
 
   useEffect(() => () => stopSpeak(), [])
 
+  // Auto-avance estilo REEL: tras unos segundos viendo el feedback, pasa solo a la
+  // siguiente pregunta (que entra deslizando desde abajo). También se puede tocar.
+  useEffect(() => {
+    if (phase !== 'playing' || stage !== 'feedback' || loading) return
+    const id = setTimeout(() => next(), 5200)
+    return () => clearTimeout(id)
+  }, [phase, stage, loading, qi]) // eslint-disable-line react-hooks/exhaustive-deps
+
   if (!world) { nav('/hub'); return null }
 
   const toggleVoice = () => {
@@ -301,6 +309,8 @@ export default function Round() {
         ))}
       </div>
 
+      {/* Estilo REEL: cada nueva pregunta entra deslizando desde abajo */}
+      <div key={qi} className="reel-in">
       {stage === 'answer' && (
         <div className="space-y-4 fade-in">
           <div className="card p-5" style={{ boxShadow: `inset 0 0 0 1px ${world.color}44` }}>
@@ -381,8 +391,15 @@ export default function Round() {
             aria-label={qi + 1 < N ? t('nextQuestion') : t('seeResults')}>
             {qi + 1 < N ? t('nextQuestion') : t('seeResults')}
           </button>
+          {!loading && qi + 1 < N && (
+            <div className="flex flex-col items-center mt-2 text-[var(--text-dim)]">
+              <span className="chevron-bounce text-2xl leading-none" aria-hidden="true">⌄</span>
+              <span className="text-[11px] font-bold -mt-1">{t('reelHint')}</span>
+            </div>
+          )}
         </div>
       )}
+      </div>
     </div>
   )
 }
