@@ -62,11 +62,8 @@ export default function Home() {
 
       {/* ZOE da la bienvenida */}
       <div className="card px-4 py-3 mt-6 flex items-center gap-3 w-full fade-in-d2" style={{ borderColor: 'rgba(168,85,247,0.4)' }}>
-        <div className="shrink-0"><Zoe size={52} talking speakable /></div>
-        <div className="text-left leading-snug">
-          <div className="text-sm font-bold">{t('homeWelcome')}</div>
-          <div className="text-[11px] text-[var(--violet-light)] font-extrabold mt-0.5">{t('zoeTapHint')}</div>
-        </div>
+        <div className="shrink-0"><Zoe size={52} talking /></div>
+        <div className="text-left text-sm font-bold leading-snug">{t('homeWelcome')}</div>
       </div>
 
       {/* Elige cómo jugar — 3 modos bien diferenciados */}

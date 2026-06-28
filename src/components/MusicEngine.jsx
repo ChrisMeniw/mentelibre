@@ -19,8 +19,9 @@ const BELLS = [1568, 2093, 2349]
 
 export default function MusicEngine() {
   const { t } = useLang()
-  // Música APAGADA por defecto; recuerda la elección del usuario (localStorage 'ml_music').
-  const initialOn = (() => { try { return localStorage.getItem('ml_music') === 'on' } catch { return false } })()
+  // Música ENCENDIDA por defecto (suena al entrar con la intro); apagada solo si
+  // el usuario la silenció (recuerda la elección en localStorage 'ml_music').
+  const initialOn = (() => { try { return localStorage.getItem('ml_music') !== 'off' } catch { return true } })()
   const [on, setOn] = useState(initialOn)
   const onRef = useRef(initialOn) // misma intención, leída en vivo por la lógica de audio
   const R = useRef({ ctx: null, master: null, timers: [], started: false, noiseBuf: null, step: 0 })

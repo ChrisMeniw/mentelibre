@@ -1,7 +1,9 @@
+import { useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { useLang } from './i18n'
 import WarpBackground from './components/WarpBackground'
 import MusicEngine from './components/MusicEngine'
+import IntroSplash from './components/IntroSplash'
 import BottomNav from './components/BottomNav'
 import FoundationBadge from './components/FoundationBadge'
 import Home from './pages/Home'
@@ -32,8 +34,11 @@ function LangToggle() {
 }
 
 export default function App() {
+  // La intro se muestra SIEMPRE al abrir el juego (cada carga de página).
+  const [showIntro, setShowIntro] = useState(true)
   return (
     <>
+      {showIntro && <IntroSplash onClose={() => setShowIntro(false)} />}
       <WarpBackground />
       <LangToggle />
       <main className="relative z-10 min-h-dvh">
