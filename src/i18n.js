@@ -9,7 +9,7 @@ export const LANG_DATA = {
 
     // Onboarding
     homeSub: 'Un juego de pensamiento crítico con inteligencia artificial. Gratis, para escuelas y familias.',
-    homeWelcome: '¡Hola! Soy ZOE. ¿Estás listo para desafiar a tu mente? 🧠',
+    homeWelcome: '¿Estás listo para desafiar a tu mente?',
     zoeTitle: 'Primera profesora IA de LATAM',
     zoeTapHint: '🔊 Tócame para escucharme',
     introStart: '¡Comenzar! 🚀',
@@ -297,7 +297,7 @@ export const LANG_DATA = {
     subtitle: 'Treine sua mente com a ajuda da IA. Grátis para escolas.',
 
     homeSub: 'Um jogo de pensamento crítico com inteligência artificial. Grátis, para escolas e famílias.',
-    homeWelcome: 'Olá! Eu sou a ZOE. Você está pronto para desafiar a sua mente? 🧠',
+    homeWelcome: 'Você está pronto para desafiar a sua mente?',
     zoeTitle: 'Primeira professora IA da América Latina',
     zoeTapHint: '🔊 Toque para me ouvir',
     introStart: 'Começar! 🚀',

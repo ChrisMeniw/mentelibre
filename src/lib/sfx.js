@@ -45,8 +45,14 @@ function tone(freq, dur, { type = 'sine', gain = 0.16, when = 0, sweepTo = null,
 }
 
 // Toque de botón — pop corto y burbujeante.
+// Anti-doble: si se llama dos veces casi juntas (botón con su propio sonido + el
+// detector global de toques), suena una sola vez.
+let lastPop = -1000
 export function sfxPop() {
-  tone(420, 0.12, { type: 'triangle', gain: 0.12, sweepTo: 680 })
+  const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : 0
+  if (now - lastPop < 80) return
+  lastPop = now
+  tone(420, 0.12, { type: 'triangle', gain: 0.14, sweepTo: 680 })
 }
 
 // Tic-tac de los últimos segundos — urgencia (más ruido en la cuenta regresiva).

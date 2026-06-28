@@ -86,9 +86,9 @@ function speakNow(text, lang) {
   u.lang = LANGS[lang] || 'es-US'
   const v = pickVoice(lang)
   if (v) u.voice = v // voz LATAM (es) o pt-BR (pt); si no hay, queda u.lang
-  // Voz de CHICA JOVEN: tono más alto y un pelín más vivo (sin sonar robótico).
+  // Voz de MUJER JOVEN (natural, no chillona): tono apenas por encima del neutro.
   u.rate = 1.0
-  u.pitch = 1.32
+  u.pitch = 1.08
   synth.speak(u)
   try { synth.resume() } catch { /* iOS a veces queda en pausa */ }
 }

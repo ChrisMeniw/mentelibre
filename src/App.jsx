@@ -3,6 +3,7 @@ import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { useLang } from './i18n'
 import WarpBackground from './components/WarpBackground'
 import AudioMusic from './components/AudioMusic'
+import TapSound from './components/TapSound'
 import IntroSplash from './components/IntroSplash'
 import BottomNav from './components/BottomNav'
 import FoundationBadge from './components/FoundationBadge'
@@ -69,6 +70,7 @@ export default function App() {
       <BottomNav />
       <FoundationBadge />
       <AudioMusic />
+      <TapSound />
     </>
   )
 }

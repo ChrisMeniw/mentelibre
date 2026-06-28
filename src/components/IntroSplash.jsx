@@ -77,8 +77,8 @@ export default function IntroSplash({ onClose }) {
           <div className="text-[11px] text-[var(--violet-light)] font-extrabold uppercase tracking-wide">{t('zoeTitle')}</div>
         </div>
 
-        <div className="text-[14px] font-bold text-white mt-3 max-w-xs leading-snug fade-in-d2"
-          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.9)' }}>{t('homeWelcome')}</div>
+        <div className="text-2xl font-extrabold text-white mt-4 max-w-sm leading-tight fade-in-d2"
+          style={{ textShadow: '0 3px 18px rgba(0,0,0,0.95)' }}>{t('homeWelcome')}</div>
 
         <button onClick={onClose} className="btn btn-gold mt-5 text-lg px-12 min-h-touch glow-pulse fade-in-d3" aria-label={t('introStart')}>
           {t('introStart')}
