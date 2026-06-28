@@ -64,7 +64,7 @@ export default function Round() {
   }
   const questions = pickedRef.current
 
-  const [phase, setPhase] = useState('intro')   // intro | playing | results
+  const [phase, setPhase] = useState('playing')   // arranca DIRECTO en la 1ª pregunta (sin pantalla previa)
   const [qi, setQi] = useState(0)
   const [stage, setStage] = useState('answer')  // answer | feedback
   const [answer, setAnswer] = useState('')

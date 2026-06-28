@@ -38,7 +38,7 @@ export default function Ask() {
   const topics = useRef(pickAskTopics(ageGroup, N)).current
   const childName = player.name || (lang === 'pt' ? 'amigo' : 'amigo')
 
-  const [phase, setPhase] = useState('intro') // intro | playing | results
+  const [phase, setPhase] = useState('playing') // arranca DIRECTO (sin pantalla previa)
   const [ti, setTi] = useState(0)
   const [stage, setStage] = useState('answer') // answer | feedback
   const [answer, setAnswer] = useState('')
