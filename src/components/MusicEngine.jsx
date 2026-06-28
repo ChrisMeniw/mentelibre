@@ -5,17 +5,30 @@ import { subscribeGameplay, isGameplay } from '../lib/musicBus'
 
 // Música arcade/casino procedural (Web Audio API). Sin archivos de audio.
 // Pegadiza y en bucle: suena en el menú y se calla apenas se empieza a jugar.
-const BPM = 112
-const STEP_MS = (60 / BPM / 4) * 1000 // semicorchea
-const MAX_GAIN = 0.42
+const BPM = 126
+const STEP_MS = (60 / BPM / 4) * 1000 // semicorchea (16th)
+const MAX_GAIN = 0.40
 
-// Melodía pegadiza (Do mayor pentatónica), una nota cada corchea sobre 2 compases.
-const HOOK = [523.25, 659.25, 783.99, 880.0, 783.99, 659.25, 783.99, 1046.5, 880.0, 783.99, 659.25, 783.99, 659.25, 587.33, 523.25, null]
-const MEL = []
-for (let i = 0; i < HOOK.length; i++) { MEL.push(HOOK[i]); MEL.push(null) } // 32 pasos: notas en pares
-// Bajo saltarín, una nota por tiempo (I–V–vi–iii–IV–I–V–V)
-const BASS = [65.41, 98.0, 110.0, 82.41, 87.31, 65.41, 98.0, 98.0]
-const BELLS = [1568, 2093, 2349]
+// Estilo Fortnite/Roblox: EDM melódico y enérgico. Progresión en La menor
+// Am – F – C – G (i–VI–III–VII), un acorde por compás de 16 semicorcheas.
+const CHORDS = [
+  [220.0, 261.63, 329.63, 440.0],   // Am  (A3 C4 E4 A4)
+  [174.61, 220.0, 261.63, 349.23],  // F   (F3 A3 C4 F4)
+  [261.63, 329.63, 392.0, 523.25],  // C   (C4 E4 G4 C5)
+  [196.0, 246.94, 293.66, 392.0],   // G   (G3 B3 D4 G4)
+]
+// Arpegio saltarín (índices a los 4 tonos del acorde) — el "pluck" pegadizo tipo Fortnite.
+const ARP = [0, 2, 1, 2, 3, 2, 1, 2, 0, 2, 3, 2, 1, 3, 2, 3]
+const BASS_ROOT = [110.0, 87.31, 130.81, 98.0] // A2 F2 C3 G2
+
+// Melodía/hook pegadizo encima del arpegio (64 semicorcheas; null = silencio).
+const A4 = 440, B4 = 493.88, C5 = 523.25, D5 = 587.33, E5 = 659.25, F4 = 349.23, G4 = 392.0, G5 = 783.99
+const MELODY = [
+  A4, null, E5, null, A4, null, C5, null, E5, null, null, D5, C5, null, A4, null, // Am
+  F4, null, C5, null, F4, null, A4, null, C5, null, null, A4, F4, null, C5, null,  // F
+  G4, null, E5, null, G4, null, C5, null, E5, null, null, G5, E5, null, C5, null,  // C
+  G4, null, D5, null, G4, null, B4, null, D5, null, null, B4, G4, null, D5, null,  // G
+]
 
 export default function MusicEngine() {
   const { t } = useLang()
@@ -43,61 +56,119 @@ export default function MusicEngine() {
     return ctx
   }
 
-  // Una nota corta con envolvente percutida.
-  function blip(freq, dur, { type = 'triangle', gain = 0.08, pan = 0 } = {}) {
-    const r = R.current; const ctx = r.ctx; if (!ctx) return
-    const t0 = ctx.currentTime
-    const o = ctx.createOscillator(); o.type = type; o.frequency.value = freq
-    const g = ctx.createGain()
-    g.gain.setValueAtTime(0.0001, t0)
-    g.gain.exponentialRampToValueAtTime(gain, t0 + 0.01)
-    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur)
-    let node = g
-    if (pan && ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = pan; g.connect(p); node = p }
-    o.connect(g); node.connect(r.master); o.start(t0); o.stop(t0 + dur + 0.02)
-  }
-
-  function bass(freq) {
+  // Pluck saltarín (saw+square con filtro que cae) — el alma del arpegio Fortnite.
+  function pluck(freq, { gain = 0.055, pan = 0, dur = 0.19 } = {}) {
     const r = R.current; const ctx = r.ctx; if (!ctx) return
     const t0 = ctx.currentTime
     const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = freq
-    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 620
+    const o2 = ctx.createOscillator(); o2.type = 'square'; o2.frequency.value = freq * 1.004
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'
+    lp.frequency.setValueAtTime(4600, t0); lp.frequency.exponentialRampToValueAtTime(1100, t0 + dur)
     const g = ctx.createGain()
     g.gain.setValueAtTime(0.0001, t0)
-    g.gain.exponentialRampToValueAtTime(0.22, t0 + 0.01)
-    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.34)
-    o.connect(lp); lp.connect(g); g.connect(r.master); o.start(t0); o.stop(t0 + 0.36)
+    g.gain.exponentialRampToValueAtTime(gain, t0 + 0.006)
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + dur)
+    let node = g
+    if (pan && ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = pan; g.connect(p); node = p }
+    o.connect(lp); o2.connect(lp); lp.connect(g); node.connect(r.master)
+    o.start(t0); o2.start(t0); o.stop(t0 + dur + 0.03); o2.stop(t0 + dur + 0.03)
+  }
+
+  // Lead brillante (la melodía pegadiza) — square con filtro, bien al frente.
+  function lead(freq, { gain = 0.085, pan = 0 } = {}) {
+    const r = R.current; const ctx = r.ctx; if (!ctx) return
+    const t0 = ctx.currentTime
+    const o = ctx.createOscillator(); o.type = 'square'; o.frequency.value = freq
+    const o2 = ctx.createOscillator(); o2.type = 'triangle'; o2.frequency.value = freq * 2 // brillo
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 3400
+    const g = ctx.createGain()
+    g.gain.setValueAtTime(0.0001, t0)
+    g.gain.exponentialRampToValueAtTime(gain, t0 + 0.012)
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.28)
+    const g2 = ctx.createGain(); g2.gain.value = 0.3
+    let node = g
+    if (ctx.createStereoPanner) { const p = ctx.createStereoPanner(); p.pan.value = pan; g.connect(p); node = p }
+    o.connect(lp); lp.connect(g); o2.connect(g2); g2.connect(g); node.connect(r.master)
+    o.start(t0); o2.start(t0); o.stop(t0 + 0.3); o2.stop(t0 + 0.3)
+  }
+
+  // Bajo saltarín con sub — gordo pero corto (groove de baile).
+  function subbass(freq, { gain = 0.24 } = {}) {
+    const r = R.current; const ctx = r.ctx; if (!ctx) return
+    const t0 = ctx.currentTime
+    const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = freq
+    const sub = ctx.createOscillator(); sub.type = 'sine'; sub.frequency.value = freq / 2
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 520
+    const g = ctx.createGain()
+    g.gain.setValueAtTime(0.0001, t0)
+    g.gain.exponentialRampToValueAtTime(gain, t0 + 0.008)
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.2)
+    o.connect(lp); lp.connect(g); sub.connect(g); g.connect(r.master)
+    o.start(t0); sub.start(t0); o.stop(t0 + 0.22); sub.stop(t0 + 0.22)
   }
 
   function kick() {
     const r = R.current; const ctx = r.ctx; if (!ctx) return
     const t0 = ctx.currentTime
     const o = ctx.createOscillator(); o.type = 'sine'
-    o.frequency.setValueAtTime(130, t0); o.frequency.exponentialRampToValueAtTime(48, t0 + 0.12)
-    const g = ctx.createGain(); g.gain.setValueAtTime(0.5, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.16)
-    o.connect(g); g.connect(r.master); o.start(t0); o.stop(t0 + 0.18)
+    o.frequency.setValueAtTime(150, t0); o.frequency.exponentialRampToValueAtTime(46, t0 + 0.11)
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.62, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.17)
+    o.connect(g); g.connect(r.master); o.start(t0); o.stop(t0 + 0.19)
   }
 
   function hat() {
     const r = R.current; const ctx = r.ctx; if (!ctx) return
     const t0 = ctx.currentTime
     const src = ctx.createBufferSource(); src.buffer = r.noiseBuf
-    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 7000
-    const g = ctx.createGain(); g.gain.setValueAtTime(0.1, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.05)
-    src.connect(hp); hp.connect(g); g.connect(r.master); src.start(t0); src.stop(t0 + 0.06)
+    const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 8000
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.09, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.04)
+    src.connect(hp); hp.connect(g); g.connect(r.master); src.start(t0); src.stop(t0 + 0.05)
+  }
+
+  // Palmada en 2 y 4 (backbeat enérgico).
+  function clap() {
+    const r = R.current; const ctx = r.ctx; if (!ctx) return
+    const t0 = ctx.currentTime
+    const src = ctx.createBufferSource(); src.buffer = r.noiseBuf
+    const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1600; bp.Q.value = 0.7
+    const g = ctx.createGain(); g.gain.setValueAtTime(0.2, t0); g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.13)
+    src.connect(bp); bp.connect(g); g.connect(r.master); src.start(t0); src.stop(t0 + 0.15)
+  }
+
+  // Acorde "supersaw" suave al inicio de cada compás (energía/relleno).
+  function stab(freqs) {
+    const r = R.current; const ctx = r.ctx; if (!ctx) return
+    const t0 = ctx.currentTime
+    const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 2400
+    const g = ctx.createGain()
+    g.gain.setValueAtTime(0.0001, t0)
+    g.gain.exponentialRampToValueAtTime(0.038, t0 + 0.02)
+    g.gain.exponentialRampToValueAtTime(0.0001, t0 + 0.55)
+    lp.connect(g); g.connect(r.master)
+    freqs.forEach((f) => { const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.connect(lp); o.start(t0); o.stop(t0 + 0.58) })
   }
 
   function sequencer() {
     const r = R.current
     const seq = setInterval(() => {
       if (!r.ctx || !r.started) return
-      const s = r.step % 32
-      if (s % 4 === 0) { kick(); bass(BASS[(s / 4) % BASS.length]) }
-      if (s % 4 === 2) hat()
-      const m = MEL[s]
-      if (m) blip(m, 0.2, { type: 'triangle', gain: 0.085, pan: s % 8 < 4 ? -0.12 : 0.12 })
-      // Campanita brillante de casino al cerrar cada 2 bucles.
-      if (s === 14 && Math.floor(r.step / 32) % 2 === 1) blip(BELLS[Math.floor(r.step / 32) % BELLS.length], 0.6, { type: 'sine', gain: 0.045 })
+      const s = r.step % 64           // 4 compases de 16 semicorcheas
+      const bar = Math.floor(s / 16)
+      const st = s % 16
+      // Batería: bombo en cada tiempo, palmada en 2 y 4, hats en contratiempos.
+      if (st % 4 === 0) kick()
+      if (st === 4 || st === 12) clap()
+      if (st % 2 === 1) hat()
+      // Bajo: en cada tiempo, con rebote de octava en el contratiempo.
+      if (st % 4 === 0) subbass(BASS_ROOT[bar])
+      else if (st % 2 === 0) subbass(BASS_ROOT[bar] * 2, { gain: 0.11 })
+      // Arpegio pluck en cada semicorchea (paneado L/R).
+      pluck(CHORDS[bar][ARP[st]], { gain: 0.05, pan: st % 4 < 2 ? -0.18 : 0.18 })
+      // Melodía pegadiza por encima.
+      const m = MELODY[s]
+      if (m) lead(m, { gain: 0.085, pan: 0.04 })
+      // Acorde de relleno al inicio de cada compás.
+      if (st === 0) stab(CHORDS[bar])
       r.step++
     }, STEP_MS)
     r.timers.push(seq)
