@@ -1,4 +1,7 @@
 import { useLang } from '../i18n'
+import { kickMusic } from '../lib/musicControl'
+
+const SLOW = 0.5 // el video va a la mitad de velocidad (más calmo/cinematográfico)
 
 // INTRO con VIDEO real (presentación premium): galaxia cósmica en movimiento de
 // fondo (clip libre para uso comercial, Pexels) + título centrado que respira +
@@ -35,6 +38,8 @@ export default function IntroSplash({ onClose }) {
       <video
         autoPlay muted loop playsInline aria-hidden
         poster="/intro-1.png"
+        onLoadedMetadata={(e) => { e.currentTarget.playbackRate = SLOW }}
+        onPlay={(e) => { e.currentTarget.playbackRate = SLOW }}
         className="absolute inset-0 w-full h-full object-cover"
         style={{ filter: 'saturate(1.12) contrast(1.05)' }}
       >
@@ -80,7 +85,7 @@ export default function IntroSplash({ onClose }) {
         <div className="text-2xl font-extrabold text-white mt-4 max-w-sm leading-tight fade-in-d2"
           style={{ textShadow: '0 3px 18px rgba(0,0,0,0.95)' }}>{t('homeWelcome')}</div>
 
-        <button onClick={onClose} className="btn btn-gold mt-5 text-lg px-12 min-h-touch glow-pulse fade-in-d3" aria-label={t('introStart')}>
+        <button onClick={() => { kickMusic(); onClose() }} className="btn btn-gold mt-5 text-lg px-12 min-h-touch glow-pulse fade-in-d3" aria-label={t('introStart')}>
           {t('introStart')}
         </button>
         <div className="text-[11px] text-white/70 mt-2.5 fade-in-d3">{t('introTapHint')}</div>
