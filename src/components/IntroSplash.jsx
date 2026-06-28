@@ -1,14 +1,14 @@
 import { useLang } from '../i18n'
 
-// INTRO inspiradora y DINÁMICA (siempre al abrir): montaje cinematográfico de dos
-// ilustraciones (cerebro de ideas → galaxia de sueños) con paneo+zoom continuo,
-// chispas que suben, título centrado con halo que respira. La música enérgica
-// (estilo Fortnite/Roblox) la pone el MusicEngine global y sigue al entrar al menú.
+// INTRO con VIDEO real (presentación premium): galaxia cósmica en movimiento de
+// fondo (clip libre para uso comercial, Pexels) + título centrado que respira +
+// chispas. Sin música (la sacamos). El póster es la ilustración inspiradora, así
+// se ve algo lindo al instante mientras carga el video.
 export default function IntroSplash({ onClose }) {
   const { t, lang } = useLang()
   const appName = lang === 'pt' ? 'Mente Livre' : 'Mente Libre'
 
-  const sparkles = Array.from({ length: 22 }, (_, i) => ({
+  const sparkles = Array.from({ length: 20 }, (_, i) => ({
     left: (i * 53) % 100,
     bottom: 16 + (i * 31) % 62,
     delay: (i % 9) * 0.5,
@@ -20,29 +20,29 @@ export default function IntroSplash({ onClose }) {
   return (
     <div className="fixed inset-0 z-[100] overflow-hidden" role="dialog" aria-label={appName}>
       <style>{`
-        @keyframes introFadeA { 0%,42%{opacity:1} 50%,92%{opacity:0} 100%{opacity:1} }
-        @keyframes introFadeB { 0%,42%{opacity:0} 50%,92%{opacity:1} 100%{opacity:0} }
-        @keyframes kenMove1 { 0%{transform:scale(1.06) translate(-1.5%,1.5%)} 100%{transform:scale(1.18) translate(1.5%,-2.5%)} }
-        @keyframes kenMove2 { 0%{transform:scale(1.18) translate(1.5%,-2.5%)} 100%{transform:scale(1.06) translate(-1.5%,1.5%)} }
         @keyframes introSpark { 0%{transform:translateY(10px) scale(0.6);opacity:0} 20%{opacity:1} 100%{transform:translateY(-90px) scale(1);opacity:0} }
         @keyframes titleBreathe { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-4px) scale(1.015)} }
         @keyframes haloBreathe { 0%,100%{opacity:0.45;transform:scale(1)} 50%{opacity:0.85;transform:scale(1.14)} }
-        .ken-a{animation:introFadeA 14s ease-in-out infinite, kenMove1 14s ease-in-out infinite alternate}
-        .ken-b{animation:introFadeB 14s ease-in-out infinite, kenMove2 14s ease-in-out infinite alternate}
         .title-breathe{animation:titleBreathe 5s ease-in-out infinite}
         .halo-breathe{animation:haloBreathe 4s ease-in-out infinite}
-        @media (prefers-reduced-motion: reduce){ .ken-a,.ken-b,.title-breathe,.halo-breathe{animation:none} .ken-b{opacity:0} }
+        @media (prefers-reduced-motion: reduce){ .title-breathe,.halo-breathe{animation:none} }
       `}</style>
 
-      {/* Base opaca: evita transparencias durante el cruce de imágenes */}
+      {/* Base opaca por si el video tarda en pintar */}
       <div className="absolute inset-0" style={{ background: '#0b0518' }} />
 
-      {/* Montaje cinematográfico con paneo + zoom continuo (no estático) */}
-      <img src="/intro-1.png" alt="" aria-hidden className="ken-a absolute inset-0 w-full h-full object-cover" />
-      <img src="/intro-2.png" alt="" aria-hidden className="ken-b absolute inset-0 w-full h-full object-cover" />
+      {/* VIDEO real de fondo (galaxia cósmica en movimiento) */}
+      <video
+        autoPlay muted loop playsInline aria-hidden
+        poster="/intro-1.png"
+        className="absolute inset-0 w-full h-full object-cover"
+        style={{ filter: 'saturate(1.12) contrast(1.05)' }}
+      >
+        <source src="/intro.mp4" type="video/mp4" />
+      </video>
 
-      {/* Velo: oscuro arriba y abajo para leer, deja respirar el centro */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(10,6,23,0.55) 0%, rgba(10,6,23,0.16) 27%, rgba(10,6,23,0.32) 52%, rgba(10,6,23,0.88) 100%)' }} />
+      {/* Velo: deja respirar el centro y oscurece arriba/abajo para leer el texto */}
+      <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(10,6,23,0.50) 0%, rgba(10,6,23,0.18) 30%, rgba(10,6,23,0.40) 55%, rgba(10,6,23,0.90) 100%)' }} />
 
       {/* Chispas de imaginación que suben */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
@@ -56,7 +56,7 @@ export default function IntroSplash({ onClose }) {
         ))}
       </div>
 
-      {/* Contenido — centrado vertical: título en el tercio superior, CTA debajo */}
+      {/* Contenido — centrado vertical: título en el tercio superior */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center safe-top">
         <img src="/foundation-logo.webp" alt="Chris Meniw Foundation" width="70" height="70"
           className="rounded-full floaty fade-in" style={{ width: 70, height: 70, filter: 'drop-shadow(0 8px 24px rgba(124,58,237,0.75))' }} />
