@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useLang } from '../i18n'
+import NavIcon from './NavIcon'
 
 export default function BottomNav() {
   const { t } = useLang()
@@ -8,10 +9,10 @@ export default function BottomNav() {
   // No mostrar en la portada, el onboarding ni dentro de un desafío/ronda.
   if (loc.pathname === '/' || loc.pathname === '/empezar' || loc.pathname === '/mision' || loc.pathname === '/aula' || loc.pathname.startsWith('/desafio')) return null
   const items = [
-    { to: '/hub', icon: '🏠', label: t('navHome') },
-    { to: '/tienda', icon: '🛒', label: t('navShop') },
-    { to: '/logros', icon: '🏅', label: t('navBadges') },
-    { to: '/docentes', icon: '👩‍🏫', label: t('navTeacher') },
+    { to: '/hub', icon: 'home', label: t('navHome') },
+    { to: '/tienda', icon: 'shop', label: t('navShop') },
+    { to: '/logros', icon: 'badge', label: t('navBadges') },
+    { to: '/docentes', icon: 'teacher', label: t('navTeacher') },
   ]
   return (
     <nav className="fixed bottom-0 inset-x-0 z-40 safe-bottom pointer-events-none">
@@ -33,7 +34,7 @@ export default function BottomNav() {
                   style={{ background: 'radial-gradient(circle, rgba(251,191,36,0.22), transparent 70%)' }}
                 />
               )}
-              <span className="text-xl relative">{it.icon}</span>
+              <span className="relative"><NavIcon name={it.icon} /></span>
               <span className="text-[10px] font-extrabold relative">{it.label}</span>
             </button>
           )

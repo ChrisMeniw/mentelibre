@@ -4,27 +4,32 @@ import { usePlayer } from '../hooks/usePlayer'
 import { isAskUnlocked } from '../data/levels'
 import { sfxPop } from '../lib/sfx'
 import Zoe from '../components/Zoe'
+import ModeIcon from '../components/ModeIcon'
 
-// Tarjeta de modo: ícono + título + descripción, con color propio. Deja clarísimo
-// si entrás a jugar solo, a la competencia de grupos o al ranking de escuelas.
-function ModeCard({ icon, title, desc, accent, onClick, primary }) {
+// Tarjeta de modo: vidrio neutro + ficha de ícono con acento. Jerarquía clara —
+// una sola tarjeta primaria (dorada) sobresale; el resto, calmo y consistente.
+function ModeCard({ iconName, title, desc, accent, onClick, primary }) {
   return (
     <button
       onClick={onClick}
-      className="w-full card p-3.5 flex items-center gap-3 text-left active:scale-[0.98] transition min-h-touch"
-      style={{
-        borderColor: `${accent}66`,
-        boxShadow: primary ? `0 0 0 1px ${accent}66, 0 12px 28px -12px ${accent}` : undefined,
-        background: `linear-gradient(135deg, ${accent}1f, rgba(255,255,255,0.02))`,
-      }}
+      className="group w-full card p-3.5 flex items-center gap-3.5 text-left active:scale-[0.98] transition min-h-touch"
+      style={primary ? { boxShadow: `0 0 0 1.5px ${accent}77, 0 16px 34px -16px ${accent}, 0 18px 50px -24px rgba(0,0,0,0.85)` } : undefined}
     >
-      <span className="shrink-0 w-12 h-12 rounded-2xl grid place-items-center text-2xl"
-        style={{ background: `${accent}26`, border: `1px solid ${accent}55` }}>{icon}</span>
+      <span className="shrink-0 w-12 h-12 rounded-2xl grid place-items-center"
+        style={{
+          background: primary
+            ? `linear-gradient(140deg, ${accent}, #E59409)`
+            : `linear-gradient(140deg, ${accent}2e, ${accent}10)`,
+          border: `1px solid ${accent}${primary ? 'cc' : '40'}`,
+          boxShadow: `inset 0 1px 0 rgba(255,255,255,0.22)${primary ? `, 0 8px 20px -10px ${accent}` : ''}`,
+        }}>
+        <ModeIcon name={iconName} accent={primary ? '#3B2A04' : accent} size={26} />
+      </span>
       <span className="flex-1 min-w-0">
         <span className="block font-extrabold text-[15px] leading-tight">{title}</span>
-        <span className="block text-[11px] text-[var(--text-dim)] leading-snug mt-0.5">{desc}</span>
+        <span className="block text-[11.5px] text-[var(--text-dim)] leading-snug mt-0.5">{desc}</span>
       </span>
-      <span className="shrink-0 text-[var(--text-dim)] text-xl">›</span>
+      <span className="shrink-0 text-[var(--text-dim)] text-lg transition-transform group-active:translate-x-0.5">›</span>
     </button>
   )
 }
@@ -70,19 +75,19 @@ export default function Home() {
       <div className="w-full mt-6 fade-in-d3">
         <div className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[var(--text-dim)] mb-2 text-center">{t('chooseHowToPlay')}</div>
         <div className="space-y-2.5">
-          <ModeCard icon="🎮" accent="#FBBF24" primary
+          <ModeCard iconName="solo" accent="#FBBF24" primary
             title={hasProfile ? t('continueCta') : t('modeSoloTitle')} desc={t('modeSoloDesc')}
             onClick={play} />
-          <ModeCard icon="⚔️" accent="#A855F7"
+          <ModeCard iconName="group" accent="#A855F7"
             title={t('modeGroupTitle')} desc={t('modeGroupDesc')}
             onClick={() => { sfxPop(); nav('/aula') }} />
-          <ModeCard icon="🏆" accent="#10B981"
+          <ModeCard iconName="ranking" accent="#38BDF8"
             title={t('modeRankingTitle')} desc={t('modeRankingDesc')}
             onClick={() => { sfxPop(); nav('/aula', { state: { view: 'board' } }) }} />
-          <ModeCard icon={askUnlocked ? '🦉' : '🔒'} accent="#8B5CF6"
+          <ModeCard iconName={askUnlocked ? 'ask' : 'lock'} accent="#C084FC"
             title={t('modeAskTitle')} desc={askUnlocked ? t('modeAskDesc') : t('askLockedHint')}
             onClick={() => { sfxPop(); if (askUnlocked) nav('/preguntar') }} />
-          <ModeCard icon="🔥" accent="#FB7185"
+          <ModeCard iconName="daily" accent="#FB7185"
             title={t('modeDailyTitle')} desc={t('modeDailyDesc')}
             onClick={() => { sfxPop(); nav('/reto') }} />
         </div>

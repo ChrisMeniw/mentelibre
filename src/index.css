@@ -19,6 +19,8 @@ html, body, #root { height: 100%; min-height: 100dvh; }
 
 body {
   margin: 0;
+  /* La galaxia premium se pinta en la capa fija de WarpBackground (mejor en iOS).
+     Acá solo el color base por si esa capa aún no montó. */
   background: var(--bg-deep);
   color: var(--text);
   font-family: 'Nunito', system-ui, sans-serif;
