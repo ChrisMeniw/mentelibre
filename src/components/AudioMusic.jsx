@@ -8,7 +8,7 @@ import { setPlaybackAudioSession } from '../lib/audioUnlock'
 // Música REAL (mp3) reproducida por WEB AUDIO (no HTML5 <audio>): así suena en iPhone
 // AUNQUE esté el switch de silencio activado — igual que los juegos. "Pixelland" de
 // Kevin MacLeod (incompetech.com), CC BY 4.0. Arranca con el primer gesto del usuario.
-const TARGET_VOL = 0.5
+const TARGET_VOL = 0.36 // música más bajo que los efectos, para que los botones se oigan por encima
 
 export default function AudioMusic() {
   const { t } = useLang()

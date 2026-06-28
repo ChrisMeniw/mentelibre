@@ -58,8 +58,9 @@ export function sfxPop() {
   if (now - lastPop < 80) return
   lastPop = now
   const f = TAP_NOTES[tapIdx % TAP_NOTES.length]; tapIdx++
-  tone(f, 0.13, { type: 'sine', gain: 0.17 })                       // cuerpo redondo y brillante
-  tone(f * 2, 0.08, { type: 'triangle', gain: 0.055, when: 0.004 }) // chispita una octava arriba
+  // Bien fuerte para que se oiga POR ENCIMA de la música.
+  tone(f, 0.14, { type: 'sine', gain: 0.5 })                        // cuerpo redondo y brillante
+  tone(f * 2, 0.09, { type: 'triangle', gain: 0.16, when: 0.004 })  // chispita una octava arriba
 }
 
 // Tic-tac de los últimos segundos — urgencia (más ruido en la cuenta regresiva).
