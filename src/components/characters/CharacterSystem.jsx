@@ -1,8 +1,8 @@
-import Kiko from './chibi/Kiko'
-import Lumi from './chibi/Lumi'
-import Nube from './chibi/Nube'
-import Rayo from './chibi/Rayo'
-import Cosmo from './chibi/Cosmo'
+import Michi from './animals/Michi'
+import Rolo from './animals/Rolo'
+import Bambu from './animals/Bambu'
+import Tango from './animals/Tango'
+import Sabio from './animals/Sabio'
 import Kai from './adventure/Kai'
 import Nova from './adventure/Nova'
 import Ryu from './adventure/Ryu'
@@ -14,16 +14,17 @@ import Shin from './shonen/Shin'
 import Akira from './shonen/Akira'
 import Ryoken from './shonen/Ryoken'
 
-// Personajes por GRUPO DE EDAD REAL × 5 niveles. (El spec usaba 4 grupos; la app
-// tiene 3: 6-8 chibi, 9-11 anime aventura, 12-15 shonen.)
+// Personajes por GRUPO DE EDAD REAL × 5 niveles. Los más chicos (6-8) usan ANIMALES
+// tiernos (suben de nivel: gatito→zorro→panda→tigre→búho sabio); los otros dos
+// grupos son personajes anime (NO animales): 9-11 aventura, 12-15 shonen.
 const GROUPS = {
-  '6-8': [Kiko, Lumi, Nube, Rayo, Cosmo],
+  '6-8': [Michi, Rolo, Bambu, Tango, Sabio],
   '9-11': [Kai, Nova, Ryu, Sora, Zen],
   '12-15': [Kuro, Miyako, Shin, Akira, Ryoken],
 }
 
 export const CHAR_NAMES = {
-  '6-8': ['Kiko', 'Lumi', 'Nube', 'Rayo', 'Cosmo'],
+  '6-8': ['Michi', 'Rolo', 'Bambú', 'Tango', 'Sabio'],
   '9-11': ['Kai', 'Nova', 'Ryu', 'Sora', 'Zen'],
   '12-15': ['Kuro', 'Miyako', 'Shin', 'Akira', 'Ryoken'],
 }

@@ -6,7 +6,7 @@ import { sfxPop } from '../lib/sfx'
 // Vitrina para revisar los personajes por grupo de edad y mood.
 const MOODS = ['idle', 'happy', 'thinking', 'excited', 'sad']
 const GROUPS = [
-  { id: '6-8', label: '6-8 · chibi' },
+  { id: '6-8', label: '6-8 · animales' },
   { id: '9-11', label: '9-11 · aventura' },
   { id: '12-15', label: '12-15 · shonen' },
 ]
