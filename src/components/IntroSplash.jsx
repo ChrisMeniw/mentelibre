@@ -37,7 +37,6 @@ export default function IntroSplash({ onClose }) {
       {/* VIDEO real de fondo (galaxia cósmica en movimiento) */}
       <video
         autoPlay muted loop playsInline aria-hidden preload="auto"
-        poster="/intro-1.png"
         onLoadedMetadata={(e) => { e.currentTarget.playbackRate = SLOW }}
         onPlay={(e) => { e.currentTarget.playbackRate = SLOW }}
         className="absolute inset-0 w-full h-full object-cover"
