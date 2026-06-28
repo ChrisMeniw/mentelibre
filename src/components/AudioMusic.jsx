@@ -4,66 +4,93 @@ import { setSfxEnabled } from '../lib/sfx'
 import { subscribeGameplay, isGameplay } from '../lib/musicBus'
 import { setMusicKick } from '../lib/musicControl'
 
-// Música REAL (mp3): "Pixelland" de Kevin MacLeod (incompetech.com), CC BY 4.0.
-// Suena en la intro y los menús (arranca al primer toque por política de autoplay),
-// se calla mientras jugás una ronda y vuelve al salir. Botón para silenciar.
-const TARGET_VOL = 0.6
+// Música REAL (mp3) reproducida por WEB AUDIO (no HTML5 <audio>): así suena en iPhone
+// AUNQUE esté el switch de silencio activado — igual que los juegos. "Pixelland" de
+// Kevin MacLeod (incompetech.com), CC BY 4.0. Arranca con el primer gesto del usuario.
+const TARGET_VOL = 0.5
 
 export default function AudioMusic() {
   const { t } = useLang()
   const initialOn = (() => { try { return localStorage.getItem('ml_music') !== 'off' } catch { return true } })()
   const [on, setOn] = useState(initialOn)
   const onRef = useRef(initialOn)
-  const audioRef = useRef(null)
+  const R = useRef({ ctx: null, buffer: null, source: null, gain: null, started: false, loading: false })
   const gameplay = useRef(isGameplay())
   const gestured = useRef(false)
 
-  // Sin fades raros: fijamos el volumen directo y reproducimos. (iOS ignora .volume
-  // y suena al nivel del sistema; en desktop fija el nivel.) Así nunca queda "sonando en mudo".
-  function sync() {
-    const a = audioRef.current
-    if (!a) return
-    const shouldPlay = gestured.current && onRef.current && !gameplay.current
-    if (shouldPlay) {
-      a.volume = TARGET_VOL
-      const p = a.play()
-      if (p && p.catch) p.catch(() => {})
-    } else {
-      try { a.pause() } catch { /* noop */ }
+  const desiredGain = () => (gestured.current && onRef.current && !gameplay.current) ? TARGET_VOL : 0
+
+  function applyGain() {
+    const r = R.current
+    if (!r.ctx || !r.gain) return
+    const now = r.ctx.currentTime
+    r.gain.gain.cancelScheduledValues(now)
+    r.gain.gain.setValueAtTime(r.gain.gain.value, now)
+    r.gain.gain.linearRampToValueAtTime(desiredGain(), now + 0.35)
+  }
+
+  async function ensure() {
+    const r = R.current
+    if (!r.ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext
+      if (!AC) return
+      r.ctx = new AC()
+      r.gain = r.ctx.createGain()
+      r.gain.gain.value = 0
+      r.gain.connect(r.ctx.destination)
+    }
+    if (!r.buffer && !r.loading) {
+      r.loading = true
+      try {
+        const res = await fetch('/musica.mp3')
+        const arr = await res.arrayBuffer()
+        r.buffer = await new Promise((resolve, reject) => {
+          const p = r.ctx.decodeAudioData(arr, resolve, reject)
+          if (p && p.then) p.then(resolve, reject) // forma con promesa (navegadores nuevos)
+        })
+      } catch { /* noop */ } finally { r.loading = false }
     }
   }
 
-  useEffect(() => {
-    const a = new Audio('/musica.mp3')
-    a.loop = true
-    a.volume = TARGET_VOL
-    a.preload = 'auto'
-    audioRef.current = a
-    setSfxEnabled(onRef.current)
+  async function sync() {
+    const r = R.current
+    if (!gestured.current) return
+    await ensure()
+    if (!r.ctx) return
+    if (r.ctx.state === 'suspended') { try { await r.ctx.resume() } catch { /* noop */ } }
+    if (!r.started && r.buffer) {
+      const src = r.ctx.createBufferSource()
+      src.buffer = r.buffer
+      src.loop = true
+      src.connect(r.gain)
+      try { src.start(0) } catch { /* noop */ }
+      r.source = src
+      r.started = true
+    }
+    applyGain()
+  }
 
+  useEffect(() => {
+    setSfxEnabled(onRef.current)
     gameplay.current = isGameplay()
-    const unsub = subscribeGameplay((g) => { gameplay.current = g; sync() })
-    // Arranque garantizado desde un gesto real (ej. tocar ¡Comenzar!).
+    const unsub = subscribeGameplay((g) => { gameplay.current = g; applyGain() })
+    // Arranque garantizado desde el gesto real de ¡Comenzar!.
     setMusicKick(() => { gestured.current = true; sync() })
 
     const events = ['pointerdown', 'touchstart', 'click', 'keydown']
-    const tryStart = () => {
-      gestured.current = true
-      sync()
-      const x = audioRef.current
-      if (x && !x.paused) events.forEach((e) => window.removeEventListener(e, tryStart))
-    }
+    const tryStart = () => { gestured.current = true; sync() }
     events.forEach((e) => window.addEventListener(e, tryStart, { passive: true }))
 
-    const onVis = () => { const x = audioRef.current; if (!document.hidden && gestured.current && onRef.current && !gameplay.current && x && x.paused) sync() }
+    const onVis = () => { const r = R.current; if (!document.hidden && r.ctx && r.ctx.state === 'suspended' && gestured.current) r.ctx.resume() }
     document.addEventListener('visibilitychange', onVis)
 
     return () => {
       events.forEach((e) => window.removeEventListener(e, tryStart))
       document.removeEventListener('visibilitychange', onVis)
-      unsub()
-      setMusicKick(null)
-      const x = audioRef.current; if (x) { x.pause(); audioRef.current = null }
+      unsub(); setMusicKick(null)
+      const r = R.current
+      try { r.source && r.source.stop() } catch { /* noop */ }
+      try { r.ctx && r.ctx.close() } catch { /* noop */ }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
