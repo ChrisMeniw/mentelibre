@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { useLang } from './i18n'
 import WarpBackground from './components/WarpBackground'
+import AudioMusic from './components/AudioMusic'
 import IntroSplash from './components/IntroSplash'
 import BottomNav from './components/BottomNav'
 import FoundationBadge from './components/FoundationBadge'
@@ -18,6 +19,13 @@ import Round from './pages/Round'
 import Achievements from './pages/Achievements'
 import TeacherPortal from './pages/TeacherPortal'
 import Shop from './pages/Shop'
+
+// Al pasar de un planeta a otro (auto-avance), `key` fuerza remontar la ronda
+// para que reinicie limpia (preguntas, tiempo, racha).
+function RoundRoute() {
+  const { world } = useParams()
+  return <Round key={world} />
+}
 
 // Toggle de idioma visible en todas las pantallas (Paso 5)
 function LangToggle() {
@@ -51,7 +59,7 @@ export default function App() {
           <Route path="/empezar" element={<Landing />} />
           <Route path="/hub" element={<Hub />} />
           <Route path="/tienda" element={<Shop />} />
-          <Route path="/ronda/:world" element={<Round />} />
+          <Route path="/ronda/:world" element={<RoundRoute />} />
           <Route path="/desafio/:world" element={<Challenge />} />
           <Route path="/logros" element={<Achievements />} />
           <Route path="/docentes" element={<TeacherPortal />} />
@@ -60,6 +68,7 @@ export default function App() {
       </main>
       <BottomNav />
       <FoundationBadge />
+      <AudioMusic />
     </>
   )
 }

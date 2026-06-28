@@ -171,6 +171,12 @@ export function getWorld(id) {
   return WORLDS.find((w) => w.id === id)
 }
 
+// Siguiente planeta en orden (vuelve al primero tras el último → nunca se corta).
+export function nextWorldId(id) {
+  const i = WORLDS.findIndex((w) => w.id === id)
+  return WORLDS[(i + 1) % WORLDS.length].id
+}
+
 export function getQuestions(worldId, ageGroup) {
   const base = CHALLENGES[worldId]?.[ageGroup] || CHALLENGES[worldId]?.['9-11'] || []
   const extra = EXTRA_CHALLENGES[worldId]?.[ageGroup] || EXTRA_CHALLENGES[worldId]?.['9-11'] || []

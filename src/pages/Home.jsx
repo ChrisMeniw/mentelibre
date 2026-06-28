@@ -3,7 +3,6 @@ import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { isAskUnlocked } from '../data/levels'
 import { sfxPop } from '../lib/sfx'
-import Zoe from '../components/Zoe'
 import ModeIcon from '../components/ModeIcon'
 
 // Tarjeta de modo: vidrio neutro + ficha de ícono con acento. Jerarquía clara —
@@ -65,12 +64,6 @@ export default function Home() {
       <div className="text-[var(--gold)] font-extrabold mt-3 text-glow fade-in-d1">✨ {t('tagline')}</div>
       <p className="text-sm text-[var(--text-dim)] mt-3 max-w-xs leading-relaxed fade-in-d2">{t('homeSub')}</p>
 
-      {/* ZOE da la bienvenida */}
-      <div className="card px-4 py-3 mt-6 flex items-center gap-3 w-full fade-in-d2" style={{ borderColor: 'rgba(168,85,247,0.4)' }}>
-        <div className="shrink-0"><Zoe size={52} talking /></div>
-        <div className="text-left text-sm font-bold leading-snug">{t('homeWelcome')}</div>
-      </div>
-
       {/* Elige cómo jugar — 3 modos bien diferenciados */}
       <div className="w-full mt-6 fade-in-d3">
         <div className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[var(--text-dim)] mb-2 text-center">{t('chooseHowToPlay')}</div>
@@ -103,6 +96,9 @@ export default function Home() {
       </div>
 
       <div className="text-[10px] text-[var(--text-dim)] opacity-70 mt-6 leading-snug max-w-xs mx-auto fade-in-d3">{t('legalReg')}</div>
+      <div className="text-[9px] text-[var(--text-dim)] opacity-50 mt-2 leading-snug max-w-xs mx-auto">
+        Música: “Pixelland” — Kevin MacLeod (incompetech.com), CC BY 4.0
+      </div>
     </div>
   )
 }

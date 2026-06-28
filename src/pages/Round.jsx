@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
-import { getWorld, getQuestions, pickRoundQuestions } from '../data/challenges'
+import { getWorld, getQuestions, pickRoundQuestions, nextWorldId } from '../data/challenges'
 import { getSeen, addSeen, resetSeen } from '../lib/seenQuestions'
 import { BADGES } from '../data/badges'
 import { levelForXP, levelName } from '../data/levels'
@@ -10,7 +10,7 @@ import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '.
 import { avatarByEmoji } from '../components/AvatarPicker'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
-import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp, sfxCombo } from '../lib/sfx'
+import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp, sfxCombo, sfxTick } from '../lib/sfx'
 import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import Zoe from '../components/Zoe'
 import StarsReveal from '../components/StarsReveal'
@@ -18,7 +18,8 @@ import CharacterSystem, { characterName, levelTitle } from '../components/charac
 
 const N = 5
 const ROUND_REWARD = { 1: { xp: 6, coins: 1 }, 2: { xp: 12, coins: 2 }, 3: { xp: 18, coins: 3 } }
-const THINK_SECONDS = 45
+// Tiempo para responder según el avance: 40s al comienzo, 30s en el medio, 20s al final.
+const answerSecondsFor = (xp) => { const lv = levelForXP(xp); return lv <= 1 ? 40 : lv <= 3 ? 30 : 20 }
 const countWords = (s) => (s.trim() ? s.trim().split(/\s+/).length : 0)
 
 function Confetti({ n = 36 }) {
@@ -49,6 +50,7 @@ export default function Round() {
 
   const world = getWorld(worldId)
   const av = avatarByEmoji(player.avatar)
+  const ANSWER_SECONDS = answerSecondsFor(player.xp) // 40 / 30 / 20 según el nivel
   // Elige y registra las preguntas UNA sola vez por ronda, evitando las ya vistas.
   // Ref-guard: a prueba del doble render de StrictMode (no repite el registro).
   const pickedRef = useRef(null)
@@ -72,7 +74,7 @@ export default function Round() {
   const [stars, setStars] = useState([])
   const [combo, setCombo] = useState(0)        // racha de respuestas con 2★+ seguidas
   const [comboPop, setComboPop] = useState(0)  // dispara la animación del cartel de racha
-  const [timeLeft, setTimeLeft] = useState(THINK_SECONDS)
+  const [timeLeft, setTimeLeft] = useState(ANSWER_SECONDS)
   const [results, setResults] = useState(null)
   const badgesBefore = useRef(player.unlockedBadges || [])
   const bestComboRef = useRef(0)               // racha máxima de la ronda
@@ -88,23 +90,28 @@ export default function Round() {
   const childName = player.name || (lang === 'pt' ? 'amigo' : 'amigo')
   const canSend = answer.trim().length > 0
 
-  // Leer la pregunta en voz alta (auto para 6-8) y reiniciar el tiempo al cambiar de pregunta.
+  // Leer la pregunta en voz alta (TODOS los chicos, voz de chica joven) y reiniciar el tiempo.
   useEffect(() => {
     if (phase !== 'playing' || stage !== 'answer') return
-    setTimeLeft(THINK_SECONDS)
-    if (player.ageGroup === '6-8' && qText) {
-      const tm = setTimeout(() => speak(qText, lang), 400)
+    setTimeLeft(ANSWER_SECONDS)
+    if (qText) {
+      const tm = setTimeout(() => speak(qText, lang), 350)
       return () => { clearTimeout(tm); stopSpeak() }
     }
     return () => stopSpeak()
   }, [qi, phase, stage]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Barra de "tiempo para pensar" — no castiga: al llegar a 0 se queda en 0.
+  // Cuenta regresiva REAL: al llegar a 0 se envía/avanza solo (urgencia + tic-tac).
   useEffect(() => {
-    if (phase !== 'playing' || stage !== 'answer' || timeLeft <= 0) return
-    const id = setTimeout(() => setTimeLeft((s) => Math.max(0, s - 1)), 1000)
+    if (phase !== 'playing' || stage !== 'answer') return
+    if (timeLeft <= 0) { handleTimeUp(); return }
+    const id = setTimeout(() => setTimeLeft((s) => {
+      const n = Math.max(0, s - 1)
+      if (n > 0 && n <= 5) sfxTick()
+      return n
+    }), 1000)
     return () => clearTimeout(id)
-  }, [timeLeft, phase, stage])
+  }, [timeLeft, phase, stage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => stopSpeak(), [])
 
@@ -126,15 +133,28 @@ export default function Round() {
     incrementAI()
     const res = await callClaude(roundReactSystemPrompt(childName, lang, player.ageGroup), `Pregunta: ${qText}\nRespuesta: ${answer}`, 120)
     const parsed = res ? parseReact(res) : { stars: 2, text: fallbackReact(childName, lang) }
-    setReact(parsed.text || fallbackReact(childName, lang))
+    const fb = parsed.text || fallbackReact(childName, lang)
+    // Cuando contesta muy bien, ZOE festeja: "¡Excelente respuesta! ¡Vamos por más!"
+    setReact(parsed.stars >= 3 ? `${t('zoeBravo')} ${fb}` : fb)
     setQStars(parsed.stars)
     setLoading(false)
+    if (parsed.stars >= 3) speak(t('zoeBravo'), lang) // ZOE lo dice en voz alta
     // Racha: respuestas con 2★+ encadenadas suben el combo (se corta con un 1★).
     const nc = parsed.stars >= 2 ? combo + 1 : 0
     setCombo(nc)
     if (nc > bestComboRef.current) bestComboRef.current = nc
     if (parsed.stars >= 2) sfxCorrect(); else sfxSparkle()
     if (nc >= 2) { setComboPop((p) => p + 1); setTimeout(() => sfxCombo(nc), 220) }
+  }
+
+  // Se acabó el tiempo: si escribió algo lo enviamos; si no, seguimos sin castigar feo.
+  const handleTimeUp = () => {
+    if (phase !== 'playing' || stage !== 'answer') return
+    if (answer.trim()) { respond(); return }
+    if (listening) stopListen()
+    stopSpeak(); sfxSparkle()
+    setStage('feedback'); setLoading(false)
+    setReact(t('timeUpMsg')); setQStars(1); setCombo(0)
   }
 
   const next = () => {
@@ -237,14 +257,18 @@ export default function Round() {
             </div>
           )}
 
-          <button onClick={() => { sfxPop(); nav('/hub') }} className="btn btn-gold w-full mt-6 text-lg min-h-touch" aria-label={t('nextRound')}>{t('nextRound')}</button>
+          {/* Auto-avance: el botón grande lleva DIRECTO al próximo planeta (sin pasar por el mapa). */}
+          <button onClick={() => { sfxPop(); nav('/ronda/' + nextWorldId(worldId)) }} className="btn btn-gold w-full mt-6 text-lg min-h-touch" aria-label={t('nextPlanet')}>
+            {getWorld(nextWorldId(worldId)).emoji} {t('nextPlanet')}
+          </button>
+          <button onClick={() => { sfxPop(); nav('/hub') }} className="btn btn-ghost w-full mt-2 text-sm min-h-touch" aria-label={t('backToMap')}>{t('backToMap')}</button>
         </div>
       </div>
     )
   }
 
   // ---------- PLAYING ----------
-  const timePct = Math.max(0, Math.round((timeLeft / THINK_SECONDS) * 100))
+  const timePct = Math.max(0, Math.round((timeLeft / ANSWER_SECONDS) * 100))
   return (
     <div className="mx-auto max-w-md px-4 pt-14 pb-32 min-h-dvh safe-top">
       {/* Header: progreso de la ronda */}

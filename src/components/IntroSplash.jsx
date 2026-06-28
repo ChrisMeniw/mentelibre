@@ -56,26 +56,34 @@ export default function IntroSplash({ onClose }) {
         ))}
       </div>
 
-      {/* Contenido — centrado vertical: título en el tercio superior */}
+      {/* Contenido — centrado vertical: título + ZOE protagonista */}
       <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center safe-top">
-        <img src="/foundation-logo.webp" alt="Chris Meniw Foundation" width="70" height="70"
-          className="rounded-full floaty fade-in" style={{ width: 70, height: 70, filter: 'drop-shadow(0 8px 24px rgba(124,58,237,0.75))' }} />
-        <div className="text-[10px] uppercase tracking-[0.25em] text-white/80 mt-2 font-extrabold fade-in">Chris Meniw Foundation</div>
+        <img src="/foundation-logo.webp" alt="Chris Meniw Foundation" width="56" height="56"
+          className="rounded-full floaty fade-in" style={{ width: 56, height: 56, filter: 'drop-shadow(0 8px 24px rgba(124,58,237,0.75))' }} />
+        <div className="text-[10px] uppercase tracking-[0.25em] text-white/80 mt-1.5 font-extrabold fade-in">Chris Meniw Foundation</div>
 
         <div className="relative mt-1">
           <span aria-hidden className="halo-breathe absolute inset-0 -z-10"
             style={{ background: 'radial-gradient(ellipse at center, rgba(124,58,237,0.6), transparent 65%)', filter: 'blur(22px)' }} />
-          <h1 className="title-breathe font-logo text-7xl grad-text leading-none fade-in-d1" style={{ textShadow: '0 6px 34px rgba(124,58,237,0.7)' }}>{appName}</h1>
+          <h1 className="title-breathe font-logo text-6xl grad-text leading-none fade-in-d1" style={{ textShadow: '0 6px 34px rgba(124,58,237,0.7)' }}>{appName}</h1>
         </div>
-        <div className="text-[var(--gold)] font-extrabold mt-3 text-glow fade-in-d1">✨ {t('tagline')}</div>
+        <div className="text-[var(--gold)] font-extrabold mt-2 text-glow fade-in-d1">✨ {t('tagline')}</div>
 
-        <div className="text-[15px] font-bold text-white mt-6 max-w-xs leading-snug fade-in-d2"
-          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.85)' }}>{t('homeWelcome')}</div>
+        {/* ZOE — primera profesora IA de LATAM */}
+        <div className="mt-5 flex flex-col items-center fade-in-d2">
+          <img src="/zoe.jpg" alt="ZOE" width="80" height="80" className="floaty"
+            style={{ width: 80, height: 80, borderRadius: '9999px', objectFit: 'cover', border: '2.5px solid rgba(168,85,247,0.9)', boxShadow: '0 0 28px rgba(168,85,247,0.7)' }} />
+          <div className="mt-2 font-logo text-xl grad-text leading-none">ZOE</div>
+          <div className="text-[11px] text-[var(--violet-light)] font-extrabold uppercase tracking-wide">{t('zoeTitle')}</div>
+        </div>
 
-        <button onClick={onClose} className="btn btn-gold mt-7 text-lg px-12 min-h-touch glow-pulse fade-in-d3" aria-label={t('introStart')}>
+        <div className="text-[14px] font-bold text-white mt-3 max-w-xs leading-snug fade-in-d2"
+          style={{ textShadow: '0 2px 12px rgba(0,0,0,0.9)' }}>{t('homeWelcome')}</div>
+
+        <button onClick={onClose} className="btn btn-gold mt-5 text-lg px-12 min-h-touch glow-pulse fade-in-d3" aria-label={t('introStart')}>
           {t('introStart')}
         </button>
-        <div className="text-[11px] text-white/70 mt-3 fade-in-d3">{t('introTapHint')}</div>
+        <div className="text-[11px] text-white/70 mt-2.5 fade-in-d3">{t('introTapHint')}</div>
       </div>
     </div>
   )

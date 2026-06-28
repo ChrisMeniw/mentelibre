@@ -49,6 +49,12 @@ export function sfxPop() {
   tone(420, 0.12, { type: 'triangle', gain: 0.12, sweepTo: 680 })
 }
 
+// Tic-tac de los últimos segundos — urgencia (más ruido en la cuenta regresiva).
+export function sfxTick() {
+  tone(1320, 0.05, { type: 'square', gain: 0.12 })
+  tone(660, 0.05, { type: 'square', gain: 0.08, when: 0.005 })
+}
+
 // Enviar respuesta — whoosh ascendente.
 export function sfxSend() {
   tone(300, 0.18, { type: 'sawtooth', gain: 0.09, sweepTo: 760 })
@@ -67,13 +73,19 @@ export function sfxCorrect() {
   tone(988, 0.3, { type: 'triangle', gain: 0.11, when: 0.12 })
 }
 
-// Subir de nivel — fanfarria ascendente (C–E–G–C).
+// Subir de nivel — fanfarria GRANDE y dinámica (riser + acorde + campanas).
 export function sfxLevelUp() {
-  const seq = [523, 659, 784, 1047]
+  // Riser que sube (tensión) antes del estallido.
+  tone(220, 0.5, { type: 'sawtooth', gain: 0.06, sweepTo: 880 })
+  // Fanfarria principal C–E–G–C–E (doblada con octava brillante).
+  const seq = [523, 659, 784, 1047, 1319]
   seq.forEach((f, i) => {
-    tone(f, 0.32, { type: 'triangle', gain: 0.16, when: i * 0.12 })
-    tone(f * 2, 0.32, { type: 'sine', gain: 0.05, when: i * 0.12 })
+    tone(f, 0.36, { type: 'triangle', gain: 0.18, when: 0.18 + i * 0.11, pan: i % 2 ? 0.3 : -0.3 })
+    tone(f * 2, 0.34, { type: 'sine', gain: 0.06, when: 0.18 + i * 0.11 })
   })
+  // Lluvia de campanitas que corona.
+  const bells = [1568, 2093, 2637, 2093]
+  bells.forEach((f, i) => tone(f, 0.5, { type: 'sine', gain: 0.07, when: 0.7 + i * 0.07, pan: i % 2 ? 0.4 : -0.4 }))
 }
 
 // Desafío completado — acorde + lluvia de chispas.

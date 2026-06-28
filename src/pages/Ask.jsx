@@ -6,7 +6,7 @@ import { pickAskTopics } from '../data/askTopics'
 import { evaluateQuestion } from '../lib/claude'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
-import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxComplete, sfxLevelUp, sfxCoins } from '../lib/sfx'
+import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxComplete, sfxLevelUp, sfxCoins, sfxTick } from '../lib/sfx'
 import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import { levelForXP, levelName, isAskUnlocked } from '../data/levels'
 import Zoe from '../components/Zoe'
@@ -15,6 +15,7 @@ import StarsReveal from '../components/StarsReveal'
 
 const N = 5
 const ACCENT = '#8B5CF6'
+const ASK_SECONDS = 30 // formular preguntas: 30 segundos
 // XP por estrella (spec): ⭐=5, ⭐⭐=10, ⭐⭐⭐=20. Preguntar bien es la habilidad más alta.
 const REWARD = { 1: { xp: 5, coins: 2 }, 2: { xp: 10, coins: 3 }, 3: { xp: 20, coins: 5 } }
 
@@ -44,6 +45,7 @@ export default function Ask() {
   const [loading, setLoading] = useState(false)
   const [react, setReact] = useState('')
   const [qStars, setQStars] = useState(2)
+  const [timeLeft, setTimeLeft] = useState(ASK_SECONDS)
   const [stars, setStars] = useState([])
   const [results, setResults] = useState(null)
   const [celeb, setCeleb] = useState(null)
@@ -54,13 +56,24 @@ export default function Ask() {
   const topic = topics[ti]
   const topicText = topic ? (lang === 'pt' ? topic.pt : topic.es) : ''
 
+  // Lee el tema en voz alta (chica joven, todos) y reinicia los 30 s al cambiar de tema.
   useEffect(() => {
-    if (phase === 'playing' && stage === 'answer' && player.ageGroup === '6-8' && topicText) {
-      const tm = setTimeout(() => speak(topicText, lang), 450)
+    if (phase !== 'playing' || stage !== 'answer') return
+    setTimeLeft(ASK_SECONDS)
+    if (topicText) {
+      const tm = setTimeout(() => speak(topicText, lang), 400)
       return () => { clearTimeout(tm); stopSpeak() }
     }
     return () => stopSpeak()
   }, [ti, phase, stage]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Cuenta regresiva de 30 s para formular la pregunta (urgencia + tic-tac).
+  useEffect(() => {
+    if (phase !== 'playing' || stage !== 'answer') return
+    if (timeLeft <= 0) { handleTimeUp(); return }
+    const id = setTimeout(() => setTimeLeft((s) => { const n = Math.max(0, s - 1); if (n > 0 && n <= 5) sfxTick(); return n }), 1000)
+    return () => clearTimeout(id)
+  }, [timeLeft, phase, stage]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => () => stopSpeak(), [])
 
@@ -86,6 +99,15 @@ export default function Ask() {
     setQStars(qs)
     setLoading(false)
     if (qs >= 2) sfxCorrect(); else sfxSparkle()
+  }
+
+  // Se acabó el tiempo: si formuló algo lo enviamos; si no, seguimos sin castigar feo.
+  const handleTimeUp = () => {
+    if (phase !== 'playing' || stage !== 'answer') return
+    if (answer.trim()) { respond(); return }
+    if (listening) stopListen()
+    stopSpeak(); sfxSparkle()
+    setStage('feedback'); setLoading(false); setReact(t('timeUpMsg')); setQStars(1)
   }
 
   const next = () => {
@@ -178,6 +200,15 @@ export default function Ask() {
         </div>
         <p className="mt-2 text-lg font-extrabold leading-snug">{topicText}</p>
         <p className="mt-1 text-xs text-[var(--text-dim)]">{t('askHelp')}</p>
+
+        {stage === 'answer' && (
+          <div className="mt-3">
+            <div className="flex justify-between text-[10px] text-[var(--text-dim)] mb-1"><span>⏳ {t('thinkTime')}</span><span>{timeLeft}s</span></div>
+            <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+              <div className="h-full rounded-full transition-all duration-1000" style={{ width: Math.max(0, Math.round((timeLeft / ASK_SECONDS) * 100)) + '%', background: timeLeft > 8 ? `linear-gradient(90deg,${ACCENT},var(--sky))` : 'linear-gradient(90deg,var(--gold),var(--rose))' }} />
+            </div>
+          </div>
+        )}
       </div>
 
       {stage === 'answer' && (

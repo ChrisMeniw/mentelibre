@@ -10,6 +10,7 @@ export const LANG_DATA = {
     // Onboarding
     homeSub: 'Un juego de pensamiento crítico con inteligencia artificial. Gratis, para escuelas y familias.',
     homeWelcome: '¡Hola! Soy ZOE. ¿Estás listo para desafiar a tu mente? 🧠',
+    zoeTitle: 'Primera profesora IA de LATAM',
     zoeTapHint: '🔊 Tócame para escucharme',
     introStart: '¡Comenzar! 🚀',
     introTapHint: '✨ Tu aventura está por comenzar',
@@ -177,10 +178,14 @@ export const LANG_DATA = {
     seeResults: 'Ver resultado →',
     roundDoneTitle: '¡Ronda completa!',
     roundStarsLabel: 'estrellas de pensamiento',
+    zoeBravo: '¡Excelente respuesta! ¡Vamos por más! 🚀',
+    timeUpMsg: '¡Se acabó el tiempo! La próxima, un poquito más rápido 🚀',
     comboLabel: 'Racha',
     comboBest: 'Mejor racha',
     newBadge: '¡Nueva medalla!',
     nextRound: 'Siguiente ronda →',
+    nextPlanet: 'Siguiente planeta →',
+    backToMap: 'Volver al mapa',
     backToMap: 'Volver al mapa',
 
     // Misión diaria
@@ -293,6 +298,7 @@ export const LANG_DATA = {
 
     homeSub: 'Um jogo de pensamento crítico com inteligência artificial. Grátis, para escolas e famílias.',
     homeWelcome: 'Olá! Eu sou a ZOE. Você está pronto para desafiar a sua mente? 🧠',
+    zoeTitle: 'Primeira professora IA da América Latina',
     zoeTapHint: '🔊 Toque para me ouvir',
     introStart: 'Começar! 🚀',
     introTapHint: '✨ Sua aventura está por começar',
@@ -457,10 +463,14 @@ export const LANG_DATA = {
     seeResults: 'Ver resultado →',
     roundDoneTitle: 'Rodada completa!',
     roundStarsLabel: 'estrelas de pensamento',
+    zoeBravo: 'Excelente resposta! Vamos por mais! 🚀',
+    timeUpMsg: 'Acabou o tempo! Da próxima, um pouquinho mais rápido 🚀',
     comboLabel: 'Sequência',
     comboBest: 'Melhor sequência',
     newBadge: 'Nova medalha!',
     nextRound: 'Próxima rodada →',
+    nextPlanet: 'Próximo planeta →',
+    backToMap: 'Voltar ao mapa',
     backToMap: 'Voltar ao mapa',
 
     // Missão diária
