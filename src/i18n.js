@@ -9,7 +9,7 @@ export const LANG_DATA = {
 
     // Onboarding
     homeSub: 'Un juego de pensamiento crítico con inteligencia artificial. Gratis, para escuelas y familias.',
-    homeWelcome: '¡Hola! Soy ZOE, tu guía. ¿Jugamos a pensar?',
+    homeWelcome: '¡Hola! Soy ZOE. ¿Estás listo para desafiar a tu mente? 🧠',
     zoeTapHint: '🔊 Tócame para escucharme',
     introStart: '¡Comenzar! 🚀',
     introTapHint: 'Toca para entrar',
@@ -177,6 +177,8 @@ export const LANG_DATA = {
     seeResults: 'Ver resultado →',
     roundDoneTitle: '¡Ronda completa!',
     roundStarsLabel: 'estrellas de pensamiento',
+    comboLabel: 'Racha',
+    comboBest: 'Mejor racha',
     newBadge: '¡Nueva medalla!',
     nextRound: 'Siguiente ronda →',
     backToMap: 'Volver al mapa',
@@ -290,7 +292,7 @@ export const LANG_DATA = {
     subtitle: 'Treine sua mente com a ajuda da IA. Grátis para escolas.',
 
     homeSub: 'Um jogo de pensamento crítico com inteligência artificial. Grátis, para escolas e famílias.',
-    homeWelcome: 'Olá! Eu sou a ZOE, sua guia. Vamos pensar?',
+    homeWelcome: 'Olá! Eu sou a ZOE. Você está pronto para desafiar a sua mente? 🧠',
     zoeTapHint: '🔊 Toque para me ouvir',
     introStart: 'Começar! 🚀',
     introTapHint: 'Toque para entrar',
@@ -455,6 +457,8 @@ export const LANG_DATA = {
     seeResults: 'Ver resultado →',
     roundDoneTitle: 'Rodada completa!',
     roundStarsLabel: 'estrelas de pensamento',
+    comboLabel: 'Sequência',
+    comboBest: 'Melhor sequência',
     newBadge: 'Nova medalha!',
     nextRound: 'Próxima rodada →',
     backToMap: 'Voltar ao mapa',

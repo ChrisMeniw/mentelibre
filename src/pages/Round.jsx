@@ -10,7 +10,7 @@ import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '.
 import { avatarByEmoji } from '../components/AvatarPicker'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
-import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp } from '../lib/sfx'
+import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp, sfxCombo } from '../lib/sfx'
 import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import Zoe from '../components/Zoe'
 import StarsReveal from '../components/StarsReveal'
@@ -70,9 +70,13 @@ export default function Round() {
   const [react, setReact] = useState('')
   const [qStars, setQStars] = useState(2)
   const [stars, setStars] = useState([])
+  const [combo, setCombo] = useState(0)        // racha de respuestas con 2★+ seguidas
+  const [comboPop, setComboPop] = useState(0)  // dispara la animación del cartel de racha
   const [timeLeft, setTimeLeft] = useState(THINK_SECONDS)
   const [results, setResults] = useState(null)
   const badgesBefore = useRef(player.unlockedBadges || [])
+  const bestComboRef = useRef(0)               // racha máxima de la ronda
+  const comboCoinsRef = useRef(0)              // monedas extra acumuladas por racha
 
   const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
 
@@ -125,13 +129,19 @@ export default function Round() {
     setReact(parsed.text || fallbackReact(childName, lang))
     setQStars(parsed.stars)
     setLoading(false)
+    // Racha: respuestas con 2★+ encadenadas suben el combo (se corta con un 1★).
+    const nc = parsed.stars >= 2 ? combo + 1 : 0
+    setCombo(nc)
+    if (nc > bestComboRef.current) bestComboRef.current = nc
     if (parsed.stars >= 2) sfxCorrect(); else sfxSparkle()
+    if (nc >= 2) { setComboPop((p) => p + 1); setTimeout(() => sfxCombo(nc), 220) }
   }
 
   const next = () => {
     sfxPop()
     const all = [...stars, qStars]
     setStars(all)
+    if (combo >= 2) comboCoinsRef.current += (combo - 1) // bono de racha: x2→+1, x3→+2…
     trackDaily({ answers: 1, stars: qStars }) // progreso de misión diaria por pregunta
     if (qi + 1 < N) {
       setQi(qi + 1); setAnswer(''); setReact(''); setStage('answer')
@@ -143,14 +153,17 @@ export default function Round() {
 
   const finishRound = (all) => {
     const totalXp = all.reduce((a, s) => a + (ROUND_REWARD[s]?.xp || 0), 0)
-    const totalCoins = all.reduce((a, s) => a + (ROUND_REWARD[s]?.coins || 0), 0)
+    const baseCoins = all.reduce((a, s) => a + (ROUND_REWARD[s]?.coins || 0), 0)
+    const comboBonus = comboCoinsRef.current
+    const totalCoins = baseCoins + comboBonus
+    const bestCombo = bestComboRef.current
     const totalStars = all.reduce((a, s) => a + s, 0)
     const oldLevel = levelForXP(player.xp)
     const newXP = player.xp + totalXp
     const leveledUp = levelForXP(newXP) > oldLevel
     addXP(totalXp); addCoins(totalCoins); completeChallenge(worldId); trackDaily({ rounds: 1 })
     sfxComplete(); if (leveledUp) sfxLevelUp()
-    setResults({ totalXp, totalCoins, totalStars, leveledUp, levelName: levelName(newXP, lang) })
+    setResults({ totalXp, totalCoins, comboBonus, bestCombo, totalStars, leveledUp, levelName: levelName(newXP, lang) })
     setPhase('results')
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
@@ -195,6 +208,13 @@ export default function Round() {
             <span className="chip text-lg" style={{ background: 'linear-gradient(135deg,rgba(251,191,36,0.25),rgba(251,191,36,0.08))', borderColor: 'rgba(251,191,36,0.6)' }}>🪙 <span className="text-[var(--gold)] font-black">+{results.totalCoins}</span></span>
           </div>
 
+          {results.comboBonus > 0 && (
+            <div className="bounce-in mt-3 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-black mx-auto"
+              style={{ background: 'linear-gradient(135deg,#FBBF24,#F43F5E)', color: '#1a0b2e' }}>
+              🔥 {t('comboBest')} x{results.bestCombo} · +{results.comboBonus} 🪙
+            </div>
+          )}
+
           {results.leveledUp && (
             <div className="mt-3">
               <div className="text-[11px] font-extrabold tracking-[0.2em] uppercase text-[var(--gold)]">{t('newLevel')}</div>
@@ -234,6 +254,12 @@ export default function Round() {
           <span className="text-xl">{world.emoji}</span>
           <span className="text-[var(--text-dim)]">{t('questionOf')} {qi + 1} {t('ofWord')} {N}</span>
         </div>
+        {combo >= 2 && (
+          <div key={comboPop} className="ml-auto combo-chip flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-black"
+            style={{ background: 'linear-gradient(135deg,rgba(251,191,36,0.25),rgba(244,63,94,0.25))', border: '1px solid rgba(251,191,36,0.6)', color: 'var(--gold)' }}>
+            🔥 x{combo}
+          </div>
+        )}
       </div>
       <div className="flex gap-1.5 mb-4" aria-hidden="true">
         {Array.from({ length: N }, (_, i) => (
@@ -247,7 +273,7 @@ export default function Round() {
             <div className="flex items-center justify-between gap-2">
               <div className="text-xs font-extrabold uppercase tracking-wide" style={{ color: world.color }}>{t('question')}</div>
               {speakSupported() && (
-                <button onClick={() => { sfxPop(); speak(qText, lang) }} aria-label={t('listenQuestion')}
+                <button onClick={() => speak(qText, lang)} aria-label={t('listenQuestion')}
                   className="shrink-0 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-extrabold active:scale-90 transition min-h-touch"
                   style={{ background: `${world.color}22`, color: world.color, border: `1px solid ${world.color}55` }}>🔊 {t('listenQuestion')}</button>
               )}
@@ -306,6 +332,12 @@ export default function Round() {
             ) : (
               <>
                 <div className="mt-2"><StarsReveal stars={qStars} /></div>
+                {combo >= 2 && (
+                  <div key={comboPop} className="combo-burst mx-auto mt-2 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-black"
+                    style={{ background: 'linear-gradient(135deg,#FBBF24,#F43F5E)', color: '#1a0b2e', boxShadow: '0 8px 24px -6px rgba(251,191,36,0.8)' }}>
+                    🔥 {t('comboLabel')} x{combo}{combo >= 3 ? ' 🚀' : ''}
+                  </div>
+                )}
                 <p className="mt-2 text-[15px] font-bold leading-snug">{react}</p>
               </>
             )}

@@ -166,7 +166,7 @@ export default function Challenge() {
               </div>
               {speakSupported() && (
                 <button
-                  onClick={() => { sfxPop(); speak(qText, lang) }}
+                  onClick={() => speak(qText, lang)}
                   aria-label={t('listenQuestion')}
                   className="shrink-0 inline-flex items-center gap-1 rounded-full px-3 py-1 text-xs font-extrabold active:scale-90 transition"
                   style={{ background: `${world.color}22`, color: world.color, border: `1px solid ${world.color}55` }}

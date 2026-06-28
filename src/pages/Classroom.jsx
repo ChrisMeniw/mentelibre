@@ -274,7 +274,7 @@ export default function Classroom() {
         <div className="flex items-center justify-between gap-2">
           <div className="text-xs font-extrabold uppercase tracking-wide" style={{ color: q?.color }}>{q?.emoji} {t('question')}</div>
           {speakSupported() && (
-            <button onClick={() => { sfxPop(); speak(qText, lang) }} aria-label={t('listenQuestion')} className="shrink-0 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-extrabold active:scale-90 transition min-h-touch" style={{ background: `${q?.color}22`, color: q?.color, border: `1px solid ${q?.color}55` }}>🔊 {t('listenQuestion')}</button>
+            <button onClick={() => speak(qText, lang)} aria-label={t('listenQuestion')} className="shrink-0 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-extrabold active:scale-90 transition min-h-touch" style={{ background: `${q?.color}22`, color: q?.color, border: `1px solid ${q?.color}55` }}>🔊 {t('listenQuestion')}</button>
           )}
         </div>
         <p className="mt-2 text-lg font-extrabold leading-snug">{qText}</p>

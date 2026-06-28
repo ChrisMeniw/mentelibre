@@ -92,6 +92,14 @@ export function sfxStarsFanfare() { ;[523, 659, 784].forEach((f, i) => tone(f, 0
 // Pop suave del +XP flotante.
 export function sfxXp() { tone(400, 0.07, { type: 'triangle', gain: 0.12, sweepTo: 640 }) }
 
+// Racha / combo — arpegio que SUBE de tono con cada eslabón (adictivo, tipo arcade).
+// n = largo de la racha (2, 3, 4...). Cuanto más alta, más brillante y triunfal.
+export function sfxCombo(n) {
+  const base = 660 * Math.pow(1.0595, Math.min(n, 8) * 2) // sube ~1 tono por nivel
+  ;[0, 1, 2].forEach((i) => tone(base * Math.pow(1.26, i), 0.13, { type: 'triangle', gain: 0.13, when: i * 0.07, pan: i % 2 ? 0.3 : -0.3 }))
+  tone(base * 2, 0.18, { type: 'sine', gain: 0.05, when: 0.14 }) // brillo de campana arriba
+}
+
 // Monedas — JACKPOT de casino: cascada de monedas metálicas cayendo a la bandeja.
 export function sfxCoins() {
   const notes = [1568, 1976, 2349, 2093, 1760, 2637] // notas brillantes de "ting"
