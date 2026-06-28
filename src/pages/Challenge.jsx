@@ -136,7 +136,7 @@ export default function Challenge() {
 
       {/* Header */}
       <div className="flex items-center gap-3 mb-4">
-        <button onClick={() => { sfxPop(); nav('/hub') }} className="btn btn-ghost px-3 py-2 text-sm">←</button>
+        <button onClick={() => { sfxPop(); nav('/') }} aria-label={t('navHome')} className="btn btn-ghost px-3 py-2 text-base">🏠</button>
         <div className="flex items-center gap-2 font-extrabold">
           <span className="text-2xl">{world.emoji}</span>
           <span>{lang === 'pt' ? world.name_pt : world.name_es}</span>

@@ -72,6 +72,9 @@ export default function AudioMusic() {
 
   useEffect(() => {
     setSfxEnabled(onRef.current)
+    // Pre-decodificar el mp3 YA (mientras se ve la intro), así al tocar ¡Comenzar!
+    // la música arranca al instante en vez de esperar ~2s a que decodifique.
+    ensure().catch(() => { /* noop */ })
     gameplay.current = isGameplay()
     const unsub = subscribeGameplay((g) => { gameplay.current = g; applyGain() })
     // Arranque garantizado desde el gesto real de ¡Comenzar!.

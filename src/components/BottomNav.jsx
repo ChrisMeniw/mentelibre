@@ -6,8 +6,8 @@ export default function BottomNav() {
   const { t } = useLang()
   const nav = useNavigate()
   const loc = useLocation()
-  // No mostrar en la portada, el onboarding ni dentro de un desafío/ronda.
-  if (loc.pathname === '/' || loc.pathname === '/empezar' || loc.pathname === '/mision' || loc.pathname === '/aula' || loc.pathname.startsWith('/desafio')) return null
+  // No mostrar en la portada, el onboarding, la misión ni el aula (competencia con tiempo).
+  if (loc.pathname === '/' || loc.pathname === '/empezar' || loc.pathname === '/mision' || loc.pathname === '/aula') return null
   const items = [
     { to: '/hub', icon: 'home', label: t('navHome') },
     { to: '/tienda', icon: 'shop', label: t('navShop') },

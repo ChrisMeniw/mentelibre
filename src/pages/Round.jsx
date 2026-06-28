@@ -283,7 +283,7 @@ export default function Round() {
     <div className="mx-auto max-w-md px-4 pt-14 pb-32 min-h-dvh safe-top">
       {/* Header: progreso de la ronda */}
       <div className="flex items-center gap-3 mb-3">
-        <button onClick={() => { sfxPop(); stopSpeak(); nav('/hub') }} aria-label={t('back')} className="btn btn-ghost px-3 py-2 text-sm min-h-touch">←</button>
+        <button onClick={() => { sfxPop(); stopSpeak(); nav('/') }} aria-label={t('navHome')} className="btn btn-ghost px-3 py-2 text-base min-h-touch">🏠</button>
         <div className="flex items-center gap-2 font-extrabold text-sm">
           <span className="text-xl">{world.emoji}</span>
           <span className="text-[var(--text-dim)]">{t('questionOf')} {qi + 1} {t('ofWord')} {N}</span>

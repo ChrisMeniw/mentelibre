@@ -178,7 +178,7 @@ export default function Ask() {
   return (
     <div className="mx-auto max-w-md px-4 pt-14 pb-32 min-h-dvh safe-top">
       <div className="flex items-center justify-between gap-2 mb-3">
-        <button onClick={() => { sfxPop(); stopSpeak(); nav('/hub') }} aria-label={t('back')} className="btn btn-ghost px-3 py-2 text-sm min-h-touch">←</button>
+        <button onClick={() => { sfxPop(); stopSpeak(); nav('/') }} aria-label={t('navHome')} className="btn btn-ghost px-3 py-2 text-base min-h-touch">🏠</button>
         <div className="chip text-[11px]" style={{ background: `${ACCENT}1f`, borderColor: `${ACCENT}66`, color: '#DDD6FE' }}>{t('askBadge')}</div>
         <span className="text-sm text-[var(--text-dim)] tabular-nums">{ti + 1}/{N}</span>
       </div>
