@@ -3,6 +3,7 @@ import { useLang } from '../i18n'
 import { setSfxEnabled } from '../lib/sfx'
 import { subscribeGameplay, isGameplay } from '../lib/musicBus'
 import { setMusicKick } from '../lib/musicControl'
+import { setPlaybackAudioSession } from '../lib/audioUnlock'
 
 // Música REAL (mp3) reproducida por WEB AUDIO (no HTML5 <audio>): así suena en iPhone
 // AUNQUE esté el switch de silencio activado — igual que los juegos. "Pixelland" de
@@ -35,6 +36,7 @@ export default function AudioMusic() {
       const AC = window.AudioContext || window.webkitAudioContext
       if (!AC) return
       r.ctx = new AC()
+      setPlaybackAudioSession() // iOS: música suena aunque el switch de silencio esté activado
       r.gain = r.ctx.createGain()
       r.gain.gain.value = 0
       r.gain.connect(r.ctx.destination)

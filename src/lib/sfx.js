@@ -1,5 +1,6 @@
 // Efectos de sonido procedurales (Web Audio API). Sin archivos.
 // Se crean dentro de gestos del usuario (onClick), así cumplen la política de autoplay.
+import { setPlaybackAudioSession } from './audioUnlock'
 
 let actx = null
 let enabled = true
@@ -10,6 +11,7 @@ function ctx() {
     const AC = window.AudioContext || window.webkitAudioContext
     if (!AC) return null
     actx = new AC()
+    setPlaybackAudioSession() // iOS: sonar aunque el switch de silencio esté activado
   }
   if (actx.state === 'suspended') actx.resume()
   return actx
