@@ -72,6 +72,22 @@ export default function AudioMusic() {
     applyGain()
   }
 
+  // Despierta el audio DENTRO del gesto (SINCRÓNICO, sin await) — clave en iOS:
+  // resume() y start() deben pasar en el mismo instante del toque o se pierde el permiso.
+  function unlockNow() {
+    const r = R.current
+    if (!r.ctx) return
+    if (r.ctx.state === 'suspended') { try { r.ctx.resume() } catch { /* noop */ } }
+    if (!r.started && r.buffer) {
+      try {
+        const src = r.ctx.createBufferSource()
+        src.buffer = r.buffer; src.loop = true; src.connect(r.gain); src.start(0)
+        r.source = src; r.started = true
+      } catch { /* noop */ }
+    }
+    applyGain()
+  }
+
   useEffect(() => {
     setSfxEnabled(onRef.current)
     // Pre-decodificar el mp3 YA (mientras se ve la intro), así al tocar ¡Comenzar!
@@ -79,11 +95,12 @@ export default function AudioMusic() {
     ensure().catch(() => { /* noop */ })
     gameplay.current = isGameplay()
     const unsub = subscribeGameplay((g) => { gameplay.current = g; applyGain() })
-    // Arranque garantizado desde el gesto real de ¡Comenzar!.
-    setMusicKick(() => { gestured.current = true; sync() })
+    // Arranque garantizado desde el gesto real de ¡Comenzar!: primero despertar el
+    // audio SINCRÓNICO (dentro del gesto), después sync() como respaldo.
+    setMusicKick(() => { gestured.current = true; unlockNow(); sync() })
 
     const events = ['pointerdown', 'touchstart', 'click', 'keydown']
-    const tryStart = () => { gestured.current = true; sync() }
+    const tryStart = () => { gestured.current = true; unlockNow(); sync() }
     events.forEach((e) => window.addEventListener(e, tryStart, { passive: true }))
 
     const onVis = () => { const r = R.current; if (!document.hidden && r.ctx && r.ctx.state === 'suspended' && gestured.current) r.ctx.resume() }
