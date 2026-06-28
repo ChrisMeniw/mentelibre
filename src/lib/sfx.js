@@ -46,15 +46,20 @@ function tone(freq, dur, { type = 'sine', gain = 0.16, when = 0, sweepTo = null,
   o.stop(t0 + dur + 0.03)
 }
 
-// Toque de botón — pop corto y burbujeante.
+// Toque de botón — nota brillante tipo MARIMBA que sube de tono con cada toque:
+// al tocar rápido forma una melodía pegadiza (satisfactorio y adictivo).
 // Anti-doble: si se llama dos veces casi juntas (botón con su propio sonido + el
 // detector global de toques), suena una sola vez.
+const TAP_NOTES = [659.25, 783.99, 880.0, 1046.5, 880.0, 783.99] // pentatónica brillante (ida y vuelta)
+let tapIdx = 0
 let lastPop = -1000
 export function sfxPop() {
   const now = (typeof performance !== 'undefined' && performance.now) ? performance.now() : 0
   if (now - lastPop < 80) return
   lastPop = now
-  tone(420, 0.12, { type: 'triangle', gain: 0.14, sweepTo: 680 })
+  const f = TAP_NOTES[tapIdx % TAP_NOTES.length]; tapIdx++
+  tone(f, 0.13, { type: 'sine', gain: 0.17 })                       // cuerpo redondo y brillante
+  tone(f * 2, 0.08, { type: 'triangle', gain: 0.055, when: 0.004 }) // chispita una octava arriba
 }
 
 // Tic-tac de los últimos segundos — urgencia (más ruido en la cuenta regresiva).
