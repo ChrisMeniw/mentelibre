@@ -23,35 +23,39 @@ export async function callClaude(systemPrompt, userMessage, maxTokens = 300, tim
   const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY
   if (!apiKey) return null // sin clave: la UI usa un texto de respaldo y la app sigue funcionando
 
-  // Timeout duro: si la API se cuelga, abortamos y usamos respaldo (la app nunca se traba).
-  const controller = new AbortController()
-  const timer = setTimeout(() => controller.abort(), timeoutMs)
-  try {
-    const response = await fetch(ENDPOINT, {
-      method: 'POST',
-      signal: controller.signal,
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        // Permite llamar a la API directo desde el navegador (solo prototipo).
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
-      body: JSON.stringify({
-        model: MODEL,
-        max_tokens: maxTokens,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userMessage }],
-      }),
-    })
-    if (!response.ok) return null
-    const data = await response.json()
-    return data.content?.[0]?.text || ''
-  } catch {
-    return null
-  } finally {
-    clearTimeout(timer)
+  // Reintenta UNA vez si falla la red/API antes de rendirse (la app nunca se traba igual).
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const controller = new AbortController()
+    const timer = setTimeout(() => controller.abort(), timeoutMs)
+    try {
+      const response = await fetch(ENDPOINT, {
+        method: 'POST',
+        signal: controller.signal,
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          // Permite llamar a la API directo desde el navegador (solo prototipo).
+          'anthropic-dangerous-direct-browser-access': 'true',
+        },
+        body: JSON.stringify({
+          model: MODEL,
+          max_tokens: maxTokens,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMessage }],
+        }),
+      })
+      clearTimeout(timer)
+      if (!response.ok) { if (attempt === 0) continue; return null }
+      const data = await response.json()
+      return data.content?.[0]?.text || ''
+    } catch {
+      clearTimeout(timer)
+      if (attempt === 0) continue // un reintento
+      return null
+    }
   }
+  return null
 }
 
 // ---- System prompts ----
@@ -86,9 +90,9 @@ export function parseScore(text) {
 // ---- Reacción corta por pregunta dentro de una ronda (texto + estrellas en una sola llamada) ----
 export function roundReactSystemPrompt(childName, lang, ageGroup) {
   if (lang === 'pt') {
-    return `Você é ZOE, uma guia calorosa para crianças. ${childName} respondeu uma pergunta aberta de pensamento (não há resposta certa nem errada). Reaja em 1 ou 2 frases curtas celebrando a ideia; se foi muito curta, convide gentilmente a pensar um pouco mais. Português do Brasil, simples. No final, em uma linha separada, adicione a etiqueta de qualidade do pensamento exatamente assim: [ESTRELAS:N] onde N é 1, 2 ou 3 (3 = criativo e explica o porquê). Nunca diga que a resposta está errada.${toneFor(ageGroup, lang)}`
+    return `Você é ZOE, uma guia calorosa para crianças. ${childName} respondeu uma pergunta aberta de pensamento (não há resposta certa nem errada). Reaja em 1 ou 2 frases curtas celebrando a ideia; se foi muito curta, convide gentilmente a pensar um pouco mais. Chame ${childName} PELO NOME uma vez, de forma natural (nunca mais de 2 vezes). Português do Brasil, simples. No final, em uma linha separada, adicione a etiqueta de qualidade do pensamento exatamente assim: [ESTRELAS:N] onde N é 1, 2 ou 3 (3 = criativo e explica o porquê). Nunca diga que a resposta está errada.${toneFor(ageGroup, lang)}`
   }
-  return `Eres ZOE, una guía cálida para niños. ${childName} respondió una pregunta abierta de pensamiento (no hay respuesta correcta ni incorrecta). Reacciona en 1 o 2 frases cortas celebrando su idea; si fue muy corta, invítalo con cariño a pensar un poco más. Español neutro y simple. Al final, en una línea aparte, agrega la etiqueta de calidad del pensamiento exactamente así: [ESTRELLAS:N] donde N es 1, 2 o 3 (3 = creativo y explica el porqué). Nunca digas que la respuesta está mal.${NEUTRO}${toneFor(ageGroup, lang)}`
+  return `Eres ZOE, una guía cálida para niños. ${childName} respondió una pregunta abierta de pensamiento (no hay respuesta correcta ni incorrecta). Reacciona en 1 o 2 frases cortas celebrando su idea; si fue muy corta, invítalo con cariño a pensar un poco más. Dirígete a ${childName} POR SU NOMBRE una vez, de forma natural (nunca más de 2 veces). Español neutro y simple. Al final, en una línea aparte, agrega la etiqueta de calidad del pensamiento exactamente así: [ESTRELLAS:N] donde N es 1, 2 o 3 (3 = creativo y explica el porqué). Nunca digas que la respuesta está mal.${NEUTRO}${toneFor(ageGroup, lang)}`
 }
 
 // Separa la reacción (texto limpio) de las estrellas embebidas en la etiqueta.

@@ -10,7 +10,7 @@ import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '.
 import { avatarByEmoji } from '../components/AvatarPicker'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
-import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp, sfxCombo, sfxTick } from '../lib/sfx'
+import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp, sfxCombo, sfxTick, sfxStarsFanfare } from '../lib/sfx'
 import { enterGameplay, exitGameplay } from '../lib/musicBus'
 import Zoe from '../components/Zoe'
 import StarsReveal from '../components/StarsReveal'
@@ -151,7 +151,9 @@ export default function Round() {
     const nc = parsed.stars >= 2 ? combo + 1 : 0
     setCombo(nc)
     if (nc > bestComboRef.current) bestComboRef.current = nc
-    if (parsed.stars >= 2) sfxCorrect(); else sfxSparkle()
+    if (parsed.stars >= 3) { sfxCorrect(); setTimeout(() => sfxStarsFanfare(), 120) } // 3★ = fanfarria especial
+    else if (parsed.stars === 2) sfxCorrect()
+    else sfxSparkle()
     if (nc >= 2) { setComboPop((p) => p + 1); setTimeout(() => sfxCombo(nc), 220) }
   }
 
@@ -313,6 +315,17 @@ export default function Round() {
       <div key={qi} className="reel-in">
       {stage === 'answer' && (
         <div className="space-y-4 fade-in">
+          {/* Reloj PROMINENTE arriba: urgencia visible (rojo + pulso cuando queda poco) */}
+          <div className="card p-3" style={{ boxShadow: timeLeft <= 10 ? '0 0 0 1.5px rgba(244,63,94,0.55)' : undefined }}>
+            <div className="flex items-center justify-between mb-1.5">
+              <span className="text-xs font-extrabold uppercase tracking-wide" style={{ color: timeLeft <= 10 ? '#F43F5E' : 'var(--text-dim)' }}>⏱ {t('thinkTime')}</span>
+              <span className={'font-logo text-2xl ' + (timeLeft <= 5 && timeLeft > 0 ? 'happy-shake' : '')} style={{ color: timeLeft <= 10 ? '#F43F5E' : 'var(--gold)' }}>{timeLeft}s</span>
+            </div>
+            <div className="h-3 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+              <div className={'h-full rounded-full transition-all duration-1000 ' + (timeLeft <= 10 ? 'timer-pulse' : '')} style={{ width: timePct + '%', background: timeLeft <= 10 ? 'linear-gradient(90deg,#F43F5E,#fb7185)' : 'linear-gradient(90deg,var(--violet-light),var(--sky))' }} />
+            </div>
+            {timeLeft <= 5 && timeLeft > 0 && <div className="text-center text-xs font-black text-[var(--rose)] mt-1.5">⚡ {t('hurry')}</div>}
+          </div>
           <div className="card p-5" style={{ boxShadow: `inset 0 0 0 1px ${world.color}44` }}>
             <div className="flex items-center justify-between gap-2">
               <div className="text-xs font-extrabold uppercase tracking-wide" style={{ color: world.color }}>{t('question')}</div>
@@ -323,16 +336,6 @@ export default function Round() {
               )}
             </div>
             <p className="mt-2 text-lg font-extrabold leading-snug">{qText}</p>
-
-            {/* Barra de tiempo para pensar (no castiga) */}
-            <div className="mt-3">
-              <div className="flex justify-between text-[10px] text-[var(--text-dim)] mb-1">
-                <span>⏳ {t('thinkTime')}</span><span>{timeLeft}s</span>
-              </div>
-              <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                <div className="h-full rounded-full transition-all duration-1000" style={{ width: timePct + '%', background: timePct > 35 ? 'linear-gradient(90deg,var(--violet-light),var(--sky))' : 'linear-gradient(90deg,var(--gold),var(--rose))' }} />
-              </div>
-            </div>
           </div>
 
           <div className="card p-4">
@@ -368,14 +371,24 @@ export default function Round() {
 
           <div className={'relative card p-5 text-center overflow-hidden' + (!loading && qStars >= 2 ? ' happy-shake' : '')}
             role="status" aria-live="polite"
-            style={{ background: loading ? undefined : (qStars >= 2 ? 'linear-gradient(180deg, rgba(16,185,129,0.16), rgba(255,255,255,0.03))' : 'linear-gradient(180deg, rgba(251,191,36,0.14), rgba(255,255,255,0.03))') }}>
-            {!loading && qStars >= 3 && <Confetti n={28} />}
+            style={{ background: loading ? undefined : (
+              qStars >= 3 ? 'linear-gradient(180deg, rgba(16,185,129,0.22), rgba(255,255,255,0.03))'
+              : qStars === 2 ? 'linear-gradient(180deg, rgba(251,191,36,0.15), rgba(255,255,255,0.03))'
+              : 'linear-gradient(180deg, rgba(56,189,248,0.15), rgba(255,255,255,0.03))') }}>
+            {!loading && qStars >= 3 && <Confetti n={36} />}
+            {!loading && (
+              <div key={qi + '-xp'} className="xp-float absolute left-1/2 top-1 font-logo text-xl text-[var(--gold)] text-glow">+{ROUND_REWARD[qStars]?.xp || 0} XP</div>
+            )}
             <div className="grid place-items-center"><Zoe size={72} talking={!loading} /></div>
             {loading ? (
-              <div className="text-[var(--text-dim)] text-sm caret mt-2">{t('aiThinking')}</div>
+              <div className="mt-2 flex items-center justify-center gap-1.5 text-[var(--text-dim)] text-sm font-bold">
+                <span>💭 {t('aiThinking')}</span>
+                <span className="thinking-dot" /><span className="thinking-dot" style={{ animationDelay: '0.18s' }} /><span className="thinking-dot" style={{ animationDelay: '0.36s' }} />
+              </div>
             ) : (
               <>
-                <div className="mt-2"><StarsReveal stars={qStars} /></div>
+                <div className="text-3xl mt-1 bounce-in">{qStars >= 3 ? '🎉' : qStars === 2 ? '✨' : '💪'}</div>
+                <div className="mt-1"><StarsReveal stars={qStars} /></div>
                 {combo >= 2 && (
                   <div key={comboPop} className="combo-burst mx-auto mt-2 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-black"
                     style={{ background: 'linear-gradient(135deg,#FBBF24,#F43F5E)', color: '#1a0b2e', boxShadow: '0 8px 24px -6px rgba(251,191,36,0.8)' }}>
