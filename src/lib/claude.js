@@ -1,8 +1,8 @@
-// Paso 12 — Llamadas a la API de Anthropic (Claude).
-// NOTA: la API key va directo en el header SOLO para el prototipo escolar.
-// Para producción, usar un backend proxy (ver README).
-const ENDPOINT = 'https://api.anthropic.com/v1/messages'
-const MODEL = 'claude-sonnet-4-6'
+// Llamadas a ZOE (la profe IA) a través de NUESTRO proxy serverless /api/zoe.
+// La API key vive SOLO en el servidor (ANTHROPIC_API_KEY), NUNCA se expone al navegador.
+// Si el servidor no tiene clave o la API falla, el proxy devuelve texto vacío y el juego
+// usa su respaldo cálido: la experiencia NUNCA se traba.
+const ENDPOINT = '/api/zoe'
 
 // ZOE habla ESPAÑOL NEUTRO LATINOAMERICANO (no argentino). Se agrega a cada prompt en español.
 const NEUTRO = ' Habla en español neutro latinoamericano con "tú" (tú, tienes, piensas, puedes, sabes, eres, quieres). NUNCA uses voseo: nada de "vos", "tenés", "pensás", "podés", "sabés", "sos", "jugás", "querés". Suena como un locutor de radio latinoamericana: claro y cálido, sin acento de ningún país.'
@@ -19,9 +19,10 @@ function toneFor(ageGroup, lang) {
   return ' Tono: aventurero y cómplice, como una compañera de aventuras (usa palabras como "misión", "descubriste").' // 9-11
 }
 
-// ¿Hay clave de IA configurada? (sin clave = modo demo: se usan respuestas de respaldo)
+// El navegador YA NO conoce la clave (vive solo en el servidor). El juego SIEMPRE intenta
+// ZOE vía el proxy y, si no hay respuesta, usa el respaldo cálido. Se mantiene por compatibilidad.
 export function hasApiKey() {
-  return !!import.meta.env.VITE_ANTHROPIC_API_KEY
+  return true
 }
 
 // Monitoreo: si ZOE falla 3 veces seguidas, avisamos (para enganchar alertas reales).
@@ -36,11 +37,8 @@ function logApiError(err) {
 }
 
 export async function callClaude(systemPrompt, userMessage, maxTokens = 300, timeoutMs = 20000) {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY
-  if (!apiKey) return null // sin clave: la UI usa un texto de respaldo y la app sigue funcionando
-
   let lastErr = null
-  // Reintenta UNA vez si falla la red/API antes de rendirse (la app nunca se traba igual).
+  // Reintenta UNA vez si falla la red antes de rendirse (la app nunca se traba igual).
   for (let attempt = 0; attempt < 2; attempt++) {
     const controller = new AbortController()
     const timer = setTimeout(() => controller.abort(), timeoutMs)
@@ -48,32 +46,20 @@ export async function callClaude(systemPrompt, userMessage, maxTokens = 300, tim
       const response = await fetch(ENDPOINT, {
         method: 'POST',
         signal: controller.signal,
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          // Permite llamar a la API directo desde el navegador (solo prototipo).
-          'anthropic-dangerous-direct-browser-access': 'true',
-        },
-        body: JSON.stringify({
-          model: MODEL,
-          max_tokens: maxTokens,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userMessage }],
-        }),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ system: systemPrompt, message: userMessage, maxTokens }),
       })
       clearTimeout(timer)
       if (!response.ok) { lastErr = new Error('HTTP ' + response.status); if (attempt === 0) continue; break }
       const data = await response.json()
       consecutiveFails = 0 // éxito: reinicia el contador de fallas
-      return data.content?.[0]?.text || ''
+      return data.text || '' // '' => el servidor no tiene clave o no hubo respuesta: el caller usa el respaldo
     } catch (e) {
       clearTimeout(timer)
       lastErr = e
       if (attempt === 0) continue // un reintento
     }
   }
-  // Falla definitiva: registramos con fecha/hora y avisamos tras 3 seguidas.
   consecutiveFails++
   logApiError(lastErr)
   if (consecutiveFails >= 3) notifyAdmin()
@@ -179,12 +165,10 @@ export function parseAskJSON(text) {
 // Puntúa la calidad de las preguntas del chico con la rúbrica fija (modelo abierto, sin respuesta correcta).
 export async function evaluateQuestion(tema, pregunta, ageGroup, lang = 'es', childName = '') {
   const res = await callClaude(askReactSystemPrompt(childName, lang, ageGroup), `Tema: ${tema}\nPregunta del niño: ${pregunta}`, 220)
-  if (!res) {
-    // Sin clave = modo demo (respaldo alegre). Con clave pero sin respuesta = falla real → la UI ofrece reintentar.
-    return { stars: 2, emoji: '🌟', feedback: fallbackAskReact(childName, lang), failed: hasApiKey() }
-  }
+  // Sin respuesta (servidor sin clave o falla) = respaldo alegre. El juego SIEMPRE sigue.
+  if (!res) return { stars: 2, emoji: '🌟', feedback: fallbackAskReact(childName, lang) }
   const parsed = parseAskJSON(res)
-  return { stars: parsed.stars, emoji: parsed.emoji, feedback: parsed.feedback || fallbackAskReact(childName, lang), failed: false }
+  return { stars: parsed.stars, emoji: parsed.emoji, feedback: parsed.feedback || fallbackAskReact(childName, lang) }
 }
 
 export function fallbackAskReact(childName, lang) {
