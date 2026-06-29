@@ -21,7 +21,7 @@ export default function IntroSplash({ onClose }) {
   }))
 
   return (
-    <div className="fixed inset-0 z-[100] overflow-hidden" role="dialog" aria-label={appName}>
+    <div className="fixed inset-0 z-[100] overflow-hidden" role="dialog" aria-label={appName} onPointerDown={() => kickMusic()}>
       <style>{`
         @keyframes introSpark { 0%{transform:translateY(10px) scale(0.6);opacity:0} 20%{opacity:1} 100%{transform:translateY(-90px) scale(1);opacity:0} }
         @keyframes titleBreathe { 0%,100%{transform:translateY(0) scale(1)} 50%{transform:translateY(-4px) scale(1.015)} }

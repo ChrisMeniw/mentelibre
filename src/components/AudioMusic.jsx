@@ -38,15 +38,24 @@ export default function AudioMusic() {
   useEffect(() => {
     const a = new Audio('/musica.mp3')
     a.loop = true
-    // preload='none': NO baja los 7MB de música hasta el primer gesto (cuando se llama
-    // a .play()). Así la 1ª carga no compite por el ancho de banda en celulares de gama baja.
-    a.preload = 'none'
+    // preload='auto': la música queda LISTA para sonar al instante (prioridad de Chris:
+    // que la música nunca falle). El peso grande (video de 11MB) ya se difiere mostrando
+    // la intro una sola vez; acá importa que el audio esté cargado y arranque sin demora.
+    a.preload = 'auto'
     a.volume = TARGET_VOL
     audioRef.current = a
     // OJO: NO tocar los efectos (sfx). El ruido de los botones debe sonar SIEMPRE,
     // aunque la música esté en silencio. El botón 🔊/🔇 solo controla la música.
 
     gameplay.current = isGameplay()
+
+    // INTENTO DE AUTOPLAY: que la música suene DESDE la primera pantalla, sin esperar a
+    // que toque "Comenzar". Los navegadores bloquean el audio hasta el primer gesto en una
+    // carga "fría", pero en app instalada (PWA) o cargas "tibias" SÍ suena de entrada. Si lo
+    // bloquea, los listeners de abajo la arrancan con el primer toque (en cualquier lado).
+    if (onRef.current && !gameplay.current) {
+      try { setPlaybackAudioSession(); const p = a.play(); if (p && p.catch) p.catch(() => { /* se reintenta al primer toque */ }) } catch { /* noop */ }
+    }
     const unsub = subscribeGameplay((g) => { gameplay.current = g; apply() })
     // Arranque garantizado desde el gesto real de ¡Comenzar!.
     setMusicKick(() => { gestured.current = true; apply() })
