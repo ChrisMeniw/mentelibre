@@ -38,27 +38,33 @@ if (speakSupported()) {
 
 const norm = (v) => (v.lang || '').toLowerCase().replace('_', '-')
 
-// Señales de voz NATURAL (no robótica). Estas voces son gratis; solo hay que
-// tenerlas instaladas. macOS/iOS/Android traen variantes "enhanced/premium/natural".
-const NATURAL = ['premium', 'enhanced', 'natural', 'neural', 'siri', 'google', 'wavenet', 'multilingual']
+// Señales de voz NATURAL (humana, no robótica): neuronales / de red / premium.
+const NATURAL = ['neural', 'natural', 'premium', 'enhanced', 'online', 'siri', 'google', 'wavenet', 'multilingual', 'plus', 'naturalne']
+// Voces ROBÓTICAS / de juguete que hay que EVITAR (las compactas y novelty de macOS/iOS).
+const ROBOTIC = ['compact', 'eloquence', 'fred', 'albert', 'zarvox', 'novelty', 'bells', 'cellos', 'organ',
+  'whisper', 'trinoids', 'wobble', 'pipe', 'bubbles', 'jester', 'bahh', 'boing', 'junior', 'ralph', 'kathy',
+  'agnes', 'bruce', 'vicki', 'victoria', 'good news', 'bad news', 'reed', 'rocko', 'sandy', 'shelley', 'grandma', 'grandpa', 'flo']
+const isRobotic = (v) => ROBOTIC.some((r) => (v.name || '').toLowerCase().includes(r))
 
-// Puntúa una voz: MUJER primero, luego natural (no robótica), luego dialecto.
+// Puntúa una voz: NATURALIDAD manda (que NO suene robótica), luego mujer y dialecto.
 function scoreVoice(v) {
   const l = norm(v)
   const n = (v.name || '').toLowerCase()
   let s = 0
-  if (isFemale(v)) s += 20                             // ZOE es mujer → priorizar voz femenina
-  if (NATURAL.some((k) => n.includes(k))) s += 6       // voz natural (no robótica)
-  if (v.localService === false) s += 3                 // voces de red suelen ser más naturales
-  if (l === 'es-us' || l === 'pt-br') s += 1
-  if (l === 'es-mx') s += 1
+  if (NATURAL.some((k) => n.includes(k))) s += 50     // voz humana (neuronal/red) → lo más importante
+  if (v.localService === false) s += 25               // voces de red = casi siempre neuronales/naturales
+  if (isRobotic(v)) s -= 60                            // castiga fuerte las robóticas/de juguete
+  if (isFemale(v)) s += 15                             // ZOE es mujer
+  if (LATAM.includes(l)) s += 4                        // dialecto latino
+  if (l === 'es-us' || l === 'pt-br' || l === 'es-mx') s += 2
   return s
 }
 function bestVoice(pool) {
   if (!pool.length) return null
-  // Saca las voces masculinas; si por algún motivo no quedara ninguna, usa el pool completo.
+  // Preferí femeninas NO robóticas; si no hay, femeninas; si no, lo que haya.
+  const ideal = pool.filter((v) => !isMale(v) && !isRobotic(v))
   const noMale = pool.filter((v) => !isMale(v))
-  const use = noMale.length ? noMale : pool
+  const use = ideal.length ? ideal : (noMale.length ? noMale : pool)
   return [...use].sort((a, b) => scoreVoice(b) - scoreVoice(a))[0]
 }
 
@@ -88,7 +94,7 @@ function speakNow(text, lang) {
   if (v) u.voice = v // voz LATAM (es) o pt-BR (pt); si no hay, queda u.lang
   // Voz de MUJER JOVEN (natural, no chillona): tono apenas por encima del neutro.
   u.rate = 1.0
-  u.pitch = 1.08
+  u.pitch = 1.12
   synth.speak(u)
   try { synth.resume() } catch { /* iOS a veces queda en pausa */ }
 }
