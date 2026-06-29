@@ -19,10 +19,27 @@ function toneFor(ageGroup, lang) {
   return ' Tono: aventurero y cómplice, como una compañera de aventuras (usa palabras como "misión", "descubriste").' // 9-11
 }
 
+// ¿Hay clave de IA configurada? (sin clave = modo demo: se usan respuestas de respaldo)
+export function hasApiKey() {
+  return !!import.meta.env.VITE_ANTHROPIC_API_KEY
+}
+
+// Monitoreo: si ZOE falla 3 veces seguidas, avisamos (para enganchar alertas reales).
+let consecutiveFails = 0
+function notifyAdmin() {
+  // eslint-disable-next-line no-console
+  console.warn('ALERT: ZOE API down — notify Chris Meniw')
+}
+function logApiError(err) {
+  // eslint-disable-next-line no-console
+  console.error(`[${new Date().toISOString()}] ZOE API error:`, err && err.message ? err.message : err)
+}
+
 export async function callClaude(systemPrompt, userMessage, maxTokens = 300, timeoutMs = 20000) {
   const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY
   if (!apiKey) return null // sin clave: la UI usa un texto de respaldo y la app sigue funcionando
 
+  let lastErr = null
   // Reintenta UNA vez si falla la red/API antes de rendirse (la app nunca se traba igual).
   for (let attempt = 0; attempt < 2; attempt++) {
     const controller = new AbortController()
@@ -46,15 +63,20 @@ export async function callClaude(systemPrompt, userMessage, maxTokens = 300, tim
         }),
       })
       clearTimeout(timer)
-      if (!response.ok) { if (attempt === 0) continue; return null }
+      if (!response.ok) { lastErr = new Error('HTTP ' + response.status); if (attempt === 0) continue; break }
       const data = await response.json()
+      consecutiveFails = 0 // éxito: reinicia el contador de fallas
       return data.content?.[0]?.text || ''
-    } catch {
+    } catch (e) {
       clearTimeout(timer)
+      lastErr = e
       if (attempt === 0) continue // un reintento
-      return null
     }
   }
+  // Falla definitiva: registramos con fecha/hora y avisamos tras 3 seguidas.
+  consecutiveFails++
+  logApiError(lastErr)
+  if (consecutiveFails >= 3) notifyAdmin()
   return null
 }
 
@@ -110,21 +132,59 @@ export function fallbackReact(childName, lang) {
     : `¡Me encantó tu idea, ${childName}! Pensaste de una forma muy tuya. 💜`
 }
 
-// El arte de preguntar: la IA puntúa la CALIDAD de las preguntas del chico (no responde nada).
+// El arte de preguntar: ZOE puntúa la CALIDAD de las preguntas del chico (no responde nada).
+// RÚBRICA FIJA Y EXPLÍCITA con ejemplos concretos: así la MISMA pregunta saca SIEMPRE las
+// mismas estrellas (calibración consistente, sin arbitrariedad que desmotive). Salida en JSON.
 export function askReactSystemPrompt(childName, lang, ageGroup) {
+  const nom = childName
+    ? (lang === 'pt' ? ` A criança se chama ${childName}; use o nome dela uma vez, com naturalidade.` : ` El niño se llama ${childName}; usa su nombre una vez, de forma natural.`)
+    : ''
   if (lang === 'pt') {
-    return `Você é ZOE, uma guia calorosa e socrática para crianças. ${childName} NÃO responde: o desafio é fazer as MELHORES PERGUNTAS sobre um tema. Leia o tema e as perguntas e pontue a QUALIDADE delas: ⭐ = pergunta superficial ou óbvia; ⭐⭐ = pergunta interessante que vai além do óbvio; ⭐⭐⭐ = pergunta profunda, filosófica, imaginativa e original. Critérios: profundidade, originalidade, curiosidade e imaginação. Em 1 ou 2 frases calorosas EXPLIQUE POR QUE essa pergunta foi boa (ou, com carinho, como poderia ir mais fundo), de forma socrática e sem dar respostas. Nunca diga que uma pergunta está errada: toda pergunta vale. No final, em uma linha separada, escreva exatamente: [ESTRELAS:N] com N = 1, 2 ou 3.${toneFor(ageGroup, lang)}`
+    return `Você é ZOE, mentora de pensamento crítico para crianças de 6 a 15 anos. Sua única tarefa agora é avaliar a QUALIDADE da pergunta que a criança escreveu, usando EXATAMENTE esta rubrica:
+⭐ (1 estrela): a pergunta tem resposta de sim/não, ou é vaga demais (ex.: "Por quê?", "O que é isso?").
+⭐⭐ (2 estrelas): a pergunta pede uma informação específica ou uma explicação, mas não convida a pensar (ex.: "De que cor é o céu?").
+⭐⭐⭐ (3 estrelas): a pergunta abre várias perspectivas, convida a imaginar ou comparar, ou desafia suposições (ex.: "O que aconteceria se o céu fosse de outra cor e como mudaria nossa vida?").
+Nunca diga que uma pergunta está "errada": toda pergunta vale; só mostre, com carinho, como poderia ir mais fundo.${nom} Responda APENAS com este JSON exato, sem nenhum texto a mais:
+{"stars": 1, "emoji": "😊", "feedback": "uma única frase curta, calorosa, em português do Brasil, dirigida à criança, explicando por que recebeu essas estrelas e como poderia melhorar a pergunta"}
+Use o emoji "😊" para 1 estrela, "🌟" para 2 estrelas e "🚀" para 3 estrelas.${toneFor(ageGroup, lang)}`
   }
-  return `Eres ZOE, una guía cálida y socrática para niños. ${childName} NO responde: el desafío es hacer las MEJORES PREGUNTAS sobre un tema. Lee el tema y sus preguntas y puntúa la CALIDAD de las preguntas así: ⭐ = pregunta superficial u obvia; ⭐⭐ = pregunta interesante que va más allá de lo obvio; ⭐⭐⭐ = pregunta profunda, filosófica, imaginativa y original. Criterios: profundidad, originalidad, curiosidad e imaginación. En 1 o 2 frases cálidas EXPLICA POR QUÉ esa pregunta fue buena (o, con cariño, cómo podría ir más profundo), al estilo socrático y sin dar respuestas. Nunca digas que una pregunta está mal: toda pregunta vale. Al final, en una línea aparte, escribe exactamente: [ESTRELLAS:N] con N = 1, 2 o 3.${NEUTRO}${toneFor(ageGroup, lang)}`
+  return `Eres ZOE, mentora de pensamiento crítico para niños de 6 a 15 años. Tu único trabajo en este momento es evaluar la CALIDAD de la pregunta que escribió el niño, usando EXACTAMENTE esta rúbrica:
+⭐ (1 estrella): la pregunta tiene respuesta de sí/no, o es demasiado vaga (ej: "¿Por qué?", "¿Qué es eso?").
+⭐⭐ (2 estrellas): la pregunta pide información específica o una explicación, pero no invita a pensar (ej: "¿De qué color es el cielo?").
+⭐⭐⭐ (3 estrellas): la pregunta abre múltiples perspectivas, invita a imaginar o comparar, o desafía suposiciones (ej: "¿Qué pasaría si el cielo fuera de otro color y cómo cambiaría nuestra vida?").
+Nunca digas que una pregunta está "mal": toda pregunta vale; solo muestra, con cariño, cómo podría ir más profundo.${nom} Responde SOLO con este JSON exacto, sin ningún texto adicional:
+{"stars": 1, "emoji": "😊", "feedback": "una sola oración corta, cálida, en español neutro latinoamericano (usando tú), dirigida al niño, explicando por qué recibió esas estrellas y cómo podría mejorar su pregunta"}
+Usa el emoji "😊" para 1 estrella, "🌟" para 2 estrellas y "🚀" para 3 estrellas.${NEUTRO}${toneFor(ageGroup, lang)}`
 }
 
-// evaluateQuestion(tema, pregunta, ageGroup) → { stars: 1|2|3, feedback }.
-// Puntúa la calidad de las preguntas del chico (modelo abierto, sin respuesta correcta).
+// Lee el JSON de la rúbrica { stars, emoji, feedback }. Si la IA no devolviera JSON válido,
+// cae al formato viejo [ESTRELLAS:N] para no romper nunca la experiencia del chico.
+export function parseAskJSON(text) {
+  const raw = text || ''
+  try {
+    const m = raw.match(/\{[\s\S]*\}/)
+    if (m) {
+      const o = JSON.parse(m[0])
+      const stars = Math.max(1, Math.min(3, parseInt(o.stars, 10) || 2))
+      const emoji = o.emoji || (stars >= 3 ? '🚀' : stars === 2 ? '🌟' : '😊')
+      const feedback = (o.feedback != null ? String(o.feedback) : '').trim()
+      return { stars, emoji, feedback }
+    }
+  } catch { /* no era JSON válido: usamos el respaldo de abajo */ }
+  const p = parseReact(raw)
+  return { stars: p.stars, emoji: p.stars >= 3 ? '🚀' : p.stars === 2 ? '🌟' : '😊', feedback: p.text }
+}
+
+// evaluateQuestion(tema, pregunta, ageGroup) → { stars: 1|2|3, emoji, feedback, failed }.
+// Puntúa la calidad de las preguntas del chico con la rúbrica fija (modelo abierto, sin respuesta correcta).
 export async function evaluateQuestion(tema, pregunta, ageGroup, lang = 'es', childName = '') {
-  const res = await callClaude(askReactSystemPrompt(childName, lang, ageGroup), `Tema: ${tema}\nPreguntas: ${pregunta}`, 140)
-  if (!res) return { stars: 2, feedback: fallbackAskReact(childName, lang) }
-  const parsed = parseReact(res)
-  return { stars: parsed.stars || 2, feedback: parsed.text || fallbackAskReact(childName, lang) }
+  const res = await callClaude(askReactSystemPrompt(childName, lang, ageGroup), `Tema: ${tema}\nPregunta del niño: ${pregunta}`, 220)
+  if (!res) {
+    // Sin clave = modo demo (respaldo alegre). Con clave pero sin respuesta = falla real → la UI ofrece reintentar.
+    return { stars: 2, emoji: '🌟', feedback: fallbackAskReact(childName, lang), failed: hasApiKey() }
+  }
+  const parsed = parseAskJSON(res)
+  return { stars: parsed.stars, emoji: parsed.emoji, feedback: parsed.feedback || fallbackAskReact(childName, lang), failed: false }
 }
 
 export function fallbackAskReact(childName, lang) {

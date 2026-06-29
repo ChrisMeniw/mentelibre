@@ -6,7 +6,7 @@ import { getWorld, getQuestions, pickRoundQuestions, nextWorldId } from '../data
 import { getSeen, addSeen, resetSeen } from '../lib/seenQuestions'
 import { BADGES } from '../data/badges'
 import { levelForXP, levelName } from '../data/levels'
-import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '../lib/claude'
+import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact, hasApiKey } from '../lib/claude'
 import { avatarByEmoji } from '../components/AvatarPicker'
 import { petById } from '../data/shop'
 import { useSpeech } from '../hooks/useSpeech'
@@ -73,6 +73,7 @@ export default function Round() {
   const [stage, setStage] = useState('answer')  // answer | feedback
   const [answer, setAnswer] = useState('')
   const [loading, setLoading] = useState(false)
+  const [failed, setFailed] = useState(false) // ZOE no respondió (falla de red/API) → ofrecer reintentar
   const [react, setReact] = useState('')
   const [qStars, setQStars] = useState(2)
   const [stars, setStars] = useState([])
@@ -122,10 +123,10 @@ export default function Round() {
   // Auto-avance estilo REEL: tras unos segundos viendo el feedback, pasa solo a la
   // siguiente pregunta (que entra deslizando desde abajo). También se puede tocar.
   useEffect(() => {
-    if (phase !== 'playing' || stage !== 'feedback' || loading) return
+    if (phase !== 'playing' || stage !== 'feedback' || loading || failed) return // si ZOE falló, NO auto-avanza: el chico decide reintentar
     const id = setTimeout(() => next(), 5200)
     return () => clearTimeout(id)
-  }, [phase, stage, loading, qi]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [phase, stage, loading, failed, qi]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!world) { nav('/hub'); return null }
 
@@ -141,9 +142,14 @@ export default function Round() {
   const respond = async () => {
     if (!canSend) return
     sfxSend(); if (listening) stopListen(); stopSpeak()
-    setStage('feedback'); setLoading(true); setReact('')
+    setStage('feedback'); setLoading(true); setReact(''); setFailed(false)
     incrementAI()
     const res = await callClaude(roundReactSystemPrompt(childName, lang, player.ageGroup), `Pregunta: ${qText}\nRespuesta: ${answer}`, 120)
+    if (!res && hasApiKey()) {
+      // ZOE no pudo responder (con clave, falla real): mensaje amable + botón de reintentar, sin auto-avanzar.
+      setLoading(false); setFailed(true); setReact(t('zoeRetry')); setQStars(2); sfxSparkle()
+      return
+    }
     const parsed = res ? parseReact(res) : { stars: 2, text: fallbackReact(childName, lang) }
     const fb = parsed.text || fallbackReact(childName, lang)
     // Cuando contesta muy bien, ZOE festeja: "¡Excelente respuesta! ¡Vamos por más!"
@@ -178,7 +184,7 @@ export default function Round() {
     if (combo >= 2) comboCoinsRef.current += (combo - 1) // bono de racha: x2→+1, x3→+2…
     trackDaily({ answers: 1, stars: qStars }) // progreso de misión diaria por pregunta
     if (qi + 1 < N) {
-      setQi(qi + 1); setAnswer(''); setReact(''); setStage('answer')
+      setQi(qi + 1); setAnswer(''); setReact(''); setFailed(false); setStage('answer')
       window.scrollTo({ top: 0, behavior: 'instant' })
     } else {
       finishRound(all)
@@ -394,8 +400,8 @@ export default function Round() {
               qStars >= 3 ? 'linear-gradient(180deg, rgba(16,185,129,0.22), rgba(255,255,255,0.03))'
               : qStars === 2 ? 'linear-gradient(180deg, rgba(251,191,36,0.15), rgba(255,255,255,0.03))'
               : 'linear-gradient(180deg, rgba(56,189,248,0.15), rgba(255,255,255,0.03))') }}>
-            {!loading && qStars >= 3 && <Confetti n={36} />}
-            {!loading && (
+            {!loading && !failed && qStars >= 3 && <Confetti n={36} />}
+            {!loading && !failed && (
               <div key={qi + '-xp'} className="xp-float absolute left-1/2 top-1 font-logo text-xl text-[var(--gold)] text-glow">+{ROUND_REWARD[qStars]?.xp || 0} XP</div>
             )}
             <div className="grid place-items-center"><Zoe size={72} talking={!loading} /></div>
@@ -404,6 +410,8 @@ export default function Round() {
                 <span>💭 {t('aiThinking')}</span>
                 <span className="thinking-dot" /><span className="thinking-dot" style={{ animationDelay: '0.18s' }} /><span className="thinking-dot" style={{ animationDelay: '0.36s' }} />
               </div>
+            ) : failed ? (
+              <p className="mt-2 text-[15px] font-bold leading-snug">{react}</p>
             ) : (
               <>
                 <div className="text-3xl mt-1 bounce-in">{qStars >= 3 ? '🎉' : qStars === 2 ? '✨' : '💪'}</div>
@@ -419,15 +427,24 @@ export default function Round() {
             )}
           </div>
 
-          <button onClick={next} disabled={loading} className="btn btn-gold w-full disabled:opacity-40 min-h-touch"
-            aria-label={qi + 1 < N ? t('nextQuestion') : t('seeResults')}>
-            {qi + 1 < N ? t('nextQuestion') : t('seeResults')}
-          </button>
-          {!loading && qi + 1 < N && (
-            <div className="flex flex-col items-center mt-2 text-[var(--text-dim)]">
-              <span className="chevron-bounce text-2xl leading-none" aria-hidden="true">⌄</span>
-              <span className="text-[11px] font-bold -mt-1">{t('reelHint')}</span>
+          {failed ? (
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={respond} className="btn btn-gold min-h-touch">🔄 {t('retry')}</button>
+              <button onClick={next} className="btn btn-ghost min-h-touch">{qi + 1 < N ? t('nextQuestion') : t('seeResults')}</button>
             </div>
+          ) : (
+            <>
+              <button onClick={next} disabled={loading} className="btn btn-gold w-full disabled:opacity-40 min-h-touch"
+                aria-label={qi + 1 < N ? t('nextQuestion') : t('seeResults')}>
+                {qi + 1 < N ? t('nextQuestion') : t('seeResults')}
+              </button>
+              {!loading && qi + 1 < N && (
+                <div className="flex flex-col items-center mt-2 text-[var(--text-dim)]">
+                  <span className="chevron-bounce text-2xl leading-none" aria-hidden="true">⌄</span>
+                  <span className="text-[11px] font-bold -mt-1">{t('reelHint')}</span>
+                </div>
+              )}
+            </>
           )}
         </div>
       )}

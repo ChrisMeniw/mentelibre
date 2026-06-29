@@ -43,6 +43,7 @@ export default function Ask() {
   const [stage, setStage] = useState('answer') // answer | feedback
   const [answer, setAnswer] = useState('')
   const [loading, setLoading] = useState(false)
+  const [failed, setFailed] = useState(false) // ZOE no respondió (falla de red/API) → ofrecer reintentar
   const [react, setReact] = useState('')
   const [qStars, setQStars] = useState(2)
   const [timeLeft, setTimeLeft] = useState(ASK_SECONDS)
@@ -93,11 +94,16 @@ export default function Ask() {
   const respond = async () => {
     if (!answer.trim()) return
     sfxSend(); if (listening) stopListen(); stopSpeak()
-    setStage('feedback'); setLoading(true); setReact(''); incrementAI()
-    const { stars: qs, feedback } = await evaluateQuestion(topicText, answer, player.ageGroup, lang, childName)
+    setStage('feedback'); setLoading(true); setReact(''); setFailed(false); incrementAI()
+    const { stars: qs, feedback, failed: f } = await evaluateQuestion(topicText, answer, player.ageGroup, lang, childName)
+    setLoading(false)
+    if (f) {
+      // ZOE no pudo responder: mensaje amable (nunca un error técnico) + botón de reintentar.
+      setFailed(true); setReact(t('zoeRetry')); setQStars(2); sfxSparkle()
+      return
+    }
     setReact(feedback)
     setQStars(qs)
-    setLoading(false)
     if (qs >= 2) sfxCorrect(); else sfxSparkle()
   }
 
@@ -116,7 +122,7 @@ export default function Ask() {
     setStars(all)
     trackDaily({ answers: 1, stars: qStars })
     if (ti + 1 < N) {
-      setTi(ti + 1); setAnswer(''); setReact(''); setStage('answer')
+      setTi(ti + 1); setAnswer(''); setReact(''); setFailed(false); setStage('answer')
       window.scrollTo({ top: 0, behavior: 'instant' })
     } else {
       finish(all)
@@ -234,6 +240,8 @@ export default function Ask() {
             <div className="grid place-items-center"><Zoe size={72} talking={!loading} /></div>
             {loading ? (
               <div className="text-[var(--text-dim)] text-sm caret mt-2">{t('aiThinking')}</div>
+            ) : failed ? (
+              <p className="mt-2 text-[15px] font-bold leading-snug">{react}</p>
             ) : (
               <>
                 <div className="mt-2"><StarsReveal stars={qStars} /></div>
@@ -241,7 +249,14 @@ export default function Ask() {
               </>
             )}
           </div>
-          <button onClick={next} disabled={loading} className="btn btn-gold w-full disabled:opacity-40 min-h-touch">{ti + 1 < N ? t('askNext') : t('seeResults')}</button>
+          {failed ? (
+            <div className="grid grid-cols-2 gap-2">
+              <button onClick={respond} className="btn btn-gold min-h-touch">🔄 {t('retry')}</button>
+              <button onClick={next} className="btn btn-ghost min-h-touch">{ti + 1 < N ? t('askNext') : t('seeResults')}</button>
+            </div>
+          ) : (
+            <button onClick={next} disabled={loading} className="btn btn-gold w-full disabled:opacity-40 min-h-touch">{ti + 1 < N ? t('askNext') : t('seeResults')}</button>
+          )}
         </div>
       )}
     </div>
