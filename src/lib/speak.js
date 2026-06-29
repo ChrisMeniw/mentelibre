@@ -1,5 +1,6 @@
-// Texto-a-voz del navegador (Web Speech API). Gratis, sin API key.
-// Para que los más chicos escuchen la pregunta sin tener que leer.
+// Texto-a-voz. Voz principal: mujer joven REAL en la nube (proxy /api/tts). Respaldo: navegador.
+import { setPlaybackAudioSession } from './audioUnlock'
+
 const LANGS = { es: 'es-US', pt: 'pt-BR' } // es-US = español neutro latino, pt-BR = portugués de Brasil
 
 // Dialectos LATAM (NUNCA España es-ES). Se prioriza esto para que NO suene "española".
@@ -99,7 +100,8 @@ function speakNow(text, lang) {
   try { synth.resume() } catch { /* iOS a veces queda en pausa */ }
 }
 
-export function speak(text, lang = 'es') {
+// Respaldo: voz del navegador (Web Speech) si la voz en la nube no carga.
+function speakBrowser(text, lang = 'es') {
   if (!speakSupported() || !text) return
   try {
     // Si las voces todavía no cargaron, esperá UNA vez al evento (clave en Safari/iOS).
@@ -117,6 +119,30 @@ export function speak(text, lang = 'es') {
   } catch { /* noop */ }
 }
 
+let ttsAudio = null
+const TL = { es: 'es', pt: 'pt-BR' }
+
+// Voz PRINCIPAL: una mujer joven REAL (Google TTS vía nuestro proxy /api/tts), natural e
+// IGUAL en todos los teléfonos (no la voz robótica del dispositivo). Si la red falla,
+// cae a la voz del navegador para no quedarse sin audio.
+export function speak(text, lang = 'es') {
+  if (!text) return
+  stopSpeak()
+  try { setPlaybackAudioSession() } catch { /* noop */ } // iOS: ignora el switch de silencio
+  const tl = TL[lang] || 'es'
+  try {
+    const a = new Audio(`/api/tts?tl=${tl}&q=${encodeURIComponent(String(text).slice(0, 200))}`)
+    a.volume = 1
+    ttsAudio = a
+    a.addEventListener('error', () => { if (ttsAudio === a) { ttsAudio = null; speakBrowser(text, lang) } })
+    const p = a.play()
+    if (p && p.catch) p.catch(() => { if (ttsAudio === a) { ttsAudio = null; speakBrowser(text, lang) } })
+  } catch {
+    speakBrowser(text, lang)
+  }
+}
+
 export function stopSpeak() {
+  if (ttsAudio) { try { ttsAudio.pause() } catch { /* noop */ } ttsAudio = null }
   if (speakSupported()) { try { window.speechSynthesis.cancel() } catch { /* noop */ } }
 }
