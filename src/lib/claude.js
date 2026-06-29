@@ -112,10 +112,29 @@ export function parseReact(text) {
   return { stars, text: clean }
 }
 
+// Respaldos VARIADOS: para que ZOE se sienta viva aunque su IA esté en pausa (sin clave en
+// el servidor) NO repite siempre la misma frase y usa el nombre del chico.
+const pick = (arr) => arr[Math.floor(Math.random() * arr.length)]
+
 export function fallbackReact(childName, lang) {
-  return lang === 'pt'
-    ? `Adorei sua ideia, ${childName}! Você pensou de um jeito só seu. 💜`
-    : `¡Me encantó tu idea, ${childName}! Pensaste de una forma muy tuya. 💜`
+  const n = childName || (lang === 'pt' ? 'amigo' : 'amigo')
+  const es = [
+    `¡Me encantó cómo pensaste, ${n}! Esa idea es muy tuya. 💜`,
+    `¡Qué manera de pensar, ${n}! Se nota que le diste vueltas. ✨`,
+    `¡Excelente, ${n}! Pensaste con tu propia cabeza y eso vale oro. 🌟`,
+    `¡Genial, ${n}! Tu idea me hizo pensar a mí también. 🚀`,
+    `¡Buenísimo, ${n}! Cada vez piensas más profundo. 🧠💪`,
+    `¡Me encanta, ${n}! No hay una sola forma de ver esto, y la tuya suma. 💫`,
+  ]
+  const pt = [
+    `Adorei como você pensou, ${n}! Essa ideia é bem sua. 💜`,
+    `Que jeito de pensar, ${n}! Dá pra ver que você refletiu. ✨`,
+    `Excelente, ${n}! Você pensou com a sua própria cabeça e isso vale ouro. 🌟`,
+    `Genial, ${n}! Sua ideia me fez pensar também. 🚀`,
+    `Muito bom, ${n}! Cada vez você pensa mais fundo. 🧠💪`,
+    `Adoro, ${n}! Não existe um único jeito de ver isso, e o seu conta. 💫`,
+  ]
+  return pick(lang === 'pt' ? pt : es)
 }
 
 // El arte de preguntar: ZOE puntúa la CALIDAD de las preguntas del chico (no responde nada).
@@ -172,9 +191,22 @@ export async function evaluateQuestion(tema, pregunta, ageGroup, lang = 'es', ch
 }
 
 export function fallbackAskReact(childName, lang) {
-  return lang === 'pt'
-    ? `Que perguntas boas, ${childName}! Perguntar assim é pensar de verdade. 🦉💜`
-    : `¡Qué buenas preguntas, ${childName}! Preguntar así es pensar de verdad. 🦉💜`
+  const n = childName || (lang === 'pt' ? 'amigo' : 'amigo')
+  const es = [
+    `¡Qué buenas preguntas, ${n}! Preguntar así es pensar de verdad. 🦉💜`,
+    `¡Me encantan tus preguntas, ${n}! La curiosidad es tu superpoder. ✨`,
+    `¡Excelentes preguntas, ${n}! Quien pregunta bien, piensa mejor. 🚀`,
+    `¡Guau, ${n}! Esas preguntas abren mil caminos. 🌟`,
+    `¡Tremendo, ${n}! Cada pregunta tuya enciende una idea nueva. 💡`,
+  ]
+  const pt = [
+    `Que perguntas boas, ${n}! Perguntar assim é pensar de verdade. 🦉💜`,
+    `Adoro suas perguntas, ${n}! A curiosidade é o seu superpoder. ✨`,
+    `Excelentes perguntas, ${n}! Quem pergunta bem, pensa melhor. 🚀`,
+    `Uau, ${n}! Essas perguntas abrem mil caminhos. 🌟`,
+    `Demais, ${n}! Cada pergunta sua acende uma ideia nova. 💡`,
+  ]
+  return pick(lang === 'pt' ? pt : es)
 }
 
 // ---- Respuestas de respaldo (si no hay API key, para que la demo nunca se rompa) ----
