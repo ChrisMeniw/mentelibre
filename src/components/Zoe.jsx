@@ -1,8 +1,10 @@
 import { playZoeVoice } from '../lib/zoeVoice'
+import { useLang } from '../i18n'
 
 // ZOE — la guía del juego: la primera profesora IA de LATAM (creada por Chris Meniw).
 // Muestra su foto real. Con `speakable`, al tocarla habla con su VOZ REAL.
 export default function Zoe({ size = 64, className = '', style = {}, talking = false, speakable = false }) {
+  const { t } = useLang()
   const ring = {
     width: size,
     height: size,
@@ -28,8 +30,8 @@ export default function Zoe({ size = 64, className = '', style = {}, talking = f
         onClick={(e) => { e.stopPropagation(); playZoeVoice() }}
         className={`relative rounded-full overflow-hidden shrink-0 active:scale-95 transition ${talking ? 'glow-pulse' : ''} ${className}`}
         style={ring}
-        aria-label="Escuchar a ZOE con su voz"
-        title="Tócame para escucharme"
+        aria-label={t('zoeTapHint')}
+        title={t('zoeTapHint')}
       >
         {img}
         {/* indicador de que se puede tocar para oír su voz real */}
@@ -44,7 +46,7 @@ export default function Zoe({ size = 64, className = '', style = {}, talking = f
       className={`relative rounded-full overflow-hidden shrink-0 ${talking ? 'glow-pulse' : ''} ${className}`}
       style={ring}
       role="img"
-      aria-label="ZOE, tu guía"
+      aria-label={t('zoeName')}
     >
       {img}
     </div>

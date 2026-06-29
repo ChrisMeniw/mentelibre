@@ -59,8 +59,8 @@ export default function Round() {
   if (pickedRef.current === null) {
     let seen = getSeen(worldId, player.ageGroup)
     const pool = getQuestions(worldId, player.ageGroup)
-    remainingRef.current = pool.length - seen.length // cuántas quedaban sin explorar
     if (pool.length - seen.length < N) { resetSeen(worldId, player.ageGroup); seen = [] }
+    remainingRef.current = pool.length - seen.length // cuántas quedan sin explorar (tras un posible reset del banco)
     const picked = pickRoundQuestions(worldId, player.ageGroup, N, seen)
     addSeen(worldId, player.ageGroup, picked)
     pickedRef.current = picked

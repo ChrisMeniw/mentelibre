@@ -379,3 +379,17 @@ body {
   /* el fondo de estrellas en movimiento se detiene */
   .floaty, .glow-pulse, .world-float, .mascot-idle, .pulse-ring { animation: none !important; }
 }
+
+/* ===== Impresión: la guía docente se imprime sola, legible en papel ===== */
+.print-only { display: none; }
+@media print {
+  /* Oculta TODO y luego muestra solo la guía (#teacher-guide): nada de fondo oscuro ni menús. */
+  body * { visibility: hidden; }
+  #teacher-guide, #teacher-guide * { visibility: visible; }
+  #teacher-guide { position: absolute; left: 0; top: 0; width: 100%; }
+  body { background: #fff !important; }
+  .print-only { display: block !important; }
+  #teacher-guide, #teacher-guide * { color: #161616 !important; }
+  #teacher-guide .card { background: #fff !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
+  #teacher-guide .chip { border: 1px solid #94a3b8 !important; }
+}

@@ -44,7 +44,7 @@ export default function Shop() {
 
       {/* Encabezado */}
       <div className="flex items-center justify-between fade-in">
-        <button onClick={() => { sfxPop(); nav('/hub') }} className="btn btn-ghost px-3 py-2 text-sm">←</button>
+        <button onClick={() => { sfxPop(); nav('/hub') }} aria-label={t('back')} className="btn btn-ghost px-3 py-2 text-sm min-h-touch">←</button>
         <div className="text-center">
           <h1 className="font-logo text-2xl grad-text leading-none">🛒 {t('shopTitle')}</h1>
         </div>
@@ -57,7 +57,7 @@ export default function Shop() {
       {/* Categorías */}
       <div className="card flex p-1 gap-1">
         {cats.map((c) => (
-          <button key={c.id} onClick={() => { sfxPop(); setCat(c.id) }} className="flex-1 btn text-sm py-2"
+          <button key={c.id} onClick={() => { sfxPop(); setCat(c.id) }} aria-pressed={cat === c.id} className="flex-1 btn text-sm py-2 min-h-touch"
             style={cat === c.id
               ? { background: 'linear-gradient(135deg,var(--violet-light),var(--violet))', color: '#fff' }
               : { background: 'transparent', color: 'var(--text-dim)' }}>

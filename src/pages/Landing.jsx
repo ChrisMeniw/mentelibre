@@ -5,13 +5,6 @@ import { usePlayer } from '../hooks/usePlayer'
 import AvatarPicker, { AVATARS } from '../components/AvatarPicker'
 import { AGE_GROUPS } from '../data/challenges'
 
-const TEAMS = [
-  { id: 'Alfa', emoji: '🔮', color: '#7C3AED' },
-  { id: 'Beta', emoji: '⚡', color: '#0EA5E9' },
-  { id: 'Gamma', emoji: '🌿', color: '#10B981' },
-  { id: 'Delta', emoji: '🔥', color: '#FBBF24' },
-]
-
 export default function Landing() {
   const { t, lang } = useLang()
   const { saveProfile, hasProfile } = usePlayer()
@@ -21,7 +14,6 @@ export default function Landing() {
   const [name, setName] = useState('')
   const [ageGroup, setAgeGroup] = useState('6-8')
   const [school, setSchool] = useState('')
-  const [team, setTeam] = useState('')
 
   useEffect(() => { if (hasProfile) nav('/hub', { replace: true }) }, [hasProfile, nav])
 
@@ -29,7 +21,7 @@ export default function Landing() {
 
   const start = () => {
     if (!ready) return
-    saveProfile(name.trim(), avatar.emoji, avatar.name, ageGroup, school.trim(), team)
+    saveProfile(name.trim(), avatar.emoji, avatar.name, ageGroup, school.trim())
     nav('/hub', { replace: true })
   }
 

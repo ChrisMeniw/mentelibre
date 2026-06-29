@@ -67,11 +67,19 @@ export default function Universe({ lights = 0, size = 320, animated = true }) {
       ctx.fillStyle = 'rgba(255,242,205,0.95)'
       ctx.beginPath(); ctx.arc(cx, cy, 2.6, 0, Math.PI * 2); ctx.fill()
 
-      if (animated && !reduce) { t++; raf = requestAnimationFrame(draw) }
+      if (animated && !reduce && !hidden) { t++; raf = requestAnimationFrame(draw) }
     }
 
+    let hidden = false
     draw()
-    return () => cancelAnimationFrame(raf)
+    // Pausa la galaxia cuando la app queda oculta (ahorra batería en gama baja).
+    const onVis = () => {
+      hidden = document.hidden
+      cancelAnimationFrame(raf)
+      if (!hidden && animated && !reduce) raf = requestAnimationFrame(draw)
+    }
+    document.addEventListener('visibilitychange', onVis)
+    return () => { cancelAnimationFrame(raf); document.removeEventListener('visibilitychange', onVis) }
   }, [lights, size, animated])
 
   return <canvas ref={ref} aria-hidden="true" style={{ width: size, height: size, display: 'block' }} />

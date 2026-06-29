@@ -111,7 +111,7 @@ export default function WarpBackground() {
         if (shoot.life > shoot.max || shoot.x < -0.12 || shoot.x > 1.12) shoot = null
       }
 
-      if (!reduceMotion) raf = requestAnimationFrame(tick)
+      if (!reduceMotion && !hidden) raf = requestAnimationFrame(tick)
     }
 
     const reduceMotion = typeof window !== 'undefined' && window.matchMedia
@@ -119,10 +119,18 @@ export default function WarpBackground() {
 
     function onResize() { dpr = Math.min(window.devicePixelRatio || 1, 1.8); setup(); if (reduceMotion) tick() }
 
+    let hidden = false
     setup()
     raf = requestAnimationFrame(tick)
     window.addEventListener('resize', onResize)
-    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', onResize) }
+    // Pausa el canvas cuando la pestaña/app queda oculta (ahorra batería y CPU en gama baja).
+    const onVis = () => {
+      hidden = document.hidden
+      cancelAnimationFrame(raf)
+      if (!hidden && !reduceMotion) raf = requestAnimationFrame(tick)
+    }
+    document.addEventListener('visibilitychange', onVis)
+    return () => { cancelAnimationFrame(raf); window.removeEventListener('resize', onResize); document.removeEventListener('visibilitychange', onVis) }
   }, [])
 
   return (

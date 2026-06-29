@@ -38,7 +38,9 @@ export default function AudioMusic() {
   useEffect(() => {
     const a = new Audio('/musica.mp3')
     a.loop = true
-    a.preload = 'auto'
+    // preload='none': NO baja los 7MB de música hasta el primer gesto (cuando se llama
+    // a .play()). Así la 1ª carga no compite por el ancho de banda en celulares de gama baja.
+    a.preload = 'none'
     a.volume = TARGET_VOL
     audioRef.current = a
     // OJO: NO tocar los efectos (sfx). El ruido de los botones debe sonar SIEMPRE,
@@ -79,7 +81,7 @@ export default function AudioMusic() {
       onClick={toggle}
       aria-label={on ? t('soundOff') : t('soundOn')}
       title={on ? t('soundOff') : t('soundOn')}
-      style={{ position: 'fixed', bottom: 80, right: 16, zIndex: 50 }}
+      style={{ position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 96px)', right: 16, zIndex: 50 }}
       className="w-12 h-12 rounded-full card grid place-items-center text-xl active:scale-90 transition"
     >
       {on ? '🔊' : '🔇'}

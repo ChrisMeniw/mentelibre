@@ -131,7 +131,8 @@ export default function Hub() {
           <button
             key={tb.id}
             onClick={() => { sfxPop(); setTab(tb.id) }}
-            className="flex-1 btn text-sm py-2"
+            aria-pressed={tab === tb.id}
+            className="flex-1 btn text-sm py-2 min-h-touch"
             style={tab === tb.id
               ? { background: 'linear-gradient(135deg,var(--violet-light),var(--violet))', color: '#fff', boxShadow: '0 8px 22px -10px rgba(124,58,237,0.9), inset 0 1px 0 rgba(255,255,255,0.3)' }
               : { background: 'transparent', color: 'var(--text-dim)' }}
