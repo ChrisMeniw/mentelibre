@@ -198,6 +198,13 @@ export const LANG_DATA = {
     backToMap: 'Volver al mapa',
     reelHint: 'Se desliza solo… o tocá',
     hurry: '¡Apúrate!',
+    streakLabel: 'días',
+    streakDays: '{n} días seguidos jugando 🔥',
+    keepStreak: '🔥 ¡{n} días seguidos! No cortes la racha.',
+    xpToUnlock: 'Te faltan {n} XP para desbloquear',
+    xpToNext: 'Te faltan {n} XP para ser {name}',
+    almostExplored: '¡Casi explorás todo este mundo! 🌟',
+    worldExplored: '¡Sos experto en este mundo! 🏆 Probá otro planeta o volvé en unos días por nuevos desafíos.',
     backToMap: 'Volver al mapa',
 
     // Misión diaria
@@ -495,6 +502,13 @@ export const LANG_DATA = {
     backToMap: 'Voltar ao mapa',
     reelHint: 'Passa sozinho… ou toque',
     hurry: 'Corre!',
+    streakLabel: 'dias',
+    streakDays: '{n} dias seguidos jogando 🔥',
+    keepStreak: '🔥 {n} dias seguidos! Não corte a sequência.',
+    xpToUnlock: 'Faltam {n} XP para desbloquear',
+    xpToNext: 'Faltam {n} XP para ser {name}',
+    almostExplored: 'Você quase explorou todo este mundo! 🌟',
+    worldExplored: 'Você é expert neste mundo! 🏆 Tente outro planeta ou volte em alguns dias para novos desafios.',
     backToMap: 'Voltar ao mapa',
 
     // Missão diária

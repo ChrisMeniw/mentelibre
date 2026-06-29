@@ -54,15 +54,18 @@ export default function Round() {
   // Elige y registra las preguntas UNA sola vez por ronda, evitando las ya vistas.
   // Ref-guard: a prueba del doble render de StrictMode (no repite el registro).
   const pickedRef = useRef(null)
+  const remainingRef = useRef(99)
   if (pickedRef.current === null) {
     let seen = getSeen(worldId, player.ageGroup)
     const pool = getQuestions(worldId, player.ageGroup)
+    remainingRef.current = pool.length - seen.length // cuántas quedaban sin explorar
     if (pool.length - seen.length < N) { resetSeen(worldId, player.ageGroup); seen = [] }
     const picked = pickRoundQuestions(worldId, player.ageGroup, N, seen)
     addSeen(worldId, player.ageGroup, picked)
     pickedRef.current = picked
   }
   const questions = pickedRef.current
+  const almostExplored = remainingRef.current <= N + 3 // quedan pocas preguntas nuevas en este mundo
 
   const [phase, setPhase] = useState('playing')   // arranca DIRECTO en la 1ª pregunta (sin pantalla previa)
   const [qi, setQi] = useState(0)
@@ -234,6 +237,10 @@ export default function Round() {
           <div className="font-logo text-2xl grad-text mt-2">{t('roundDoneTitle')}</div>
           <div className="text-sm font-extrabold text-[var(--gold)] mt-1">⭐ {results.totalStars}/{N * 3} {t('roundStarsLabel')}</div>
 
+          {almostExplored && (
+            <div className="text-xs text-[var(--text-dim)] mt-2 leading-snug max-w-xs mx-auto">{t('worldExplored')}</div>
+          )}
+
           <div className="mt-4 flex items-center justify-center gap-3">
             <span className="pop-bounce text-4xl font-logo text-[var(--gold)] text-glow">+{results.totalXp} XP</span>
             <span className="pop-bounce chip text-lg" style={{ background: 'linear-gradient(135deg,rgba(251,191,36,0.25),rgba(251,191,36,0.08))', borderColor: 'rgba(251,191,36,0.6)' }}><span className="coin-spin">🪙</span> <span className="text-[var(--gold)] font-black">+{results.totalCoins}</span></span>
@@ -310,6 +317,12 @@ export default function Round() {
           <div key={i} className="flex-1 h-1.5 rounded-full" style={{ background: i < qi || (i === qi && stage === 'feedback') ? 'linear-gradient(90deg,var(--violet-light),var(--gold))' : i === qi ? 'rgba(168,85,247,0.5)' : 'rgba(255,255,255,0.12)' }} />
         ))}
       </div>
+
+      {almostExplored && (
+        <div className="text-center mb-3">
+          <span className="chip text-[11px]" style={{ background: 'rgba(251,191,36,0.14)', borderColor: 'rgba(251,191,36,0.5)', color: 'var(--gold)' }}>{t('almostExplored')}</span>
+        </div>
+      )}
 
       {/* Estilo REEL: cada nueva pregunta entra deslizando desde abajo */}
       <div key={qi} className="reel-in">

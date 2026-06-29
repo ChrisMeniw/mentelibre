@@ -172,7 +172,13 @@ export default function AdventureMap() {
                 </button>
               </div>
               {!unlocked && (
-                <div className="text-center text-[11px] text-[var(--text-dim)] font-bold">{t('askLockedHint')}</div>
+                <div className="text-center">
+                  <div className="text-[11px] text-[var(--text-dim)] font-bold">{t('askLockedHint')}</div>
+                  <div className="text-[11px] font-black text-[var(--violet-light)] mt-1">🔒 {t('xpToUnlock').replace('{n}', Math.max(0, ASK_UNLOCK_XP - player.xp))}</div>
+                  <div className="mx-auto mt-1 h-1.5 w-36 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                    <div className="h-full rounded-full" style={{ width: Math.min(100, Math.round((player.xp / ASK_UNLOCK_XP) * 100)) + '%', background: 'linear-gradient(90deg,#8B5CF6,#FBBF24)' }} />
+                  </div>
+                </div>
               )}
             </div>
           )

@@ -17,7 +17,8 @@ import DailyMissions from '../components/DailyMissions'
 import InstallButton from '../components/InstallButton'
 import CharacterSystem, { characterName, levelTitle } from '../components/characters/CharacterSystem'
 import Universe, { universeRank } from '../components/Universe'
-import { levelForXP } from '../data/levels'
+import StreakBadge from '../components/StreakBadge'
+import { levelForXP, LEVELS } from '../data/levels'
 
 function PlayerHeader({ onChangeUser }) {
   const { player } = usePlayer()
@@ -157,6 +158,11 @@ export default function Hub() {
                   <div className="text-[10px] uppercase tracking-[0.18em] text-[var(--text-dim)] font-extrabold">Tu personaje</div>
                   <div className="font-logo text-xl grad-text leading-tight">{characterName(player.ageGroup, lvl)}</div>
                   <div className="text-xs text-[var(--text-dim)]">{levelTitle(player.ageGroup, lvl)} · Nivel {lvl + 1}</div>
+                  {lvl < 4 && (
+                    <div className="mt-1.5 text-[11px] font-bold text-[var(--violet-light)]">
+                      {t('xpToNext').replace('{n}', Math.max(0, LEVELS[nextLvl].min - player.xp)).replace('{name}', characterName(player.ageGroup, nextLvl))}
+                    </div>
+                  )}
                 </div>
                 {lvl < 4 && (
                   <div className="flex flex-col items-center shrink-0 opacity-50">

@@ -4,6 +4,7 @@ import { usePlayer } from '../hooks/usePlayer'
 import { isAskUnlocked } from '../data/levels'
 import { sfxPop } from '../lib/sfx'
 import ModeIcon from '../components/ModeIcon'
+import StreakBadge from '../components/StreakBadge'
 
 // Tarjeta de modo: vidrio neutro + ficha de ícono con acento. Jerarquía clara —
 // una sola tarjeta primaria (dorada) sobresale; el resto, calmo y consistente.
@@ -63,6 +64,10 @@ export default function Home() {
       <h1 className="font-logo text-6xl grad-text leading-none mt-4 fade-in-d1">{appName}</h1>
       <div className="text-[var(--gold)] font-extrabold mt-3 text-glow fade-in-d1">✨ {t('tagline')}</div>
       <p className="text-sm text-[var(--text-dim)] mt-3 max-w-xs leading-relaxed fade-in-d2">{t('homeSub')}</p>
+
+      {hasProfile && (player.streak || 0) >= 1 && (
+        <div className="mt-3 fade-in-d2"><StreakBadge size="lg" /></div>
+      )}
 
       {/* Elige cómo jugar — 3 modos bien diferenciados */}
       <div className="w-full mt-6 fade-in-d3">
