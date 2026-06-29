@@ -206,17 +206,21 @@ export default function Classroom() {
         {scores.length === 0 ? (
           <div className="card p-6 text-center text-sm text-[var(--text-dim)] mt-4">{t('caNoScores')}</div>
         ) : boardTab === 'groups' ? (
-          <div className="card overflow-hidden mt-4">
-            {scores.slice(0, 20).map((s, i) => (
-              <div key={i} className="flex items-center gap-3 px-3 py-2.5 border-b border-white/5 last:border-0" style={{ background: i < 3 ? 'rgba(251,191,36,0.10)' : 'transparent' }}>
-                <span className="w-7 text-center font-extrabold text-lg">{medal(i)}</span>
-                <span className="flex-1 min-w-0">
-                  <span className="font-bold truncate block">{s.group}</span>
-                  <span className="text-[11px] text-[var(--text-dim)] truncate block">{s.school}</span>
-                </span>
-                <span className="font-logo text-lg text-[var(--gold)] tabular-nums">{s.score}</span>
-              </div>
-            ))}
+          <div className="mt-4">
+            <div className="text-center font-logo text-lg grad-text mb-2 pop-bounce">🥁 {t('caPodium')}</div>
+            <div className="card overflow-hidden">
+              {scores.slice(0, 20).map((s, i) => (
+                <div key={i} className={'flex items-center gap-3 px-3 py-2.5 border-b border-white/5 last:border-0' + (i < 3 ? ' pop-bounce' : '')}
+                  style={{ background: i === 0 ? 'rgba(251,191,36,0.20)' : i < 3 ? 'rgba(251,191,36,0.10)' : 'transparent', animationDelay: i < 3 ? `${(2 - i) * 0.55}s` : undefined }}>
+                  <span className="w-7 text-center font-extrabold text-lg">{medal(i)}</span>
+                  <span className="flex-1 min-w-0">
+                    <span className="font-bold truncate block">{i === 0 ? '🎉 ' : ''}{s.group}</span>
+                    <span className="text-[11px] text-[var(--text-dim)] truncate block">{s.school}</span>
+                  </span>
+                  <span className="font-logo text-lg text-[var(--gold)] tabular-nums">{s.score}</span>
+                </div>
+              ))}
+            </div>
           </div>
         ) : (
           <div className="card overflow-hidden mt-4">

@@ -8,6 +8,7 @@ import { BADGES } from '../data/badges'
 import { levelForXP, levelName } from '../data/levels'
 import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '../lib/claude'
 import { avatarByEmoji } from '../components/AvatarPicker'
+import { petById } from '../data/shop'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp, sfxCombo, sfxTick, sfxStarsFanfare } from '../lib/sfx'
@@ -296,8 +297,13 @@ export default function Round() {
 
   // ---------- PLAYING ----------
   const timePct = Math.max(0, Math.round((timeLeft / ANSWER_SECONDS) * 100))
+  const pet = petById(player.pet)
   return (
     <div className="mx-auto max-w-md px-4 pt-14 pb-32 min-h-dvh safe-top">
+      {/* Mascota comprada: te acompaña durante la ronda (los ítems de la tienda se ven en el juego) */}
+      {pet && (
+        <div className="fixed left-3 bottom-24 z-30 text-3xl floaty pointer-events-none" aria-hidden title={pet.name}>{pet.emoji}</div>
+      )}
       {/* Header: progreso de la ronda */}
       <div className="flex items-center gap-3 mb-3">
         <button onClick={() => { sfxPop(); stopSpeak(); nav('/') }} aria-label={t('navHome')} className="btn btn-ghost px-3 py-2 text-base min-h-touch">🏠</button>
