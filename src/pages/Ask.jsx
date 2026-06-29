@@ -198,7 +198,11 @@ export default function Ask() {
             <button onClick={() => { sfxPop(); speak(topicText, lang) }} aria-label={t('listenQuestion')} className="shrink-0 inline-flex items-center gap-1 rounded-full px-3 py-1.5 text-xs font-extrabold active:scale-90 transition min-h-touch" style={{ background: `${ACCENT}22`, color: ACCENT, border: `1px solid ${ACCENT}55` }}>🔊 {t('listenQuestion')}</button>
           )}
         </div>
-        <p className="mt-2 text-lg font-extrabold leading-snug">{topicText}</p>
+        {/* ESCENA: ZOE te muestra la situación (ícono grande + texto) */}
+        <div key={ti} className="mt-2 rounded-2xl p-4 text-center reel-in" style={{ background: `radial-gradient(circle at 50% 32%, ${ACCENT}3a, rgba(0,0,0,0.22))`, border: `1px solid ${ACCENT}44` }}>
+          <div className="text-5xl world-float" aria-hidden>{topic?.e || '💭'}</div>
+          <p className="mt-2 text-lg font-extrabold leading-snug">{topicText}</p>
+        </div>
         <p className="mt-1 text-xs text-[var(--text-dim)]">{t('askHelp')}</p>
 
         {stage === 'answer' && (
