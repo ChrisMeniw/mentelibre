@@ -91,7 +91,11 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex gap-2 w-full mt-4 fade-in-d3">
+      <button onClick={() => { sfxPop(); nav('/como-funciona') }} className="btn btn-ghost w-full text-sm min-h-touch mt-4 fade-in-d3"
+        style={{ boxShadow: 'inset 0 0 0 1px rgba(168,85,247,0.4)' }} aria-label={t('hiwNav')}>
+        ❓ {t('hiwTitle')}
+      </button>
+      <div className="flex gap-2 w-full mt-2 fade-in-d3">
         <button onClick={() => { sfxPop(); nav('/mision') }} className="btn btn-ghost flex-1 text-sm min-h-touch" aria-label={t('ourMission')}>
           {t('ourMission')}
         </button>

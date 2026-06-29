@@ -12,6 +12,7 @@ import Daily from './pages/Daily'
 import Ask from './pages/Ask'
 import Characters from './pages/Characters'
 import Mission from './pages/Mission'
+import HowItWorks from './pages/HowItWorks'
 import Classroom from './pages/Classroom'
 import Landing from './pages/Landing'
 import Hub from './pages/Hub'
@@ -65,6 +66,7 @@ export default function App() {
           <Route path="/preguntar" element={<Ask />} />
           <Route path="/personajes" element={<Characters />} />
           <Route path="/mision" element={<Mission />} />
+          <Route path="/como-funciona" element={<HowItWorks />} />
           <Route path="/aula" element={<Classroom />} />
           <Route path="/empezar" element={<Landing />} />
           <Route path="/hub" element={<Hub />} />
