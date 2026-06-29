@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system, messages: [{ role: 'user', content: message }] }),
     })
-    if (!upstream.ok) { const detail = await upstream.text().catch(() => ''); res.status(200).json({ text: '', error: 'upstream ' + upstream.status, detail: detail.slice(0, 400) }); return }
+    if (!upstream.ok) { res.status(200).json({ text: '', error: 'upstream ' + upstream.status }); return }
     const data = await upstream.json()
     res.status(200).json({ text: (data.content && data.content[0] && data.content[0].text) || '' })
   } catch (e) {
