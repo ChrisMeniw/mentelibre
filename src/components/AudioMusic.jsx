@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLang } from '../i18n'
-import { setSfxEnabled } from '../lib/sfx'
 import { subscribeGameplay, isGameplay } from '../lib/musicBus'
 import { setMusicKick } from '../lib/musicControl'
 import { setPlaybackAudioSession } from '../lib/audioUnlock'
@@ -42,7 +41,8 @@ export default function AudioMusic() {
     a.preload = 'auto'
     a.volume = TARGET_VOL
     audioRef.current = a
-    setSfxEnabled(onRef.current)
+    // OJO: NO tocar los efectos (sfx). El ruido de los botones debe sonar SIEMPRE,
+    // aunque la música esté en silencio. El botón 🔊/🔇 solo controla la música.
 
     gameplay.current = isGameplay()
     const unsub = subscribeGameplay((g) => { gameplay.current = g; apply() })
@@ -70,8 +70,7 @@ export default function AudioMusic() {
     setOn(next)
     onRef.current = next
     try { localStorage.setItem('ml_music', next ? 'on' : 'off') } catch { /* noop */ }
-    setSfxEnabled(next)
-    gestured.current = true
+    gestured.current = true // los efectos (sfx) quedan SIEMPRE encendidos; esto solo apaga la música
     apply()
   }
 
