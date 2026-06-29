@@ -29,7 +29,11 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({ model: MODEL, max_tokens: maxTokens, system, messages: [{ role: 'user', content: message }] }),
     })
-    if (!upstream.ok) { res.status(200).json({ text: '', error: 'upstream ' + upstream.status }); return }
+    if (!upstream.ok) {
+      const out = { text: '', error: 'upstream ' + upstream.status }
+      if (req.query && req.query.debug) { out.detail = (await upstream.text().catch(() => '')).slice(0, 400) } // diagnóstico oculto
+      res.status(200).json(out); return
+    }
     const data = await upstream.json()
     res.status(200).json({ text: (data.content && data.content[0] && data.content[0].text) || '' })
   } catch (e) {
