@@ -7,7 +7,9 @@ const MODEL = 'claude-sonnet-4-6'
 export default async function handler(req, res) {
   if (req.method !== 'POST') { res.status(405).json({ text: '', error: 'method' }); return }
 
-  const apiKey = process.env.ANTHROPIC_API_KEY
+  // Acepta la clave en ANTHROPIC_API_KEY (recomendada) o en la vieja VITE_ANTHROPIC_API_KEY.
+  // Ambas se leen SOLO acá en el servidor; el navegador no las ve (el código cliente no las usa).
+  const apiKey = process.env.ANTHROPIC_API_KEY || process.env.VITE_ANTHROPIC_API_KEY
   if (!apiKey) { res.status(200).json({ text: '', noKey: true }); return } // sin clave: respaldo
 
   try {
