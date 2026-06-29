@@ -1,3 +1,5 @@
+import { localAsk } from './localZoe'
+
 // Llamadas a ZOE (la profe IA) a través de NUESTRO proxy serverless /api/zoe.
 // La API key vive SOLO en el servidor (ANTHROPIC_API_KEY), NUNCA se expone al navegador.
 // Si el servidor no tiene clave o la API falla, el proxy devuelve texto vacío y el juego
@@ -184,8 +186,9 @@ export function parseAskJSON(text) {
 // Puntúa la calidad de las preguntas del chico con la rúbrica fija (modelo abierto, sin respuesta correcta).
 export async function evaluateQuestion(tema, pregunta, ageGroup, lang = 'es', childName = '') {
   const res = await callClaude(askReactSystemPrompt(childName, lang, ageGroup), `Tema: ${tema}\nPregunta del niño: ${pregunta}`, 220)
-  // Sin respuesta (servidor sin clave o falla) = respaldo alegre. El juego SIEMPRE sigue.
-  if (!res) return { stars: 2, emoji: '🌟', feedback: fallbackAskReact(childName, lang) }
+  // Sin respuesta (sin créditos o falla) = ZOE local GRATIS: lee la pregunta del chico y
+  // responde con estrellas justas y un mensaje a medida. El juego SIEMPRE sigue.
+  if (!res) return localAsk(childName, pregunta, lang, ageGroup)
   const parsed = parseAskJSON(res)
   return { stars: parsed.stars, emoji: parsed.emoji, feedback: parsed.feedback || fallbackAskReact(childName, lang) }
 }

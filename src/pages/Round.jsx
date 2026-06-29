@@ -7,6 +7,7 @@ import { getSeen, addSeen, resetSeen } from '../lib/seenQuestions'
 import { BADGES } from '../data/badges'
 import { levelForXP, levelName } from '../data/levels'
 import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '../lib/claude'
+import { localReact } from '../lib/localZoe'
 import { avatarByEmoji } from '../components/AvatarPicker'
 import { petById } from '../data/shop'
 import { useSpeech } from '../hooks/useSpeech'
@@ -144,8 +145,9 @@ export default function Round() {
     setStage('feedback'); setLoading(true); setReact('')
     incrementAI()
     const res = await callClaude(roundReactSystemPrompt(childName, lang, player.ageGroup), `Pregunta: ${qText}\nRespuesta: ${answer}`, 120)
-    // Si ZOE no respondió (servidor sin clave o falla), usamos un respaldo cálido y SEGUIMOS. Nunca se traba.
-    const parsed = res ? parseReact(res) : { stars: 2, text: fallbackReact(childName, lang) }
+    // Si ZOE en la nube no respondió (sin créditos o falla), la ZOE LOCAL gratis lee la
+    // respuesta del chico y reacciona con estrellas justas. SIEMPRE sigue, nunca se traba.
+    const parsed = res ? parseReact(res) : localReact(childName, answer, lang, player.ageGroup)
     const fb = parsed.text || fallbackReact(childName, lang)
     // Cuando contesta muy bien, ZOE festeja: "¡Excelente respuesta! ¡Vamos por más!"
     setReact(parsed.stars >= 3 ? `${t('zoeBravo')} ${fb}` : fb)

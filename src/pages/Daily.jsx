@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '../lib/claude'
+import { localReact } from '../lib/localZoe'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxCoins } from '../lib/sfx'
@@ -65,7 +66,7 @@ export default function Daily() {
     sfxSend(); if (listening) stopListen(); stopSpeak()
     setPhase('scoring'); incrementAI()
     const res = await callClaude(roundReactSystemPrompt(childName, lang, player.ageGroup), `Pregunta: ${qText}\nRespuesta: ${answer}`, 120)
-    const parsed = res ? parseReact(res) : { stars: 2, text: fallbackReact(childName, lang) }
+    const parsed = res ? parseReact(res) : localReact(childName, answer, lang, player.ageGroup)
     const st = parsed.stars || 2
     setStars(st); setReact(parsed.text || fallbackReact(childName, lang))
     // Recompensa del reto: bonus fijo + por estrellas.
