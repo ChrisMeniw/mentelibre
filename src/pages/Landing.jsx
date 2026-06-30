@@ -28,7 +28,7 @@ export default function Landing() {
 
   return (
     <div className="max-w-md mx-auto px-4 pt-10 pb-16">
-      <LogoHero px={1} pullTop={2.5} />
+      <LogoHero />
       <p className="text-center text-sm text-[var(--text-dim)] mt-2 max-w-xs mx-auto leading-relaxed fade-in-d2">{t('subtitle')}</p>
 
       <div className="card p-4 mt-6 fade-in-d1">

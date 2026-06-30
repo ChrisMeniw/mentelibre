@@ -49,7 +49,7 @@ export default function Home() {
 
   return (
     <div className="mx-auto max-w-md px-5 pt-12 pb-32 min-h-dvh flex flex-col items-center justify-start text-center safe-top">
-      <LogoHero px={1.25} pullTop={3} />
+      <LogoHero />
       <p className="text-sm text-[var(--text-dim)] mt-2 max-w-xs leading-relaxed fade-in-d2">{t('homeSub')}</p>
 
       {hasProfile && (player.streak || 0) >= 1 && (

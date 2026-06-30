@@ -34,7 +34,7 @@ export default function HowItWorks() {
       <button onClick={() => { sfxPop(); nav('/') }} aria-label={t('back')} className="btn btn-ghost px-3 py-2 text-sm min-h-touch mb-3">←</button>
 
       {/* Hero — logo de marca fundido con el fondo */}
-      <LogoHero px={1} pullTop={0} showTagline={false} />
+      <LogoHero showTagline={false} />
       <div className="text-center">
         <h1 className="font-logo text-2xl mt-1 grad-text leading-tight">{t('hiwTitle')}</h1>
         <p className="text-sm text-[var(--text-dim)] mt-2 leading-relaxed">{t('hiwSub')}</p>
