@@ -5,10 +5,10 @@ export const LANG_DATA = {
   es: {
     appName: 'Mente Libre',
     tagline: 'Pensar es un superpoder',
-    subtitle: 'Entrena tu mente con la ayuda de la IA. Gratis para escuelas.',
+    subtitle: 'Entrena tu mente con la ayuda de la IA.',
 
     // Onboarding
-    homeSub: 'Un juego de pensamiento crítico con inteligencia artificial. Gratis, para escuelas y familias.',
+    homeSub: 'Un juego de pensamiento crítico con inteligencia artificial.',
     homeWelcome: '¿Estás listo para desafiar a tu mente?',
     zoeTitle: 'Primera profesora IA de LATAM',
     zoeTapHint: '🔊 Tócame para escucharme',
@@ -361,9 +361,9 @@ export const LANG_DATA = {
   pt: {
     appName: 'Mente Livre',
     tagline: 'Pensar é um superpoder',
-    subtitle: 'Treine sua mente com a ajuda da IA. Grátis para escolas.',
+    subtitle: 'Treine sua mente com a ajuda da IA.',
 
-    homeSub: 'Um jogo de pensamento crítico com inteligência artificial. Grátis, para escolas e famílias.',
+    homeSub: 'Um jogo de pensamento crítico com inteligência artificial.',
     homeWelcome: 'Você está pronto para desafiar a sua mente?',
     zoeTitle: 'Primeira professora IA da América Latina',
     zoeTapHint: '🔊 Toque para me ouvir',
