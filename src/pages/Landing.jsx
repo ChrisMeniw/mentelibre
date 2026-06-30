@@ -29,21 +29,15 @@ export default function Landing() {
     <div className="max-w-md mx-auto px-4 pt-10 pb-16">
       <div className="text-center fade-in pt-2">
         <img
-          src="/foundation-logo.webp"
-          alt="Chris Meniw Foundation"
-          width="104"
-          height="104"
-          className="mx-auto rounded-full floaty"
-          style={{ width: 104, height: 104, filter: 'drop-shadow(0 10px 28px rgba(124,58,237,0.55))' }}
+          src="/logo-final.webp"
+          alt={(lang === 'pt' ? 'Mente Livre' : 'Mente Libre') + ' · ZOE'}
+          width="440"
+          height="248"
+          loading="eager"
+          className="mx-auto"
+          style={{ width: 'min(440px, 100%)', height: 'auto', filter: 'drop-shadow(0 14px 40px rgba(124,58,237,0.55))' }}
         />
-        <div className="text-[10px] uppercase tracking-[0.25em] text-[var(--text-dim)] mt-2 font-extrabold">
-          Chris Meniw Foundation
-        </div>
-        <div className="font-logo text-5xl grad-text floaty leading-none mt-4">
-          {lang === 'pt' ? 'Mente Livre' : 'Mente Libre'}
-        </div>
-        <div className="text-[var(--gold)] font-extrabold mt-3 text-glow">✨ {t('tagline')}</div>
-        <p className="text-sm text-[var(--text-dim)] mt-2 max-w-xs mx-auto leading-relaxed">{t('subtitle')}</p>
+        <p className="text-sm text-[var(--text-dim)] mt-3 max-w-xs mx-auto leading-relaxed">{t('subtitle')}</p>
       </div>
 
       <div className="card p-4 mt-6 fade-in-d1">

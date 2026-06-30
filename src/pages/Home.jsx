@@ -50,15 +50,15 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-md px-5 pt-12 pb-32 min-h-dvh flex flex-col items-center justify-center text-center safe-top">
       <img
-        src={lang === 'pt' ? '/logo-mentelivre-zoe.webp' : '/logo-mentelibre-zoe.webp'}
+        src="/logo-final.webp"
         alt={appName + ' · ZOE'}
-        width="264"
-        height="264"
+        width="440"
+        height="248"
         loading="eager"
-        className="mx-auto floaty fade-in"
-        style={{ width: 'min(264px, 74%)', height: 'auto', filter: 'drop-shadow(0 16px 44px rgba(124,58,237,0.5))' }}
+        className="mx-auto fade-in"
+        style={{ width: 'min(440px, 100%)', height: 'auto', filter: 'drop-shadow(0 14px 40px rgba(124,58,237,0.55))' }}
       />
-      <p className="text-sm text-[var(--text-dim)] mt-4 max-w-xs leading-relaxed fade-in-d2">{t('homeSub')}</p>
+      <p className="text-sm text-[var(--text-dim)] mt-3 max-w-xs leading-relaxed fade-in-d2">{t('homeSub')}</p>
 
       {hasProfile && (player.streak || 0) >= 1 && (
         <div className="mt-3 fade-in-d2"><StreakBadge size="lg" /></div>
