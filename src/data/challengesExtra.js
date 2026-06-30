@@ -49,7 +49,7 @@ export const EXTRA_CHALLENGES = {
     '12-15': [
       { es: '¿Las grandes empresas cambian por convicción o solo por presión social?', pt: 'As grandes empresas mudam por convicção ou só por pressão social?' },
       { es: '¿Deberíamos prohibir productos contaminantes aunque sean baratos y populares?', pt: 'Deveríamos proibir produtos poluentes mesmo sendo baratos e populares?' },
-      { es: '¿Es egoísta tener hijos sabiendo cómo está el planeta? Defiende tu postura.', pt: 'É egoísta ter filhos sabendo como está o planeta? Defenda sua posição.' },
+      { es: '¿Las generaciones de hoy le están dejando una deuda ambiental a las que vienen? Defiende tu postura.', pt: 'As gerações de hoje estão deixando uma dívida ambiental para as que vêm? Defenda sua posição.' },
       { es: '¿Quién tiene más responsabilidad por el ambiente: tu generación o las anteriores?', pt: 'Quem tem mais responsabilidade pelo meio ambiente: sua geração ou as anteriores?' },
       { es: '¿El consumo responsable individual cambia algo o es solo marketing?', pt: 'O consumo responsável individual muda algo ou é só marketing?' },
       { es: 'Si una ciudad limpia es más cara para vivir, ¿sigue siendo justa para todos?', pt: 'Se uma cidade limpa é mais cara para morar, ela continua justa para todos?' },

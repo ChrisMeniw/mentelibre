@@ -8,18 +8,53 @@ const wordsOf = (s) => (String(s || '').trim().match(/\S+/g) || [])
 const seedOf = (s) => { let h = 0; const t = String(s || ''); for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return Math.abs(h) }
 const pick = (arr, seed) => arr[seed % arr.length]
 
-// Marcadores de razonamiento e imaginación (ES + PT).
-const REASON = /(porque|porqu[eé]|ya que|as[ií] que|entonces|por eso|debido|para que|igual que|pois|ent[ãa]o|porqu[eê])/i
+// Marcadores de razonamiento, imaginación y desarrollo (ES + PT).
+const REASON = /(porque|porqu[eé]|ya que|as[ií] que|entonces|por eso|debido|para que|igual que|gracias a|pois|ent[ãa]o|porqu[eê])/i
 const IMAGINE = /(imagin|ser[ií]a|podr[ií]a|tal vez|quiz[áa]s|\by si\b|capaz|invent|sue[ñn]|e se\b|seria|poderia|talvez|sonh)/i
+const DEVELOP = /(adem[áa]s|tambi[ée]n|por ejemplo|aunque|en cambio|primero|segundo|por un lado|al[ée]m disso|tamb[ée]m|por exemplo|embora|por outro lado)/i
+
+// El listón SUBE con la edad: a un peque le pedimos menos palabras que a un grande para
+// llegar a 3★ (tiny: por debajo y sin razón = 1★; two: alcanza 2★; reason3: con una razón
+// llega a 3★; long3: se explayó mucho = 3★ aunque no use conectores).
+const BARS = {
+  '6-8':   { tiny: 2, two: 3, reason3: 5, long3: 10 },
+  '9-11':  { tiny: 2, two: 4, reason3: 7, long3: 14 },
+  '12-15': { tiny: 3, two: 5, reason3: 9, long3: 18 },
+}
+
+// ¿Tecleo al azar / sin sentido? (sin vocales, o un mismo caracter repetido muchísimo) → 1★.
+function looksLikeGibberish(s) {
+  const t = String(s || '').toLowerCase().replace(/\s+/g, '')
+  if (t.length < 4) return false // muy corto se evalúa por longitud, no acá
+  if (!/[aeiouáéíóúãõ]/.test(t)) return true
+  if (/(.)\1{4,}/.test(t)) return true
+  return false
+}
 
 // ---------- Rondas / Reto (preguntas abiertas de pensamiento) ----------
-function scoreAnswer(answer) {
+// Puntaje JUSTO y DISCRIMINANTE: premia a quien piensa de verdad (da razones, imagina,
+// desarrolla) con 3★; un intento válido saca 2★; muy poquito o sin sustancia, 1★.
+function scoreAnswer(answer, ageGroup = '9-11') {
   const w = wordsOf(answer).length
-  const deep = REASON.test(answer) || IMAGINE.test(answer)
-  if (w <= 2) return 1            // muy cortito: invitamos a contar más
-  if (deep && w >= 5) return 3    // explicó o imaginó: pensó de verdad
-  if (w >= 14) return 3           // se explayó mucho
-  return 2                        // intento válido (generoso)
+  if (w === 0) return 1
+  if (looksLikeGibberish(answer)) return 1
+  const B = BARS[ageGroup] || BARS['9-11']
+  const deep = REASON.test(answer) || IMAGINE.test(answer)   // dio una razón o imaginó
+  const developed = DEVELOP.test(answer)                     // sumó más de una idea
+  // 3★ — pensó de verdad: razón/imaginación con cuerpo, o se explayó mucho, o desarrolló varias ideas
+  if ((deep && w >= B.reason3) || w >= B.long3 || (deep && developed && w >= B.two)) return 3
+  // 1★ — muy poquito y sin una razón
+  if (w <= B.tiny && !deep) return 1
+  // 2★ — intento válido: algo de cuerpo o una razón corta
+  if (w >= B.two || deep) return 2
+  // quedó entre medio (cortito y sin razón) → todavía 1★; ZOE lo invita a contar más
+  return 1
+}
+
+// Puntaje puro (1-3) para usar como respaldo GRATIS en otros modos (Aula, Reto) cuando la
+// IA en la nube no está disponible: así TODOS los modos premian al que mejor piensa.
+export function localScore(answer, ageGroup = '9-11') {
+  return scoreAnswer(answer, ageGroup)
 }
 
 const REACT = {
@@ -68,9 +103,9 @@ const REACT = {
 }
 
 // localReact → { stars, text }: igual forma que parseReact, para usar como respaldo directo.
-export function localReact(childName, answer, lang = 'es', _ageGroup) {
+export function localReact(childName, answer, lang = 'es', ageGroup = '9-11') {
   const n = childName || (lang === 'pt' ? 'amigo' : 'amigo')
-  const stars = scoreAnswer(answer)
+  const stars = scoreAnswer(answer, ageGroup)
   const pool = (REACT[lang] || REACT.es)[stars]
   return { stars, text: pick(pool, seedOf(answer + n))(n) }
 }

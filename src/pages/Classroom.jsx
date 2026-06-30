@@ -4,6 +4,7 @@ import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { AGE_GROUPS, pickMixedQuestions } from '../data/challenges'
 import { callClaude, scoreSystemPrompt, parseScore } from '../lib/claude'
+import { localScore } from '../lib/localZoe'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxComplete } from '../lib/sfx'
@@ -91,7 +92,8 @@ export default function Classroom() {
     stopSpeak(); sfxSend()
     setStage('scoring')
     const res = await callClaude(scoreSystemPrompt(lang), `Pregunta: ${qText}\nRespuesta: ${answer}`, 5)
-    const stars = res ? parseScore(res) : 2
+    // Sin créditos en la nube: puntaje LOCAL discriminante (antes daba 2★ fijo a todos).
+    const stars = res ? parseScore(res) : localScore(answer, age)
     const points = STAR_POINTS[stars] + Math.max(0, usedSecondsRef.current) // base + bonus por rapidez
     setScore((s) => s + points)
     setFb({ stars, points, timeout: false })

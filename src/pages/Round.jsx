@@ -19,7 +19,9 @@ import StarsReveal from '../components/StarsReveal'
 import CharacterSystem, { characterName, levelTitle } from '../components/characters/CharacterSystem'
 
 const N = 5
-const ROUND_REWARD = { 1: { xp: 6, coins: 1 }, 2: { xp: 12, coins: 2 }, 3: { xp: 18, coins: 3 } }
+// Premio por estrella: el escalón es CLARO para que contestar bien rinda mucho más.
+// 1★ = 5 · 2★ = 10 · 3★ = 20 XP (una ronda perfecta = 100 XP; floja = 25).
+const ROUND_REWARD = { 1: { xp: 5, coins: 1 }, 2: { xp: 10, coins: 2 }, 3: { xp: 20, coins: 3 } }
 // Tiempo para responder según el avance: 40s al comienzo, 30s en el medio, 20s al final.
 const answerSecondsFor = (xp) => { const lv = levelForXP(xp); return lv <= 1 ? 40 : lv <= 3 ? 30 : 20 }
 const countWords = (s) => (s.trim() ? s.trim().split(/\s+/).length : 0)

@@ -4,6 +4,7 @@ import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { getWorld, pickQuestion } from '../data/challenges'
 import { callClaude, responseSystemPrompt, hintSystemPrompt, scoreSystemPrompt, parseScore, fallbackResponse, fallbackHint } from '../lib/claude'
+import { localScore } from '../lib/localZoe'
 import { avatarByEmoji } from '../components/AvatarPicker'
 import { levelForXP, levelName } from '../data/levels'
 import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp } from '../lib/sfx'
@@ -86,10 +87,11 @@ export default function Challenge() {
     const sys = responseSystemPrompt(childName, `${av.name} ${player.avatar}`, lang, player.ageGroup)
     const userMsg = `Pregunta: ${qText}\nRespuesta: ${answer}`
     // Puntaje del pensamiento EN SEGUNDO PLANO (no bloquea la respuesta; se usa recién al terminar).
-    setScore(2)
+    // Arranca con el puntaje LOCAL justo (gratis); si la nube responde, lo refina.
+    setScore(localScore(answer, player.ageGroup))
     callClaude(scoreSystemPrompt(lang), userMsg, 5)
       .then((r) => { if (r) setScore(parseScore(r)) })
-      .catch(() => { /* queda en 2 */ })
+      .catch(() => { /* queda el puntaje local */ })
     // La respuesta cálida libera la pantalla apenas llega.
     const res = await callClaude(sys, userMsg, 300)
     setAiText(res || fallbackResponse(childName, av.name, lang))
