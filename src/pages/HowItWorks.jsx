@@ -32,12 +32,12 @@ export default function HowItWorks() {
     <div className="mx-auto max-w-md px-4 pt-14 pb-32 safe-top">
       <button onClick={() => { sfxPop(); nav('/') }} aria-label={t('back')} className="btn btn-ghost px-3 py-2 text-sm min-h-touch mb-3">←</button>
 
-      {/* Hero */}
+      {/* Hero — logo de marca (ZOE + título) */}
       <div className="text-center fade-in">
-        <img src="/zoe.jpg" alt="ZOE" width="112" height="112"
-          className="mx-auto rounded-full object-cover floaty"
-          style={{ width: 112, height: 112, objectPosition: 'center 28%', boxShadow: '0 0 0 3px rgba(168,85,247,0.7), 0 12px 34px -6px rgba(168,85,247,0.7)' }} />
-        <h1 className="font-logo text-3xl mt-3 grad-text leading-tight">{t('hiwTitle')}</h1>
+        <img src="/logo-mentelibre-zoe.webp" alt="Mente Libre · ZOE" width="280" height="280"
+          className="mx-auto floaty" loading="eager"
+          style={{ width: 'min(280px, 76%)', height: 'auto', filter: 'drop-shadow(0 16px 42px rgba(124,58,237,0.5))' }} />
+        <h1 className="font-logo text-2xl mt-4 grad-text leading-tight">{t('hiwTitle')}</h1>
         <p className="text-sm text-[var(--text-dim)] mt-2 leading-relaxed">{t('hiwSub')}</p>
       </div>
 
