@@ -90,6 +90,9 @@ export default function Round() {
   // Estás jugando → la música del menú se calla mientras dura la ronda.
   useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
 
+  // Al ENTRAR a jugar, arrancar bien arriba (no que aparezca deslizado abajo).
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [])
+
   const q = questions[qi]
   const qText = q ? (lang === 'pt' ? q.pt : q.es) : ''
   const childName = player.name || (lang === 'pt' ? 'amigo' : 'amigo')
@@ -181,7 +184,7 @@ export default function Round() {
     if (combo >= 2) comboCoinsRef.current += (combo - 1) // bono de racha: x2→+1, x3→+2…
     trackDaily({ answers: 1, stars: qStars }) // progreso de misión diaria por pregunta
     if (qi + 1 < N) {
-      setQi(qi + 1); setAnswer(''); setReact(''); setFailed(false); setStage('answer')
+      setQi(qi + 1); setAnswer(''); setReact(''); setStage('answer')
       window.scrollTo({ top: 0, behavior: 'instant' })
     } else {
       finishRound(all)

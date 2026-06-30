@@ -117,7 +117,7 @@ export default function Ask() {
     setStars(all)
     trackDaily({ answers: 1, stars: qStars })
     if (ti + 1 < N) {
-      setTi(ti + 1); setAnswer(''); setReact(''); setFailed(false); setStage('answer')
+      setTi(ti + 1); setAnswer(''); setReact(''); setStage('answer')
       window.scrollTo({ top: 0, behavior: 'instant' })
     } else {
       finish(all)
