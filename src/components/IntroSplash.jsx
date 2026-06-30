@@ -77,7 +77,7 @@ export default function IntroSplash({ onClose }) {
 
         {/* ZOE — primera profesora IA de LATAM */}
         <div className="mt-5 flex flex-col items-center fade-in-d2">
-          <img src="/zoe-portal-v8.webp" alt="ZOE" width="80" height="80" className="floaty"
+          <img src="/zoe-portal-v9.webp" alt="ZOE" width="80" height="80" className="floaty"
             style={{ width: 80, height: 80, borderRadius: '9999px', objectFit: 'cover', border: '2.5px solid rgba(168,85,247,0.9)', boxShadow: '0 0 28px rgba(168,85,247,0.7)' }} />
           <div className="mt-2 font-logo text-xl grad-text leading-none">ZOE</div>
           <div className="text-[11px] text-[var(--violet-light)] font-extrabold uppercase tracking-wide">{t('zoeTitle')}</div>

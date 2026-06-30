@@ -67,7 +67,7 @@ export default function HowItWorks() {
 
       {/* Quién es ZOE */}
       <div className="card p-4 mt-6 flex items-start gap-3 fade-in-d2" style={{ boxShadow: 'inset 0 0 0 1px rgba(168,85,247,0.33)' }}>
-        <img src="/zoe-portal-v8.webp" alt="ZOE" width="52" height="52"
+        <img src="/zoe-portal-v9.webp" alt="ZOE" width="52" height="52"
           className="shrink-0 rounded-full object-cover" style={{ width: 52, height: 52, objectPosition: 'center 28%', boxShadow: '0 0 0 2px rgba(168,85,247,0.7)' }} />
         <div>
           <h2 className="font-extrabold text-[15px] text-[var(--violet-light)] mb-1">🦉 {t('hiwZoeTitle')}</h2>

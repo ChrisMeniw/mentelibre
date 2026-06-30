@@ -26,7 +26,7 @@ export default function Mission() {
       {/* Hero con la foto real de ZOE */}
       <div className="text-center fade-in">
         <img
-          src="/zoe-portal-v8.webp"
+          src="/zoe-portal-v9.webp"
           alt="ZOE"
           width="128"
           height="128"
