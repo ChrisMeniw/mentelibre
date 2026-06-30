@@ -4,7 +4,7 @@ import { useLang } from '../i18n'
 // con el fondo de la foto quitado (se funde en un "portal" violeta oscuro) + el título
 // "Mente Libre" como TEXTO con el degradé de la marca + tagline. Elementos nativos => nunca
 // se ve como imagen pegada.
-export default function LogoHero({ size = 132, showTagline = true }) {
+export default function LogoHero({ size = 144, showTagline = true }) {
   const { t, lang } = useLang()
   const appName = lang === 'pt' ? 'Mente Livre' : 'Mente Libre'
   const glow = size + 88
@@ -20,13 +20,13 @@ export default function LogoHero({ size = 132, showTagline = true }) {
         <div
           className="relative grid place-items-center"
           style={{
-            width: size, height: size, borderRadius: '9999px', padding: Math.round(size * 0.1),
+            width: size, height: size, borderRadius: '9999px', padding: Math.round(size * 0.04),
             background: 'radial-gradient(circle at 50% 36%, #ffffff 0%, #f3f1ff 64%, #e3e0ff 100%)',
             boxShadow: '0 0 0 3px rgba(196,181,253,0.9), 0 12px 34px -6px rgba(168,85,247,0.85), inset 0 2px 6px rgba(255,255,255,0.9)',
           }}
         >
           <img
-            src="/foundation-logo.webp"
+            src="/foundation-logo-tight.webp"
             alt="Chris Meniw Foundation"
             width={size}
             height={size}
