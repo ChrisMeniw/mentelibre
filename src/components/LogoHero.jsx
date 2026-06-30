@@ -16,7 +16,7 @@ export default function LogoHero({ size = 132, showTagline = true }) {
           background: 'radial-gradient(circle, rgba(168,85,247,0.5), rgba(124,58,237,0.18) 46%, transparent 72%)',
         }} />
         <img
-          src="/zoe-portal.webp"
+          src="/zoe-portal-v2.webp"
           alt="ZOE"
           width={size}
           height={size}
