@@ -4,9 +4,10 @@ import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import AvatarPicker, { AVATARS } from '../components/AvatarPicker'
 import { AGE_GROUPS } from '../data/challenges'
+import LogoHero from '../components/LogoHero'
 
 export default function Landing() {
-  const { t, lang } = useLang()
+  const { t } = useLang()
   const { saveProfile, hasProfile } = usePlayer()
   const nav = useNavigate()
 
@@ -27,18 +28,8 @@ export default function Landing() {
 
   return (
     <div className="max-w-md mx-auto px-4 pt-10 pb-16">
-      <div className="text-center fade-in pt-2">
-        <img
-          src="/logo-final.webp"
-          alt={(lang === 'pt' ? 'Mente Livre' : 'Mente Libre') + ' · ZOE'}
-          width="440"
-          height="248"
-          loading="eager"
-          className="mx-auto"
-          style={{ width: 'min(440px, 100%)', height: 'auto', filter: 'drop-shadow(0 14px 40px rgba(124,58,237,0.55))' }}
-        />
-        <p className="text-sm text-[var(--text-dim)] mt-3 max-w-xs mx-auto leading-relaxed">{t('subtitle')}</p>
-      </div>
+      <LogoHero px={1} pullTop={2.5} />
+      <p className="text-center text-sm text-[var(--text-dim)] mt-2 max-w-xs mx-auto leading-relaxed fade-in-d2">{t('subtitle')}</p>
 
       <div className="card p-4 mt-6 fade-in-d1">
         <div className="font-extrabold mb-3">{t('chooseAvatar')}</div>

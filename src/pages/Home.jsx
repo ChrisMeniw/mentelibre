@@ -5,6 +5,7 @@ import { isAskUnlocked } from '../data/levels'
 import { sfxPop } from '../lib/sfx'
 import ModeIcon from '../components/ModeIcon'
 import StreakBadge from '../components/StreakBadge'
+import LogoHero from '../components/LogoHero'
 
 // Tarjeta de modo: vidrio neutro + ficha de ícono con acento. Jerarquía clara —
 // una sola tarjeta primaria (dorada) sobresale; el resto, calmo y consistente.
@@ -36,10 +37,9 @@ function ModeCard({ iconName, title, desc, accent, onClick, primary }) {
 
 // Página de inicio pública: bienvenida + elegir modo. Lo primero que ve cualquiera.
 export default function Home() {
-  const { t, lang } = useLang()
+  const { t } = useLang()
   const { hasProfile, player } = usePlayer()
   const nav = useNavigate()
-  const appName = lang === 'pt' ? 'Mente Livre' : 'Mente Libre'
   const askUnlocked = isAskUnlocked(player.xp)
 
   const play = () => {
@@ -48,17 +48,9 @@ export default function Home() {
   }
 
   return (
-    <div className="mx-auto max-w-md px-5 pt-12 pb-32 min-h-dvh flex flex-col items-center justify-center text-center safe-top">
-      <img
-        src="/logo-final.webp"
-        alt={appName + ' · ZOE'}
-        width="440"
-        height="248"
-        loading="eager"
-        className="mx-auto fade-in"
-        style={{ width: 'min(440px, 100%)', height: 'auto', filter: 'drop-shadow(0 14px 40px rgba(124,58,237,0.55))' }}
-      />
-      <p className="text-sm text-[var(--text-dim)] mt-3 max-w-xs leading-relaxed fade-in-d2">{t('homeSub')}</p>
+    <div className="mx-auto max-w-md px-5 pt-12 pb-32 min-h-dvh flex flex-col items-center justify-start text-center safe-top">
+      <LogoHero px={1.25} pullTop={3} />
+      <p className="text-sm text-[var(--text-dim)] mt-2 max-w-xs leading-relaxed fade-in-d2">{t('homeSub')}</p>
 
       {hasProfile && (player.streak || 0) >= 1 && (
         <div className="mt-3 fade-in-d2"><StreakBadge size="lg" /></div>

@@ -4,6 +4,7 @@ import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { sfxPop } from '../lib/sfx'
 import ModeIcon from '../components/ModeIcon'
+import LogoHero from '../components/LogoHero'
 
 // Página pública que EXPLICA el juego: qué es, cómo se juega, qué lo hace especial y qué
 // entrena. Pensada para que cualquier visitante (padre, maestro, escuela) lo entienda rápido.
@@ -32,12 +33,10 @@ export default function HowItWorks() {
     <div className="mx-auto max-w-md px-4 pt-14 pb-32 safe-top">
       <button onClick={() => { sfxPop(); nav('/') }} aria-label={t('back')} className="btn btn-ghost px-3 py-2 text-sm min-h-touch mb-3">←</button>
 
-      {/* Hero — logo de marca (ZOE + título) */}
-      <div className="text-center fade-in">
-        <img src="/logo-final.webp" alt="Mente Libre · ZOE" width="440" height="248"
-          className="mx-auto" loading="eager"
-          style={{ width: 'min(440px, 100%)', height: 'auto', filter: 'drop-shadow(0 14px 40px rgba(124,58,237,0.55))' }} />
-        <h1 className="font-logo text-2xl mt-4 grad-text leading-tight">{t('hiwTitle')}</h1>
+      {/* Hero — logo de marca fundido con el fondo */}
+      <LogoHero px={1} pullTop={0} showTagline={false} />
+      <div className="text-center">
+        <h1 className="font-logo text-2xl mt-1 grad-text leading-tight">{t('hiwTitle')}</h1>
         <p className="text-sm text-[var(--text-dim)] mt-2 leading-relaxed">{t('hiwSub')}</p>
       </div>
 
