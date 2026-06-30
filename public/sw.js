@@ -1,6 +1,6 @@
 // Service Worker de MenteLibre — hace que funcione como app (instalable + offline).
 // Estrategia: navegación con RED primero (siempre trae la última versión); assets con caché.
-const CACHE = 'mentelibre-v4'
+const CACHE = 'mentelibre-v5'
 const CORE = ['/', '/index.html', '/manifest.json', '/icon-192-v3.png', '/icon-512-v3.png', '/foundation-logo.webp', '/zoe-voz.mp3']
 
 self.addEventListener('install', (e) => {
@@ -8,11 +8,15 @@ self.addEventListener('install', (e) => {
 })
 
 self.addEventListener('activate', (e) => {
-  e.waitUntil(
-    caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k))))
-      .then(() => self.clients.claim())
-  )
+  e.waitUntil((async () => {
+    const keys = await caches.keys()
+    await Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+    await self.clients.claim()
+    // Versión nueva detectada: recargar las pestañas abiertas para que tomen lo último al
+    // instante (así no queda pegada la versión vieja en el teléfono).
+    const wins = await self.clients.matchAll({ type: 'window' })
+    wins.forEach((c) => { try { c.navigate(c.url) } catch { /* noop */ } })
+  })())
 })
 
 self.addEventListener('fetch', (e) => {
