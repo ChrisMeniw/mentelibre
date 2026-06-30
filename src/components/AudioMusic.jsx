@@ -90,10 +90,18 @@ export default function AudioMusic() {
       onClick={toggle}
       aria-label={on ? t('soundOff') : t('soundOn')}
       title={on ? t('soundOff') : t('soundOn')}
-      style={{ position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 96px)', right: 16, zIndex: 50 }}
-      className="w-12 h-12 rounded-full card grid place-items-center text-xl active:scale-90 transition"
+      style={{
+        position: 'fixed', bottom: 'calc(env(safe-area-inset-bottom, 0px) + 96px)', right: 12, zIndex: 50,
+        background: on ? 'linear-gradient(135deg, var(--gold), #E59409)' : 'rgba(28,18,48,0.92)',
+        color: on ? '#3B2A04' : 'var(--text-dim)',
+        border: on ? '1px solid rgba(255,255,255,0.28)' : '1px solid rgba(255,255,255,0.2)',
+        boxShadow: on ? '0 6px 22px -4px rgba(251,191,36,0.8)' : '0 4px 14px -4px rgba(0,0,0,0.6)',
+        backdropFilter: 'blur(6px)',
+      }}
+      className="flex items-center gap-1.5 pl-3 pr-3.5 h-11 min-h-touch rounded-full font-black text-sm active:scale-95 transition"
     >
-      {on ? '🔊' : '🔇'}
+      <span className="text-base leading-none">{on ? '🔊' : '🔇'}</span>
+      <span>Música {on ? 'ON' : 'OFF'}</span>
     </button>
   )
 }
