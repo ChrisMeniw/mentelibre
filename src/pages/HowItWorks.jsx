@@ -22,7 +22,7 @@ const SKILLS = [
 ]
 
 export default function HowItWorks() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const { hasProfile } = usePlayer()
   const nav = useNavigate()
 
@@ -34,7 +34,7 @@ export default function HowItWorks() {
 
       {/* Hero — logo de marca (ZOE + título) */}
       <div className="text-center fade-in">
-        <img src="/logo-mentelibre-zoe.webp" alt="Mente Libre · ZOE" width="280" height="280"
+        <img src={lang === 'pt' ? '/logo-mentelivre-zoe.webp' : '/logo-mentelibre-zoe.webp'} alt="Mente Libre · ZOE" width="280" height="280"
           className="mx-auto floaty" loading="eager"
           style={{ width: 'min(280px, 76%)', height: 'auto', filter: 'drop-shadow(0 16px 42px rgba(124,58,237,0.5))' }} />
         <h1 className="font-logo text-2xl mt-4 grad-text leading-tight">{t('hiwTitle')}</h1>

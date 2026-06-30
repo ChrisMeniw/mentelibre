@@ -50,20 +50,15 @@ export default function Home() {
   return (
     <div className="mx-auto max-w-md px-5 pt-12 pb-32 min-h-dvh flex flex-col items-center justify-center text-center safe-top">
       <img
-        src="/foundation-logo.webp"
-        alt="Chris Meniw Foundation"
-        width="110"
-        height="110"
-        className="mx-auto rounded-full floaty fade-in"
-        style={{ width: 110, height: 110, filter: 'drop-shadow(0 12px 30px rgba(124,58,237,0.55))' }}
+        src={lang === 'pt' ? '/logo-mentelivre-zoe.webp' : '/logo-mentelibre-zoe.webp'}
+        alt={appName + ' · ZOE'}
+        width="264"
+        height="264"
+        loading="eager"
+        className="mx-auto floaty fade-in"
+        style={{ width: 'min(264px, 74%)', height: 'auto', filter: 'drop-shadow(0 16px 44px rgba(124,58,237,0.5))' }}
       />
-      <div className="text-[10px] uppercase tracking-[0.25em] text-[var(--text-dim)] mt-2.5 font-extrabold fade-in">
-        Chris Meniw Foundation
-      </div>
-
-      <h1 className="font-logo text-6xl grad-text leading-none mt-4 fade-in-d1">{appName}</h1>
-      <div className="text-[var(--gold)] font-extrabold mt-3 text-glow fade-in-d1">✨ {t('tagline')}</div>
-      <p className="text-sm text-[var(--text-dim)] mt-3 max-w-xs leading-relaxed fade-in-d2">{t('homeSub')}</p>
+      <p className="text-sm text-[var(--text-dim)] mt-4 max-w-xs leading-relaxed fade-in-d2">{t('homeSub')}</p>
 
       {hasProfile && (player.streak || 0) >= 1 && (
         <div className="mt-3 fade-in-d2"><StreakBadge size="lg" /></div>
