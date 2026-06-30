@@ -1,6 +1,6 @@
 // Service Worker de MenteLibre — hace que funcione como app (instalable + offline).
 // Estrategia: navegación con RED primero (siempre trae la última versión); assets con caché.
-const CACHE = 'mentelibre-v3'
+const CACHE = 'mentelibre-v4'
 const CORE = ['/', '/index.html', '/manifest.json', '/icon-192-v3.png', '/icon-512-v3.png', '/foundation-logo.webp', '/zoe-voz.mp3']
 
 self.addEventListener('install', (e) => {
@@ -32,16 +32,11 @@ self.addEventListener('fetch', (e) => {
     return
   }
 
-  // Assets: stale-while-revalidate. Devuelve la caché al instante PERO la actualiza en
-  // segundo plano, así un asset nuevo (p. ej. el ícono) aparece en la próxima carga y nunca
-  // queda "pegado" como pasaba antes con el ícono viejo del planeta.
+  // Assets: RED PRIMERO (siempre lo último), la caché solo como respaldo offline. Así la
+  // versión nueva aparece al instante y NADA queda "pegado" en caché (ni ZOE ni el ícono).
   e.respondWith(
-    caches.match(req).then((cached) => {
-      const network = fetch(req).then((r) => {
-        if (r && r.ok) { const cp = r.clone(); caches.open(CACHE).then((c) => c.put(req, cp)) }
-        return r
-      }).catch(() => cached)
-      return cached || network
-    })
+    fetch(req)
+      .then((r) => { if (r && r.ok) { const cp = r.clone(); caches.open(CACHE).then((c) => c.put(req, cp)) } return r })
+      .catch(() => caches.match(req))
   )
 })

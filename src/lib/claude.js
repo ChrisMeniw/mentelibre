@@ -38,7 +38,24 @@ function logApiError(err) {
   console.error(`[${new Date().toISOString()}] ZOE API error:`, err && err.message ? err.message : err)
 }
 
-export async function callClaude(systemPrompt, userMessage, maxTokens = 300, timeoutMs = 20000) {
+// Si la IA en la nube NO está disponible (servidor sin clave o sin créditos), lo detectamos
+// UNA vez y no la volvemos a llamar en la sesión: la respuesta de ZOE es LOCAL e INSTANTÁNEA
+// (sin "ZOE pensando" colgado ni el botón Siguiente trabado). Si Chris carga créditos, vuelve.
+let apiDown = false
+
+// Chequeo de salud en segundo plano al cargar la app: cuando el chico responda, ya sabemos
+// si la nube anda y la respuesta sale al toque (sin demora en la primera pregunta).
+async function pingZoe() {
+  try {
+    const r = await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ system: 'x', message: 'ping', maxTokens: 1 }) })
+    const d = await r.json()
+    if (!d || !d.text) apiDown = true
+  } catch { apiDown = true }
+}
+if (typeof window !== 'undefined') { pingZoe() }
+
+export async function callClaude(systemPrompt, userMessage, maxTokens = 300, timeoutMs = 9000) {
+  if (apiDown) return null // IA en la nube caída/sin créditos: ZOE local INSTANTÁNEA
   let lastErr = null
   // Reintenta UNA vez si falla la red antes de rendirse (la app nunca se traba igual).
   for (let attempt = 0; attempt < 2; attempt++) {
@@ -54,14 +71,17 @@ export async function callClaude(systemPrompt, userMessage, maxTokens = 300, tim
       clearTimeout(timer)
       if (!response.ok) { lastErr = new Error('HTTP ' + response.status); if (attempt === 0) continue; break }
       const data = await response.json()
-      consecutiveFails = 0 // éxito: reinicia el contador de fallas
-      return data.text || '' // '' => el servidor no tiene clave o no hubo respuesta: el caller usa el respaldo
+      const text = (data && data.text) || ''
+      if (text) { consecutiveFails = 0; return text }
+      apiDown = true // respuesta vacía (sin clave/sin créditos): de acá en más, local
+      return null
     } catch (e) {
       clearTimeout(timer)
       lastErr = e
       if (attempt === 0) continue // un reintento
     }
   }
+  apiDown = true // falló: el resto de la sesión usa la ZOE local
   consecutiveFails++
   logApiError(lastErr)
   if (consecutiveFails >= 3) notifyAdmin()

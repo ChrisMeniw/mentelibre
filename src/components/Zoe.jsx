@@ -13,7 +13,7 @@ export default function Zoe({ size = 64, className = '', style = {}, talking = f
   }
   const img = (
     <img
-      src="/zoe-portal-v4.webp"
+      src="/zoe-portal-v5.webp"
       alt="ZOE"
       width={size}
       height={size}
