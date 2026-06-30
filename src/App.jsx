@@ -44,16 +44,10 @@ function LangToggle() {
 }
 
 export default function App() {
-  // La intro (video de 11MB) se muestra SOLO la 1ª vez en este dispositivo. En un
-  // juego de uso diario en la escuela, re-bajar 11MB cada apertura mata el celular de
-  // gama baja; el chico que ya la vio entra directo. "Cambiar de usuario" la reactiva.
-  const [showIntro, setShowIntro] = useState(() => {
-    try { return !localStorage.getItem('ml_seen_intro') } catch { return true }
-  })
-  const closeIntro = () => {
-    try { localStorage.setItem('ml_seen_intro', '1') } catch { /* noop */ }
-    setShowIntro(false)
-  }
+  // La intro con VIDEO se muestra SIEMPRE al abrir el juego. El video arranca solo; al tocar
+  // ¡Comenzar! (o cualquier toque) arranca la música y entra al juego.
+  const [showIntro, setShowIntro] = useState(true)
+  const closeIntro = () => setShowIntro(false)
   return (
     <>
       {showIntro && <IntroSplash onClose={closeIntro} />}

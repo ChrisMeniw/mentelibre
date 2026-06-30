@@ -13,12 +13,12 @@ export default function Zoe({ size = 64, className = '', style = {}, talking = f
   }
   const img = (
     <img
-      src="/zoe.jpg"
+      src="/zoe-portal-v3.webp"
       alt="ZOE"
       width={size}
       height={size}
       loading="lazy"
-      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center 28%' }}
+      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
     />
   )
 
