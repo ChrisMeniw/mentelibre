@@ -123,30 +123,60 @@ function speakBrowser(text, lang = 'es') {
   } catch { /* noop */ }
 }
 
-let ttsAudio = null
 const TL = { es: 'es', pt: 'pt-BR' }
+// WAV de silencio (0 muestras) para "desbloquear" el elemento de audio en el primer toque.
+const SILENCE = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA='
+let ttsEl = null     // UN elemento reutilizable (no uno nuevo por pregunta)
+let primed = false   // ¿ya se desbloqueó con un gesto? → puede sonar en la lectura automática
 
-// Voz PRINCIPAL: una mujer joven REAL (Google TTS vía nuestro proxy /api/tts), natural e
-// IGUAL en todos los teléfonos (no la voz robótica del dispositivo). Si la red falla,
-// cae a la voz del navegador para no quedarse sin audio.
+function getEl() {
+  if (!ttsEl && typeof Audio !== 'undefined') { ttsEl = new Audio(); ttsEl.preload = 'auto' }
+  return ttsEl
+}
+
+// En el PRIMER gesto del usuario reproducimos un silencio para habilitar el elemento.
+// A partir de ahí la voz de la nube puede sonar SOLA (lectura automática de la pregunta),
+// sin caer a la voz robótica del navegador por culpa del bloqueo de autoplay.
+function primeTts() {
+  if (primed) return
+  const el = getEl()
+  if (!el) return
+  try {
+    el.muted = true
+    el.src = SILENCE
+    const p = el.play()
+    if (p && p.then) p.then(() => { try { el.pause() } catch { /* noop */ } el.muted = false; primed = true }).catch(() => { /* se reintenta en el próximo gesto */ })
+    else { el.muted = false; primed = true }
+  } catch { /* noop */ }
+}
+if (typeof window !== 'undefined') {
+  const go = () => primeTts()
+  ;['pointerdown', 'touchend', 'click', 'keydown'].forEach((e) => window.addEventListener(e, go, { passive: true }))
+}
+
+// Voz PRINCIPAL: mujer joven REAL (vía /api/tts), natural e IGUAL en todos los teléfonos.
+// Usa el elemento ya desbloqueado, así suena también en la lectura automática. Si la nube
+// falla, recién ahí cae al navegador (y este NUNCA usa una voz robótica).
 export function speak(text, lang = 'es') {
   if (!text) return
   stopSpeak()
   try { setPlaybackAudioSession() } catch { /* noop */ } // iOS: ignora el switch de silencio
   const tl = TL[lang] || 'es'
+  const el = getEl()
+  if (!el) { speakBrowser(text, lang); return }
   try {
-    const a = new Audio(`/api/tts?tl=${tl}&q=${encodeURIComponent(String(text).slice(0, 200))}`)
-    a.volume = 1
-    ttsAudio = a
-    a.addEventListener('error', () => { if (ttsAudio === a) { ttsAudio = null; speakBrowser(text, lang) } })
-    const p = a.play()
-    if (p && p.catch) p.catch(() => { if (ttsAudio === a) { ttsAudio = null; speakBrowser(text, lang) } })
+    el.muted = false
+    el.volume = 1
+    el.onerror = () => speakBrowser(text, lang)
+    el.src = `/api/tts?tl=${tl}&q=${encodeURIComponent(String(text).slice(0, 280))}`
+    const p = el.play()
+    if (p && p.catch) p.catch(() => speakBrowser(text, lang)) // bloqueado/sin red → navegador (no robótica)
   } catch {
     speakBrowser(text, lang)
   }
 }
 
 export function stopSpeak() {
-  if (ttsAudio) { try { ttsAudio.pause() } catch { /* noop */ } ttsAudio = null }
+  if (ttsEl) { try { ttsEl.pause() } catch { /* noop */ } }
   if (speakSupported()) { try { window.speechSynthesis.cancel() } catch { /* noop */ } }
 }

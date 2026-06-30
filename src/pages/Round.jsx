@@ -160,11 +160,10 @@ export default function Round() {
     // respuesta del chico y reacciona con estrellas justas. SIEMPRE sigue, nunca se traba.
     const parsed = res ? parseReact(res) : localReact(childName, answer, lang, player.ageGroup)
     const fb = parsed.text || fallbackReact(childName, lang)
-    // Cuando contesta MUY bien (4★+), ZOE festeja: "¡Excelente respuesta! ¡Vamos por más!"
-    setReact(parsed.stars >= 4 ? `${t('zoeBravo')} ${fb}` : fb)
+    // La reacción de ZOE ya celebra la respuesta (sin coletillas tipo "¡Vamos por más!").
+    setReact(fb)
     setQStars(parsed.stars)
     setLoading(false)
-    if (parsed.stars >= 4) speak(t('zoeBravo'), lang) // ZOE lo dice en voz alta
     // Racha: respuestas con 3★+ encadenadas suben el combo (se corta con 1★ o 2★).
     const nc = parsed.stars >= 3 ? combo + 1 : 0
     setCombo(nc)
