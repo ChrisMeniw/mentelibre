@@ -148,6 +148,9 @@ export default function Hub() {
             <span className="chip text-[11px]" style={{ background: 'rgba(251,191,36,0.12)', borderColor: 'rgba(251,191,36,0.45)', color: 'var(--gold)' }}>{t('soloBadge')}</span>
           </div>
 
+          {/* MAPA DE JUEGO ARRIBA DE TODO: para entrar a jugar al toque, sin bajar la pantalla */}
+          <AdventureMap />
+
           {/* Tu personaje (cambia al subir de nivel) */}
           {(() => {
             const lvl = levelForXP(player.xp)
@@ -198,9 +201,8 @@ export default function Hub() {
               ?
             </button>
           </div>
-          <InstallButton />
           <DailyMissions />
-          <AdventureMap />
+          <InstallButton />
         </div>
       )}
 

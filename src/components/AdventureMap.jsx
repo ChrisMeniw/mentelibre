@@ -43,6 +43,13 @@ export default function AdventureMap() {
 
   return (
     <div className="relative">
+      {/* Botón directo: entra al nivel ACTUAL al toque (sin recorrer el mapa) */}
+      {activeW >= 0 && (
+        <button onClick={() => go(WORLDS[activeW].id)} aria-label={t('continueCta')}
+          className="btn btn-gold w-full text-lg min-h-touch mb-5 glow-pulse">
+          ▶ {t('continueCta')}
+        </button>
+      )}
       {/* línea central del camino */}
       <div className="absolute left-1/2 top-2 bottom-2 -translate-x-1/2 w-1 rounded-full"
         style={{ background: 'repeating-linear-gradient(180deg, rgba(255,255,255,0.18) 0 8px, transparent 8px 18px)' }} />
