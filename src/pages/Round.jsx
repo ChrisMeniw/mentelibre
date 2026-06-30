@@ -19,11 +19,16 @@ import StarsReveal from '../components/StarsReveal'
 import CharacterSystem, { characterName, levelTitle } from '../components/characters/CharacterSystem'
 
 const N = 5
-// Premio por estrella: el escalón es CLARO para que contestar bien rinda mucho más.
-// 1★ = 5 · 2★ = 10 · 3★ = 20 XP (una ronda perfecta = 100 XP; floja = 25).
-const ROUND_REWARD = { 1: { xp: 5, coins: 1 }, 2: { xp: 10, coins: 2 }, 3: { xp: 20, coins: 3 } }
-// Tiempo para responder según el avance: 40s al comienzo, 30s en el medio, 20s al final.
-const answerSecondsFor = (xp) => { const lv = levelForXP(xp); return lv <= 1 ? 40 : lv <= 3 ? 30 : 20 }
+// Premio por estrella (1 a 5): escalón CLARO para que contestar MUY bien rinda mucho más.
+// 1★=5 · 2★=10 · 3★=18 · 4★=30 · 5★=45 XP (una ronda perfecta de 5★ = 225 XP).
+const ROUND_REWARD = { 1: { xp: 5, coins: 1 }, 2: { xp: 10, coins: 2 }, 3: { xp: 18, coins: 3 }, 4: { xp: 30, coins: 4 }, 5: { xp: 45, coins: 6 } }
+// El reloj ARRANCA según el nivel y se ACELERA pregunta a pregunta dentro de la ronda:
+// la 1ª da más tiempo y la última bastante menos (más emoción al final). Nunca baja de 12s.
+const answerSecondsFor = (xp, qi = 0) => {
+  const lv = levelForXP(xp)
+  const start = lv <= 1 ? 42 : lv <= 3 ? 34 : 28
+  return Math.max(12, start - qi * 5)
+}
 const countWords = (s) => (s.trim() ? s.trim().split(/\s+/).length : 0)
 
 function Confetti({ n = 36 }) {
@@ -38,8 +43,8 @@ function Confetti({ n = 36 }) {
 
 function Stars({ value, size = 'text-2xl' }) {
   return (
-    <div className="flex items-center justify-center gap-1" aria-label={`${value} de 3 estrellas`}>
-      {[1, 2, 3].map((s) => (
+    <div className="flex items-center justify-center gap-0.5" aria-label={`${value} de 5 estrellas`}>
+      {[1, 2, 3, 4, 5].map((s) => (
         <span key={s} className={size + ' count-pop'} style={{ animationDelay: `${0.1 + s * 0.1}s`, filter: s <= value ? 'none' : 'grayscale(1) opacity(0.3)' }}>⭐</span>
       ))}
     </div>
@@ -54,7 +59,7 @@ export default function Round() {
 
   const world = getWorld(worldId)
   const av = avatarByEmoji(player.avatar)
-  const ANSWER_SECONDS = answerSecondsFor(player.xp) // 40 / 30 / 20 según el nivel
+  // (el reloj ANSWER_SECONDS se calcula más abajo: depende de la pregunta actual qi → acelera)
   // Elige y registra las preguntas UNA sola vez por ronda, evitando las ya vistas.
   // Ref-guard: a prueba del doble render de StrictMode (no repite el registro).
   const pickedRef = useRef(null)
@@ -73,11 +78,12 @@ export default function Round() {
 
   const [phase, setPhase] = useState('playing')   // arranca DIRECTO en la 1ª pregunta (sin pantalla previa)
   const [qi, setQi] = useState(0)
+  const ANSWER_SECONDS = answerSecondsFor(player.xp, qi) // arranca por nivel y se ACELERA cada pregunta
   const [stage, setStage] = useState('answer')  // answer | feedback
   const [answer, setAnswer] = useState('')
   const [loading, setLoading] = useState(false)
   const [react, setReact] = useState('')
-  const [qStars, setQStars] = useState(2)
+  const [qStars, setQStars] = useState(3)
   const [stars, setStars] = useState([])
   const [combo, setCombo] = useState(0)        // racha de respuestas con 2★+ seguidas
   const [comboPop, setComboPop] = useState(0)  // dispara la animación del cartel de racha
@@ -154,17 +160,17 @@ export default function Round() {
     // respuesta del chico y reacciona con estrellas justas. SIEMPRE sigue, nunca se traba.
     const parsed = res ? parseReact(res) : localReact(childName, answer, lang, player.ageGroup)
     const fb = parsed.text || fallbackReact(childName, lang)
-    // Cuando contesta muy bien, ZOE festeja: "¡Excelente respuesta! ¡Vamos por más!"
-    setReact(parsed.stars >= 3 ? `${t('zoeBravo')} ${fb}` : fb)
+    // Cuando contesta MUY bien (4★+), ZOE festeja: "¡Excelente respuesta! ¡Vamos por más!"
+    setReact(parsed.stars >= 4 ? `${t('zoeBravo')} ${fb}` : fb)
     setQStars(parsed.stars)
     setLoading(false)
-    if (parsed.stars >= 3) speak(t('zoeBravo'), lang) // ZOE lo dice en voz alta
-    // Racha: respuestas con 2★+ encadenadas suben el combo (se corta con un 1★).
-    const nc = parsed.stars >= 2 ? combo + 1 : 0
+    if (parsed.stars >= 4) speak(t('zoeBravo'), lang) // ZOE lo dice en voz alta
+    // Racha: respuestas con 3★+ encadenadas suben el combo (se corta con 1★ o 2★).
+    const nc = parsed.stars >= 3 ? combo + 1 : 0
     setCombo(nc)
     if (nc > bestComboRef.current) bestComboRef.current = nc
-    if (parsed.stars >= 3) { sfxCorrect(); setTimeout(() => sfxStarsFanfare(), 120) } // 3★ = fanfarria especial
-    else if (parsed.stars === 2) sfxCorrect()
+    if (parsed.stars >= 4) { sfxCorrect(); setTimeout(() => sfxStarsFanfare(), 120) } // 4-5★ = fanfarria especial
+    else if (parsed.stars >= 2) sfxCorrect()
     else sfxSparkle()
     if (nc >= 2) { setComboPop((p) => p + 1); setTimeout(() => sfxCombo(nc), 220) }
   }
@@ -244,7 +250,7 @@ export default function Round() {
           </div>
           <Stars value={Math.round(results.totalStars / N)} size="text-3xl" />
           <div className="font-logo text-2xl grad-text mt-2">{t('roundDoneTitle')}</div>
-          <div className="text-sm font-extrabold text-[var(--gold)] mt-1">⭐ {results.totalStars}/{N * 3} {t('roundStarsLabel')}</div>
+          <div className="text-sm font-extrabold text-[var(--gold)] mt-1">⭐ {results.totalStars}/{N * 5} {t('roundStarsLabel')}</div>
 
           {almostExplored && (
             <div className="text-xs text-[var(--text-dim)] mt-2 leading-snug max-w-xs mx-auto">{t('worldExplored')}</div>
@@ -399,10 +405,11 @@ export default function Round() {
           <div className={'relative card p-5 text-center overflow-hidden' + (!loading && qStars >= 2 ? ' happy-shake' : '')}
             role="status" aria-live="polite"
             style={{ background: loading ? undefined : (
-              qStars >= 3 ? 'linear-gradient(180deg, rgba(16,185,129,0.22), rgba(255,255,255,0.03))'
-              : qStars === 2 ? 'linear-gradient(180deg, rgba(251,191,36,0.15), rgba(255,255,255,0.03))'
+              qStars >= 4 ? 'linear-gradient(180deg, rgba(16,185,129,0.22), rgba(255,255,255,0.03))'
+              : qStars === 3 ? 'linear-gradient(180deg, rgba(251,191,36,0.18), rgba(255,255,255,0.03))'
+              : qStars === 2 ? 'linear-gradient(180deg, rgba(245,158,11,0.12), rgba(255,255,255,0.03))'
               : 'linear-gradient(180deg, rgba(56,189,248,0.15), rgba(255,255,255,0.03))') }}>
-            {!loading && qStars >= 3 && <Confetti n={36} />}
+            {!loading && qStars >= 4 && <Confetti n={36} />}
             {!loading && (
               <div key={qi + '-xp'} className="xp-float absolute left-1/2 top-1 font-logo text-xl text-[var(--gold)] text-glow">+{ROUND_REWARD[qStars]?.xp || 0} XP</div>
             )}
@@ -414,7 +421,7 @@ export default function Round() {
               </div>
             ) : (
               <>
-                <div className="text-3xl mt-1 bounce-in">{qStars >= 3 ? '🎉' : qStars === 2 ? '✨' : '💪'}</div>
+                <div className="text-3xl mt-1 bounce-in">{qStars >= 4 ? '🎉' : qStars === 3 ? '🌟' : qStars === 2 ? '✨' : '💪'}</div>
                 <div className="mt-1"><StarsReveal stars={qStars} /></div>
                 {combo >= 2 && (
                   <div key={comboPop} className="combo-burst mx-auto mt-2 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-black"

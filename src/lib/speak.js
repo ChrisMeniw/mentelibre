@@ -92,10 +92,14 @@ function speakNow(text, lang) {
   const u = new SpeechSynthesisUtterance(text)
   u.lang = LANGS[lang] || 'es-US'
   const v = pickVoice(lang)
+  // Chris pidió que NUNCA suene robótica: si lo único que ofrece el dispositivo es una voz
+  // robótica/de juguete, preferimos el silencio (la voz natural de la nube es la principal).
+  if (v && isRobotic(v)) return
   if (v) u.voice = v // voz LATAM (es) o pt-BR (pt); si no hay, queda u.lang
-  // Voz de MUJER JOVEN (natural, no chillona): tono apenas por encima del neutro.
-  u.rate = 1.0
-  u.pitch = 1.12
+  // Voz de MUJER JOVEN, HUMANA (no robótica): ritmo natural y tono apenas cálido.
+  // (Antes pitch 1.12 sonaba más sintético; 1.04 + rate 0.96 suena más persona.)
+  u.rate = 0.96
+  u.pitch = 1.04
   synth.speak(u)
   try { synth.resume() } catch { /* iOS a veces queda en pausa */ }
 }

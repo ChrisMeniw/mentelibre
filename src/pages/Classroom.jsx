@@ -15,7 +15,7 @@ import StarsReveal from '../components/StarsReveal'
 
 const N = 20
 const SECONDS = 30
-const STAR_POINTS = { 1: 20, 2: 50, 3: 90 }
+const STAR_POINTS = { 1: 20, 2: 40, 3: 65, 4: 95, 5: 130 }
 
 export default function Classroom() {
   const { t, lang } = useLang()

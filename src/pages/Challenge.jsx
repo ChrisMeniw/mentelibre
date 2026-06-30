@@ -16,7 +16,7 @@ import Mascot from '../components/Mascot'
 import Celebration from '../components/Celebration'
 
 // Recompensa según cuánto pensó: más pensamiento = más puntos y monedas.
-const REWARD = { 1: { xp: 30, coins: 5 }, 2: { xp: 55, coins: 10 }, 3: { xp: 85, coins: 18 } }
+const REWARD = { 1: { xp: 30, coins: 5 }, 2: { xp: 50, coins: 9 }, 3: { xp: 75, coins: 14 }, 4: { xp: 110, coins: 20 }, 5: { xp: 150, coins: 28 } }
 
 const countWords = (s) => (s.trim() ? s.trim().split(/\s+/).length : 0)
 

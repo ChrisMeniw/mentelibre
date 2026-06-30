@@ -15,8 +15,8 @@ const SITE = 'https://mentelibre.chrismeniwfoundation.org'
 
 function Stars({ value }) {
   return (
-    <div className="flex items-center justify-center gap-1" aria-label={`${value} de 3 estrellas`}>
-      {[1, 2, 3].map((s) => (
+    <div className="flex items-center justify-center gap-0.5" aria-label={`${value} de 5 estrellas`}>
+      {[1, 2, 3, 4, 5].map((s) => (
         <span key={s} className="text-3xl count-pop" style={{ animationDelay: `${0.1 + s * 0.1}s`, filter: s <= value ? 'none' : 'grayscale(1) opacity(0.3)' }}>⭐</span>
       ))}
     </div>

@@ -17,12 +17,12 @@ const N = 5
 const ACCENT = '#8B5CF6'
 const ASK_SECONDS = 30 // formular preguntas: 30 segundos
 // XP por estrella (spec): ⭐=5, ⭐⭐=10, ⭐⭐⭐=20. Preguntar bien es la habilidad más alta.
-const REWARD = { 1: { xp: 5, coins: 2 }, 2: { xp: 10, coins: 3 }, 3: { xp: 20, coins: 5 } }
+const REWARD = { 1: { xp: 5, coins: 2 }, 2: { xp: 10, coins: 3 }, 3: { xp: 18, coins: 5 }, 4: { xp: 30, coins: 7 }, 5: { xp: 45, coins: 10 } }
 
 function Stars({ value }) {
   return (
-    <div className="flex items-center justify-center gap-1" aria-label={`${value} de 3 estrellas`}>
-      {[1, 2, 3].map((s) => (
+    <div className="flex items-center justify-center gap-0.5" aria-label={`${value} de 5 estrellas`}>
+      {[1, 2, 3, 4, 5].map((s) => (
         <span key={s} className="text-2xl count-pop" style={{ animationDelay: `${0.1 + s * 0.1}s`, filter: s <= value ? 'none' : 'grayscale(1) opacity(0.3)' }}>⭐</span>
       ))}
     </div>
@@ -44,7 +44,7 @@ export default function Ask() {
   const [answer, setAnswer] = useState('')
   const [loading, setLoading] = useState(false)
   const [react, setReact] = useState('')
-  const [qStars, setQStars] = useState(2)
+  const [qStars, setQStars] = useState(3)
   const [timeLeft, setTimeLeft] = useState(ASK_SECONDS)
   const [stars, setStars] = useState([])
   const [results, setResults] = useState(null)

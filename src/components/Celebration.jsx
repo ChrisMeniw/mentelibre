@@ -65,7 +65,7 @@ function StarBurst() {
 
 export default function Celebration({ xp, coins = 0, stars = 0, leveledUp, levelName, avatar, color, ageGroup, level, onClose }) {
   const { t } = useLang()
-  const thinkMsg = stars >= 3 ? t('think3') : stars === 2 ? t('think2') : t('think1')
+  const thinkMsg = stars >= 4 ? t('think3') : stars >= 2 ? t('think2') : t('think1')
   const showChar = leveledUp && ageGroup != null && level != null // evolución de personaje
 
   useEffect(() => {

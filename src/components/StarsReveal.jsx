@@ -21,14 +21,15 @@ export default function StarsReveal({ stars = 0, size = 'text-3xl', xp = null })
   const timers = useRef([])
 
   useEffect(() => {
-    const n = Math.max(0, Math.min(3, stars))
+    const n = Math.max(0, Math.min(5, stars))
+    const snd = (i) => SOUNDS[Math.min(i, SOUNDS.length - 1)] // 4ª y 5ª reusan el "ding" más alto
     const t = []
     const push = (fn, ms) => t.push(setTimeout(fn, ms))
 
     if (reduceMotion()) {
       setRevealed(n)
-      for (let i = 0; i < n; i++) push(() => SOUNDS[i] && SOUNDS[i](), i * 60) // sin animación, con sonido
-      if (n >= 3) push(() => sfxStarsFanfare(), 220)
+      for (let i = 0; i < n; i++) push(() => snd(i) && snd(i)(), i * 60) // sin animación, con sonido
+      if (n >= 4) push(() => sfxStarsFanfare(), 220) // festejo grande recién en 4-5★
       if (xp != null) setShowXp(true)
       timers.current = t
       return () => t.forEach(clearTimeout)
@@ -36,12 +37,13 @@ export default function StarsReveal({ stars = 0, size = 'text-3xl', xp = null })
 
     const base = 100
     for (let i = 0; i < n; i++) {
-      push(() => { setRevealed(i + 1); SOUNDS[i] && SOUNDS[i]() }, base + i * 350)
+      push(() => { setRevealed(i + 1); snd(i) && snd(i)() }, base + i * 350)
     }
-    if (n >= 3) {
-      push(() => setBurst(true), base + 2 * 350)                              // partículas en la 3ª
-      push(() => { setFlash(true); sfxStarsFanfare() }, base + 2 * 350 + 100) // destello dorado + fanfarria
-      push(() => setFlash(false), base + 2 * 350 + 520)
+    const lastAt = base + (n - 1) * 350
+    if (n >= 4) { // MUY BIEN: partículas + destello dorado + fanfarria en la última estrella
+      push(() => setBurst(true), lastAt)
+      push(() => { setFlash(true); sfxStarsFanfare() }, lastAt + 100)
+      push(() => setFlash(false), lastAt + 520)
     }
     if (xp != null) {
       push(() => { setShowXp(true); sfxXp() }, base + n * 350 + 300)
@@ -53,8 +55,8 @@ export default function StarsReveal({ stars = 0, size = 'text-3xl', xp = null })
   return (
     <div className="relative inline-flex flex-col items-center">
       {flash && <span className="screen-flash-gold" aria-hidden />}
-      <div className="flex items-center justify-center gap-1" aria-label={`${stars} de 3 estrellas`}>
-        {[1, 2, 3].map((s) => {
+      <div className="flex items-center justify-center gap-0.5" aria-label={`${stars} de 5 estrellas`}>
+        {[1, 2, 3, 4, 5].map((s) => {
           const earned = s <= stars
           const visible = earned ? s <= revealed : true
           return (
@@ -63,7 +65,7 @@ export default function StarsReveal({ stars = 0, size = 'text-3xl', xp = null })
                 className={size + ' inline-block ' + (earned && s <= revealed ? 'star-pop' : '')}
                 style={{ opacity: visible ? 1 : 0, filter: earned ? 'none' : 'grayscale(1) opacity(0.25)' }}
               >⭐</span>
-              {s === 3 && burst && PARTICLES.map((p, i) => (
+              {s === Math.min(5, stars) && burst && PARTICLES.map((p, i) => (
                 <span key={i} className="star-particle" aria-hidden
                   style={{ '--tx': p.tx + 'px', '--ty': p.ty + 'px', animationDelay: p.delay + 's' }} />
               ))}
