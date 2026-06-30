@@ -16,8 +16,8 @@ export default function LogoHero({ size = 132, showTagline = true }) {
           background: 'radial-gradient(circle, rgba(168,85,247,0.5), rgba(124,58,237,0.18) 46%, transparent 72%)',
         }} />
         <img
-          src="/zoe-portal-v9.webp"
-          alt="ZOE"
+          src="/foundation-logo.webp"
+          alt="Chris Meniw Foundation"
           width={size}
           height={size}
           loading="eager"
