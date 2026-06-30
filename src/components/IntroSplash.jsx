@@ -1,15 +1,24 @@
+import { useEffect, useState } from 'react'
 import { useLang } from '../i18n'
 import { kickMusic } from '../lib/musicControl'
 
-const SLOW = 0.5 // el video va a la mitad de velocidad (más calmo/cinematográfico)
+const SLOW = 0.6 // el video va un poco más lento (calmo/cinematográfico)
 
-// INTRO con VIDEO real (presentación premium): galaxia cósmica en movimiento de
-// fondo (clip libre para uso comercial, Pexels) + título centrado que respira +
-// chispas. Sin música (la sacamos). El póster es la ilustración inspiradora, así
-// se ve algo lindo al instante mientras carga el video.
+// INTRO en DOS momentos: 1) el VIDEO real se ve LIMPIO (galaxia cósmica en movimiento,
+// clip libre Pexels) ~2.6s para que se aprecie; 2) recién ahí aparece el título "Mente
+// Libre" + ZOE + el botón Comenzar. Antes el título se superponía desde el primer frame
+// y tapaba el video (parecía una imagen fija). Tocando la pantalla se adelanta al menú.
 export default function IntroSplash({ onClose }) {
   const { t, lang } = useLang()
   const appName = lang === 'pt' ? 'Mente Livre' : 'Mente Libre'
+  const [phase, setPhase] = useState('video') // 'video' (solo el clip) → 'content' (título + menú)
+  const showContent = phase === 'content'
+
+  // Tras unos segundos de video limpio, aparece el contenido (título + ZOE + botón).
+  useEffect(() => {
+    const tm = setTimeout(() => setPhase('content'), 2600)
+    return () => clearTimeout(tm)
+  }, [])
 
   const sparkles = Array.from({ length: 20 }, (_, i) => ({
     left: (i * 53) % 100,
@@ -34,21 +43,25 @@ export default function IntroSplash({ onClose }) {
       {/* Base opaca por si el video tarda en pintar */}
       <div className="absolute inset-0" style={{ background: '#0b0518' }} />
 
-      {/* VIDEO real de fondo (galaxia cósmica en movimiento) */}
+      {/* VIDEO real de fondo (galaxia cósmica en movimiento) — PROTAGONISTA al comienzo */}
       <video
         autoPlay muted loop playsInline aria-hidden preload="auto"
         onLoadedMetadata={(e) => { e.currentTarget.playbackRate = SLOW }}
         onLoadedData={(e) => { e.currentTarget.play().catch(() => {}) }}
         onCanPlay={(e) => { e.currentTarget.play().catch(() => {}) }}
         onPlay={(e) => { e.currentTarget.playbackRate = SLOW }}
+        onError={() => setPhase('content')}
         className="absolute inset-0 w-full h-full object-cover"
         style={{ filter: 'saturate(1.12) contrast(1.05)' }}
       >
         <source src="/intro.mp4" type="video/mp4" />
       </video>
 
-      {/* Velo: deja respirar el centro y oscurece arriba/abajo para leer el texto */}
-      <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, rgba(10,6,23,0.50) 0%, rgba(10,6,23,0.18) 30%, rgba(10,6,23,0.40) 55%, rgba(10,6,23,0.90) 100%)' }} />
+      {/* Velo: TENUE mientras se ve el video; se OSCURECE al aparecer el contenido (para leer el texto) */}
+      <div className="absolute inset-0 transition-opacity duration-700" style={{
+        opacity: showContent ? 1 : 0.22,
+        background: 'linear-gradient(180deg, rgba(10,6,23,0.55) 0%, rgba(10,6,23,0.15) 30%, rgba(10,6,23,0.45) 60%, rgba(10,6,23,0.92) 100%)',
+      }} />
 
       {/* Chispas de imaginación que suben */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden>
@@ -62,34 +75,44 @@ export default function IntroSplash({ onClose }) {
         ))}
       </div>
 
-      {/* Contenido — centrado vertical: título + ZOE protagonista */}
-      <div className="relative z-10 h-full flex flex-col items-center justify-center px-6 text-center safe-top">
+      {/* MOMENTO 1 — solo el video: una marca discreta abajo + se puede tocar para adelantar */}
+      {!showContent && (
+        <button
+          onClick={() => setPhase('content')}
+          className="absolute inset-0 z-20 flex items-end justify-center pb-10"
+          aria-label={t('introStart')}
+        >
+          <span className="text-[11px] uppercase tracking-[0.3em] text-white/75 font-extrabold animate-pulse">{t('introTapHint')}</span>
+        </button>
+      )}
+
+      {/* MOMENTO 2 — título "Mente Libre" + ZOE + botón (aparece después del video) */}
+      <div className={'relative z-10 h-full flex flex-col items-center justify-center px-6 text-center safe-top transition-all duration-700 ' + (showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none')}>
         <img src="/foundation-logo.webp" alt="Chris Meniw Foundation" width="56" height="56"
-          className="rounded-full floaty fade-in" style={{ width: 56, height: 56, filter: 'drop-shadow(0 8px 24px rgba(124,58,237,0.75))' }} />
-        <div className="text-[10px] uppercase tracking-[0.25em] text-white/80 mt-1.5 font-extrabold fade-in">Chris Meniw Foundation</div>
+          className="rounded-full floaty" style={{ width: 56, height: 56, filter: 'drop-shadow(0 8px 24px rgba(124,58,237,0.75))' }} />
+        <div className="text-[10px] uppercase tracking-[0.25em] text-white/80 mt-1.5 font-extrabold">Chris Meniw Foundation</div>
 
         <div className="relative mt-1">
           <span aria-hidden className="halo-breathe absolute inset-0 -z-10"
             style={{ background: 'radial-gradient(ellipse at center, rgba(124,58,237,0.6), transparent 65%)', filter: 'blur(22px)' }} />
-          <h1 className="title-breathe font-logo text-6xl grad-text leading-none fade-in-d1" style={{ textShadow: '0 6px 34px rgba(124,58,237,0.7)' }}>{appName}</h1>
+          <h1 className="title-breathe font-logo text-6xl grad-text leading-none" style={{ textShadow: '0 6px 34px rgba(124,58,237,0.7)' }}>{appName}</h1>
         </div>
-        <div className="text-[var(--gold)] font-extrabold mt-2 text-glow fade-in-d1">✨ {t('tagline')}</div>
+        <div className="text-[var(--gold)] font-extrabold mt-2 text-glow">✨ {t('tagline')}</div>
 
         {/* ZOE — primera profesora IA de LATAM */}
-        <div className="mt-5 flex flex-col items-center fade-in-d2">
+        <div className="mt-5 flex flex-col items-center">
           <img src="/zoe-portal-v9.webp" alt="ZOE" width="80" height="80" className="floaty"
             style={{ width: 80, height: 80, borderRadius: '9999px', objectFit: 'cover', border: '2.5px solid rgba(168,85,247,0.9)', boxShadow: '0 0 28px rgba(168,85,247,0.7)' }} />
           <div className="mt-2 font-logo text-xl grad-text leading-none">ZOE</div>
           <div className="text-[11px] text-[var(--violet-light)] font-extrabold uppercase tracking-wide">{t('zoeTitle')}</div>
         </div>
 
-        <div className="text-2xl font-extrabold text-white mt-4 max-w-sm leading-tight fade-in-d2"
+        <div className="text-2xl font-extrabold text-white mt-4 max-w-sm leading-tight"
           style={{ textShadow: '0 3px 18px rgba(0,0,0,0.95)' }}>{t('homeWelcome')}</div>
 
-        <button onClick={() => { kickMusic(); onClose() }} className="btn btn-gold mt-5 text-lg px-12 min-h-touch glow-pulse fade-in-d3" aria-label={t('introStart')}>
+        <button onClick={() => { kickMusic(); onClose() }} className="btn btn-gold mt-5 text-lg px-12 min-h-touch glow-pulse" aria-label={t('introStart')}>
           {t('introStart')}
         </button>
-        <div className="text-[11px] text-white/70 mt-2.5 fade-in-d3">{t('introTapHint')}</div>
       </div>
     </div>
   )
