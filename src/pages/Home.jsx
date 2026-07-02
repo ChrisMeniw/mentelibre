@@ -65,7 +65,7 @@ export default function Home() {
             onClick={play} />
           <ModeCard iconName="group" accent="#A855F7"
             title={t('modeGroupTitle')} desc={t('modeGroupDesc')}
-            onClick={() => { sfxPop(); nav('/aula') }} />
+            onClick={() => { sfxPop(); nav('/competencia') }} />
           <ModeCard iconName="ranking" accent="#38BDF8"
             title={t('modeRankingTitle')} desc={t('modeRankingDesc')}
             onClick={() => { sfxPop(); nav('/aula', { state: { view: 'board' } }) }} />

@@ -14,6 +14,7 @@ import Characters from './pages/Characters'
 import Mission from './pages/Mission'
 import HowItWorks from './pages/HowItWorks'
 import Classroom from './pages/Classroom'
+import Competencia from './pages/Competencia'
 import Landing from './pages/Landing'
 import Hub from './pages/Hub'
 import Challenge from './pages/Challenge'
@@ -62,6 +63,7 @@ export default function App() {
           <Route path="/mision" element={<Mission />} />
           <Route path="/como-funciona" element={<HowItWorks />} />
           <Route path="/aula" element={<Classroom />} />
+          <Route path="/competencia" element={<Competencia />} />
           <Route path="/empezar" element={<Landing />} />
           <Route path="/hub" element={<Hub />} />
           <Route path="/tienda" element={<Shop />} />
