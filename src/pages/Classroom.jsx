@@ -6,6 +6,7 @@ import { AGE_GROUPS, pickMixedQuestions } from '../data/challenges'
 import { callClaude, scoreSystemPrompt, parseScore } from '../lib/claude'
 import { localScore } from '../lib/localZoe'
 import { useSpeech } from '../hooks/useSpeech'
+import { useMatchClock, mmss } from '../hooks/useMatchClock'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxComplete } from '../lib/sfx'
 import { enterGameplay, exitGameplay } from '../lib/musicBus'
@@ -15,6 +16,7 @@ import StarsReveal from '../components/StarsReveal'
 
 const N = 20
 const SECONDS = 30
+const MATCH_SECONDS = 2700 // ⏳ 45 minutos de desafío de colegio
 const STAR_POINTS = { 1: 20, 2: 40, 3: 65, 4: 95, 5: 130 }
 
 export default function Classroom() {
@@ -38,6 +40,7 @@ export default function Classroom() {
   const [fb, setFb] = useState({ stars: 0, points: 0, timeout: false })
   const [results, setResults] = useState(null)
   const [boardTab, setBoardTab] = useState('groups')
+  const [showEnd, setShowEnd] = useState(false) // diálogo Continuar / Finalizar partida
   const usedSecondsRef = useRef(SECONDS)
 
   const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
@@ -75,6 +78,7 @@ export default function Classroom() {
     sfxPop()
     setQuestions(pickMixedQuestions(age, N))
     setQi(0); setScore(0); setAnswer(''); setStage('answer'); setTimeLeft(SECONDS)
+    resetMatch()
     setPhase('playing')
   }
 
@@ -127,6 +131,9 @@ export default function Classroom() {
     setPhase('results')
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
+
+  // ⏳ RELOJ DEL DESAFÍO (45 min). Al agotarse termina la partida y muestra el resultado.
+  const { left: matchLeft, reset: resetMatch } = useMatchClock(MATCH_SECONDS, phase === 'playing', () => { if (phase === 'playing') finish() })
 
   // ---------- SETUP ----------
   if (phase === 'setup') {
@@ -255,14 +262,32 @@ export default function Classroom() {
         <span className="text-[var(--text-dim)]">·</span>
         <span className="text-[var(--text-dim)] truncate">🏫 {school}</span>
       </div>
-      {/* Header: progreso + puntaje */}
+      {/* Header: reloj de partida (45 min) + progreso + puntaje */}
       <div className="flex items-center justify-between gap-2 mb-3">
-        <div className="font-extrabold text-sm text-[var(--text-dim)]">{group}</div>
+        <button onClick={() => { sfxPop(); setShowEnd(true) }} aria-label={lang === 'pt' ? 'Finalizar' : 'Finalizar'}
+          className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-black active:scale-95 transition ' + (matchLeft <= 60 ? 'timer-pulse' : '')}
+          style={{ background: matchLeft <= 60 ? 'rgba(244,63,94,0.2)' : 'rgba(255,255,255,0.06)', border: `1px solid ${matchLeft <= 60 ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.14)'}`, color: matchLeft <= 60 ? '#F43F5E' : 'var(--text)' }}>
+          ⏳ {mmss(matchLeft)}
+        </button>
         <div className="flex items-center gap-3">
+          <span className="text-sm text-[var(--text-dim)] truncate max-w-[80px]">{group}</span>
           <span className="text-sm text-[var(--text-dim)]">{qi + 1}/{N}</span>
           <span className="chip" style={{ borderColor: 'rgba(251,191,36,0.5)' }}>🏆 <span className="text-[var(--gold)] font-black tabular-nums">{score}</span></span>
         </div>
       </div>
+
+      {/* Diálogo Continuar / Finalizar partida */}
+      {showEnd && (
+        <div className="fixed inset-0 z-[90] grid place-items-center px-6" style={{ background: 'rgba(8,4,20,0.82)', backdropFilter: 'blur(8px)' }} onClick={() => setShowEnd(false)}>
+          <div className="card p-6 max-w-xs w-full bounce-in text-center" onClick={(e) => e.stopPropagation()}>
+            <div className="text-4xl">⏳</div>
+            <h2 className="font-logo text-2xl grad-text mt-2">{lang === 'pt' ? 'Terminar a partida?' : '¿Terminar la partida?'}</h2>
+            <p className="text-sm text-[var(--text-dim)] mt-2 leading-snug">{lang === 'pt' ? 'Vamos fechar o placar do grupo e mostrar o resultado.' : 'Vamos a cerrar el puntaje del grupo y mostrar el resultado.'}</p>
+            <button onClick={() => { sfxPop(); setShowEnd(false) }} className="btn btn-gold w-full mt-4 min-h-touch">{lang === 'pt' ? 'Seguir jogando' : 'Seguir jugando'}</button>
+            <button onClick={() => { sfxPop(); setShowEnd(false); finish() }} className="btn btn-ghost w-full mt-2 min-h-touch" style={{ color: 'var(--rose)' }}>{lang === 'pt' ? 'Finalizar partida' : 'Finalizar partida'}</button>
+          </div>
+        </div>
+      )}
 
       {/* TIMER grande */}
       <div className="card p-3 mb-3" style={{ boxShadow: low ? 'inset 0 0 0 1px rgba(244,63,94,0.6)' : undefined }}>

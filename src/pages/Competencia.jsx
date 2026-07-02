@@ -7,6 +7,7 @@ import { pickAskTopics } from '../data/askTopics'
 import { callClaude, roundReactSystemPrompt, parseReact, evaluateQuestion } from '../lib/claude'
 import { localReact } from '../lib/localZoe'
 import { useSpeech } from '../hooks/useSpeech'
+import { useMatchClock, mmss } from '../hooks/useMatchClock'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxCorrect, sfxSparkle, sfxComplete, sfxLevelUp, sfxTick } from '../lib/sfx'
 import { enterGameplay, exitGameplay } from '../lib/musicBus'
@@ -18,9 +19,10 @@ import StarsReveal from '../components/StarsReveal'
 // comodín x2 (estrategia) y un cierre donde ZOE da un TEMA y cada equipo inventa su mejor
 // PREGUNTA (se califica 1-5, adaptado a la edad). Gana el equipo con más estrellas. 🏆
 
-const QTURNS = 6 // turnos de respuesta (3 por equipo, alternados)
+const MATCH_SECONDS = 600 // ⏳ 10 minutos de partida (2v2 y 5v5)
+const QPOOL = 60          // banco de preguntas suficiente para toda la partida
 const BONUS_SECONDS = 30
-const secondsForTurn = (turn) => Math.max(12, 30 - turn * 3) // 30,27,24,21,18,15 → pensar rápido
+const secondsForTurn = (turn) => Math.max(12, 30 - turn * 3) // 30,27,24,21,18,15… → pensar rápido
 const countTeamPlayers = (fmt) => (fmt === '5v5' ? 5 : 2)
 
 const TEAM_META = [
@@ -55,6 +57,9 @@ const DICT = {
     winner: '¡Equipo campeón!', tie: '¡Empate! Los dos equipos pensaron genial 🤝',
     finalScore: 'Marcador final', playAgain: 'Jugar otra vez', backMenu: 'Volver al inicio', champion: '🏆 CAMPEÓN',
     timeUp: '¡Se acabó el tiempo! Sigamos. ⏱️', teamTurnHint: 'Que responda un jugador del equipo',
+    matchTime: 'Partida', finalize: 'Finalizar', qLabel: 'Pregunta',
+    endTitle: '¿Terminar la partida?', endBody: 'Pasan al desafío final de ZOE (cada equipo inventa una pregunta) y después se ve el ganador.',
+    keepPlaying: 'Seguir jugando', endBtn: 'Finalizar partida', timeUpMatch: '¡Se acabó el tiempo de la partida! Vamos al desafío final. ⏳',
   },
   pt: {
     title: 'Competição por equipes', sub: 'Duas equipes, um vencedor. Pensar rápido!',
@@ -81,6 +86,9 @@ const DICT = {
     winner: 'Equipe campeã!', tie: 'Empate! As duas equipes pensaram demais 🤝',
     finalScore: 'Placar final', playAgain: 'Jogar de novo', backMenu: 'Voltar ao início', champion: '🏆 CAMPEÃ',
     timeUp: 'Acabou o tempo! Vamos seguir. ⏱️', teamTurnHint: 'Que responda um jogador da equipe',
+    matchTime: 'Partida', finalize: 'Finalizar', qLabel: 'Pergunta',
+    endTitle: 'Terminar a partida?', endBody: 'Vão ao desafio final da ZOE (cada equipe inventa uma pergunta) e depois aparece o vencedor.',
+    keepPlaying: 'Seguir jogando', endBtn: 'Finalizar partida', timeUpMatch: 'Acabou o tempo da partida! Vamos ao desafio final. ⏳',
   },
 }
 
@@ -108,7 +116,7 @@ export default function Competencia() {
   const questionsRef = useRef([])
   const topicsRef = useRef([])
 
-  const [turn, setTurn] = useState(0)          // 0..QTURNS-1 (fase play)
+  const [turn, setTurn] = useState(0)          // turno de respuesta (la partida va por tiempo, no por cantidad)
   const [bi, setBi] = useState(0)              // 0..1 (fase bonus, un tema por equipo)
   const [stage, setStage] = useState('answer') // answer | feedback
   const [answer, setAnswer] = useState('')
@@ -117,8 +125,13 @@ export default function Competencia() {
   const [gained, setGained] = useState(0)      // estrellas ganadas en este turno
   const [boostArmed, setBoostArmed] = useState(false)
   const [timeLeft, setTimeLeft] = useState(30)
+  const [showEnd, setShowEnd] = useState(false) // diálogo Continuar / Finalizar partida
 
   const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+
+  // ⏳ RELOJ DE LA PARTIDA (10 min). Al agotarse (o al Finalizar) pasa al desafío final de ZOE.
+  const endMatch = () => { stopSpeak(); setShowEnd(false); setBi(0); setStage('answer'); setAnswer(''); setReact(''); setGained(0); setPhase('bonus'); window.scrollTo({ top: 0, behavior: 'instant' }) }
+  const { left: matchLeft, reset: resetMatch } = useMatchClock(MATCH_SECONDS, phase === 'play', endMatch)
 
   useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
   useEffect(() => () => stopSpeak(), [])
@@ -131,7 +144,7 @@ export default function Competencia() {
     return `${lang === 'pt' ? 'Jogador' : 'Jugador'} ${idxInTeam + 1}`
   }, [turn, format, lang])
 
-  const q = questionsRef.current[turn]
+  const q = questionsRef.current[turn % (questionsRef.current.length || 1)]
   const qText = q ? (lang === 'pt' ? q.pt : q.es) : ''
   const topic = topicsRef.current[bi]
   const topicText = topic ? (lang === 'pt' ? topic.pt : topic.es) : ''
@@ -163,10 +176,11 @@ export default function Competencia() {
   // ---------- iniciar ----------
   const begin = () => {
     sfxPop()
-    questionsRef.current = pickMixedQuestions(age, QTURNS)
+    questionsRef.current = pickMixedQuestions(age, QPOOL)
     topicsRef.current = pickAskTopics(age, 2)
     setTeams((ts) => ts.map((tm) => ({ ...tm, score: 0, boostUsed: false })))
     setTurn(0); setBi(0); setStage('answer'); setAnswer(''); setReact(''); setGained(0)
+    resetMatch()
     setPhase('rules')
   }
   const goPlay = () => { sfxPop(); setPhase('play') }
@@ -215,8 +229,7 @@ export default function Competencia() {
     sfxPop(); setAnswer(''); setReact(''); setGained(0)
     window.scrollTo({ top: 0, behavior: 'instant' })
     if (phase === 'play') {
-      if (turn + 1 < QTURNS) { setTurn(turn + 1); setStage('answer') }
-      else { setBi(0); setStage('answer'); setPhase('bonus') }
+      setTurn(turn + 1); setStage('answer') // la partida sigue hasta que se acabe el tiempo o toquen Finalizar
     } else { // bonus
       if (bi + 1 < 2) { setBi(bi + 1); setStage('answer') }
       else { sfxComplete(); setTimeout(() => sfxLevelUp(), 400); setPhase('winner'); window.scrollTo({ top: 0, behavior: 'instant' }) }
@@ -355,10 +368,29 @@ export default function Competencia() {
             </span>
           ))}
         </div>
-        <span className="text-xs font-extrabold text-[var(--text-dim)] w-12 text-right">
-          {phase === 'bonus' ? '🦉' : `${L.round} ${turn + 1}/${QTURNS}`}
-        </span>
+        {phase === 'play' ? (
+          <button onClick={() => { sfxPop(); setShowEnd(true) }} aria-label={L.finalize}
+            className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-black active:scale-95 transition ' + (matchLeft <= 60 ? 'timer-pulse' : '')}
+            style={{ background: matchLeft <= 60 ? 'rgba(244,63,94,0.2)' : 'rgba(255,255,255,0.06)', border: `1px solid ${matchLeft <= 60 ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.14)'}`, color: matchLeft <= 60 ? '#F43F5E' : 'var(--text)' }}>
+            ⏳ {mmss(matchLeft)}
+          </button>
+        ) : (
+          <span className="text-lg w-12 text-right" aria-hidden>🦉</span>
+        )}
       </div>
+
+      {/* Diálogo Continuar / Finalizar partida */}
+      {showEnd && (
+        <div className="fixed inset-0 z-[90] grid place-items-center px-6" style={{ background: 'rgba(8,4,20,0.82)', backdropFilter: 'blur(8px)' }} onClick={() => setShowEnd(false)}>
+          <div className="card p-6 max-w-xs w-full bounce-in text-center" onClick={(e) => e.stopPropagation()}>
+            <div className="text-4xl">⏳</div>
+            <h2 className="font-logo text-2xl grad-text mt-2">{L.endTitle}</h2>
+            <p className="text-sm text-[var(--text-dim)] mt-2 leading-snug">{L.endBody}</p>
+            <button onClick={() => { sfxPop(); setShowEnd(false) }} className="btn btn-gold w-full mt-4 min-h-touch">{L.keepPlaying}</button>
+            <button onClick={() => { sfxPop(); endMatch() }} className="btn btn-ghost w-full mt-2 min-h-touch" style={{ color: 'var(--rose)' }}>{L.endBtn}</button>
+          </div>
+        </div>
+      )}
 
       {/* De quién es el turno */}
       <div className="text-center mb-3 reel-in" key={phase + '-' + turn + '-' + bi}>
