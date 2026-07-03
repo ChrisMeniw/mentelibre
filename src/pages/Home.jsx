@@ -56,6 +56,16 @@ export default function Home() {
         <div className="mt-3 fade-in-d2"><StreakBadge size="lg" /></div>
       )}
 
+      {/* 🎯 EL OBJETIVO — que cualquiera entienda de una qué hay que hacer y qué se gana */}
+      <div className="card w-full px-4 py-3 mt-4 text-left flex items-start gap-3 fade-in-d2"
+        style={{ background: 'linear-gradient(135deg, rgba(251,191,36,0.12), rgba(124,58,237,0.10))', boxShadow: 'inset 0 0 0 1px rgba(251,191,36,0.35)' }}>
+        <span className="text-2xl shrink-0" aria-hidden>🎯</span>
+        <span className="text-[13px] leading-snug">
+          <span className="block font-extrabold text-[var(--gold)] uppercase tracking-wide text-[11px] mb-0.5">{t('goalLabel')}</span>
+          {t('goalText')}
+        </span>
+      </div>
+
       {/* Elige cómo jugar — 3 modos bien diferenciados */}
       <div className="w-full mt-6 fade-in-d3">
         <div className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[var(--text-dim)] mb-2 text-center">{t('chooseHowToPlay')}</div>

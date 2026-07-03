@@ -10,6 +10,9 @@ export const LANG_DATA = {
     // Onboarding
     homeSub: 'Un juego de pensamiento crítico con inteligencia artificial.',
     homeWelcome: '¿Estás listo para desafiar a tu mente?',
+    goalLabel: 'El objetivo',
+    goalText: 'Responde preguntas pensando con tu propia cabeza. ZOE te da hasta 5 ⭐ por cada respuesta: mientras mejor explicas tu porqué, más estrellas ganas. Junta estrellas, sube de nivel y llega a Filósofo. 🧠',
+    goalShort: 'Piensa, responde y gana hasta 5 ⭐ por respuesta',
     zoeTitle: 'Primera profesora IA de LATAM',
     zoeTapHint: '🔊 Tócame para escucharme',
     introStart: '¡Comenzar! 🚀',
@@ -365,6 +368,9 @@ export const LANG_DATA = {
 
     homeSub: 'Um jogo de pensamento crítico com inteligência artificial.',
     homeWelcome: 'Você está pronto para desafiar a sua mente?',
+    goalLabel: 'O objetivo',
+    goalText: 'Responda perguntas pensando com a sua própria cabeça. A ZOE dá até 5 ⭐ por resposta: quanto melhor você explica o porquê, mais estrelas ganha. Junte estrelas, suba de nível e chegue a Filósofo. 🧠',
+    goalShort: 'Pense, responda e ganhe até 5 ⭐ por resposta',
     zoeTitle: 'Primeira professora IA da América Latina',
     zoeTapHint: '🔊 Toque para me ouvir',
     introStart: 'Começar! 🚀',

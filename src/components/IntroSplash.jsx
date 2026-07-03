@@ -12,13 +12,17 @@ export default function IntroSplash({ onClose }) {
   const { t, lang } = useLang()
   const appName = lang === 'pt' ? 'Mente Livre' : 'Mente Libre'
   const [phase, setPhase] = useState('video') // 'video' (solo el clip) → 'content' (título + menú)
+  const [videoOn, setVideoOn] = useState(false) // ¿el video ya está reproduciéndose de verdad?
   const showContent = phase === 'content'
 
-  // Tras unos segundos de video limpio, aparece el contenido (título + ZOE + botón).
+  // Momento 1 SOLO si el video realmente arrancó: 2.6s de clip limpio y aparece el contenido.
+  // Si el video tarda en cargar (conexión lenta), NO dejamos la pantalla negra: el contenido
+  // entra igual a los 1.8s y el video aparece detrás cuando termina de cargar.
   useEffect(() => {
-    const tm = setTimeout(() => setPhase('content'), 2600)
+    if (phase !== 'video') return
+    const tm = setTimeout(() => setPhase('content'), videoOn ? 2600 : 1800)
     return () => clearTimeout(tm)
-  }, [])
+  }, [videoOn, phase])
 
   const sparkles = Array.from({ length: 20 }, (_, i) => ({
     left: (i * 53) % 100,
@@ -50,6 +54,7 @@ export default function IntroSplash({ onClose }) {
         onLoadedData={(e) => { e.currentTarget.play().catch(() => {}) }}
         onCanPlay={(e) => { e.currentTarget.play().catch(() => {}) }}
         onPlay={(e) => { e.currentTarget.playbackRate = SLOW }}
+        onPlaying={() => setVideoOn(true)}
         onError={() => setPhase('content')}
         className="absolute inset-0 w-full h-full object-cover"
         style={{ filter: 'saturate(1.12) contrast(1.05)' }}
@@ -101,7 +106,7 @@ export default function IntroSplash({ onClose }) {
 
         {/* ZOE — primera profesora IA de LATAM */}
         <div className="mt-5 flex flex-col items-center">
-          <img src="/zoe-portal-v9.webp" alt="ZOE" width="80" height="80" className="floaty"
+          <img src="/zoe-portal-v10.webp" alt="ZOE" width="80" height="80" className="floaty"
             style={{ width: 80, height: 80, borderRadius: '9999px', objectFit: 'cover', border: '2.5px solid rgba(168,85,247,0.9)', boxShadow: '0 0 28px rgba(168,85,247,0.7)' }} />
           <div className="mt-2 font-logo text-xl grad-text leading-none">ZOE</div>
           <div className="text-[11px] text-[var(--violet-light)] font-extrabold uppercase tracking-wide">{t('zoeTitle')}</div>
@@ -109,6 +114,9 @@ export default function IntroSplash({ onClose }) {
 
         <div className="text-2xl font-extrabold text-white mt-4 max-w-sm leading-tight"
           style={{ textShadow: '0 3px 18px rgba(0,0,0,0.95)' }}>{t('homeWelcome')}</div>
+        <div className="text-[13px] font-bold text-white/85 mt-1.5" style={{ textShadow: '0 2px 10px rgba(0,0,0,0.9)' }}>
+          🎯 {t('goalShort')}
+        </div>
 
         <button onClick={() => { kickMusic(); onClose() }} className="btn btn-gold mt-5 text-lg px-12 min-h-touch glow-pulse" aria-label={t('introStart')}>
           {t('introStart')}
