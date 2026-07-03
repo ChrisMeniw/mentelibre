@@ -40,7 +40,7 @@ export default function Home() {
   const { t } = useLang()
   const { hasProfile, player } = usePlayer()
   const nav = useNavigate()
-  const askUnlocked = isAskUnlocked(player.xp)
+  const askUnlocked = isAskUnlocked(player)
 
   const play = () => {
     sfxPop()

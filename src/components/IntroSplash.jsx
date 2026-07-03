@@ -1,28 +1,18 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useLang } from '../i18n'
 import { kickMusic } from '../lib/musicControl'
 
 const SLOW = 0.6 // el video va un poco más lento (calmo/cinematográfico)
 
-// INTRO en DOS momentos: 1) el VIDEO real se ve LIMPIO (galaxia cósmica en movimiento,
-// clip libre Pexels) ~2.6s para que se aprecie; 2) recién ahí aparece el título "Mente
-// Libre" + ZOE + el botón Comenzar. Antes el título se superponía desde el primer frame
-// y tapaba el video (parecía una imagen fija). Tocando la pantalla se adelanta al menú.
+// INTRO: el título "Mente Libre" + ZOE + botón aparecen AL INSTANTE, con el VIDEO
+// cósmico (clip libre Pexels, comprimido a 3MB) reproduciéndose de fondo desde que carga.
 export default function IntroSplash({ onClose }) {
   const { t, lang } = useLang()
   const appName = lang === 'pt' ? 'Mente Livre' : 'Mente Libre'
-  const [phase, setPhase] = useState('video') // 'video' (solo el clip) → 'content' (título + menú)
-  const [videoOn, setVideoOn] = useState(false) // ¿el video ya está reproduciéndose de verdad?
+  // El TÍTULO aparece AL INSTANTE (pedido de Chris): nada de esperar al video.
+  // El video cósmico se reproduce DETRÁS desde que carga; si tarda, el título ya está.
+  const [phase, setPhase] = useState('content')
   const showContent = phase === 'content'
-
-  // Momento 1 SOLO si el video realmente arrancó: 2.6s de clip limpio y aparece el contenido.
-  // Si el video tarda en cargar (conexión lenta), NO dejamos la pantalla negra: el contenido
-  // entra igual a los 1.8s y el video aparece detrás cuando termina de cargar.
-  useEffect(() => {
-    if (phase !== 'video') return
-    const tm = setTimeout(() => setPhase('content'), videoOn ? 2600 : 1800)
-    return () => clearTimeout(tm)
-  }, [videoOn, phase])
 
   const sparkles = Array.from({ length: 20 }, (_, i) => ({
     left: (i * 53) % 100,
@@ -54,7 +44,7 @@ export default function IntroSplash({ onClose }) {
         onLoadedData={(e) => { e.currentTarget.play().catch(() => {}) }}
         onCanPlay={(e) => { e.currentTarget.play().catch(() => {}) }}
         onPlay={(e) => { e.currentTarget.playbackRate = SLOW }}
-        onPlaying={() => setVideoOn(true)}
+
         onError={() => setPhase('content')}
         className="absolute inset-0 w-full h-full object-cover"
         style={{ filter: 'saturate(1.12) contrast(1.05)' }}
@@ -80,18 +70,7 @@ export default function IntroSplash({ onClose }) {
         ))}
       </div>
 
-      {/* MOMENTO 1 — solo el video: una marca discreta abajo + se puede tocar para adelantar */}
-      {!showContent && (
-        <button
-          onClick={() => setPhase('content')}
-          className="absolute inset-0 z-20 flex items-end justify-center pb-10"
-          aria-label={t('introStart')}
-        >
-          <span className="text-[11px] uppercase tracking-[0.3em] text-white/75 font-extrabold animate-pulse">{t('introTapHint')}</span>
-        </button>
-      )}
-
-      {/* MOMENTO 2 — título "Mente Libre" + ZOE + botón (aparece después del video) */}
+      {/* Título "Mente Libre" + ZOE + botón — visibles AL INSTANTE, con el video detrás */}
       <div className={'relative z-10 h-full flex flex-col items-center justify-center px-6 text-center safe-top transition-all duration-700 ' + (showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none')}>
         <img src="/foundation-logo.webp" alt="Chris Meniw Foundation" width="56" height="56"
           className="rounded-full floaty" style={{ width: 56, height: 56, filter: 'drop-shadow(0 8px 24px rgba(124,58,237,0.75))' }} />

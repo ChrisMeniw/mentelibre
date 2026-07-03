@@ -10,6 +10,8 @@ import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '.
 import { localReact } from '../lib/localZoe'
 import { avatarByEmoji } from '../components/AvatarPicker'
 import { petById } from '../data/shop'
+import { POWERS, localHint } from '../data/powers'
+import ChestReward, { chestTierFor } from '../components/ChestReward'
 import { useSpeech } from '../hooks/useSpeech'
 import { speak, stopSpeak, speakSupported } from '../lib/speak'
 import { sfxPop, sfxSend, sfxSparkle, sfxCorrect, sfxComplete, sfxLevelUp, sfxCombo, sfxTick, sfxStarsFanfare } from '../lib/sfx'
@@ -55,7 +57,7 @@ export default function Round() {
   const { world: worldId } = useParams()
   const nav = useNavigate()
   const { t, lang } = useLang()
-  const { player, addXP, addCoins, completeChallenge, incrementAI, trackDaily, addLights } = usePlayer()
+  const { player, addXP, addCoins, completeChallenge, incrementAI, trackDaily, addLights, addPower, usePower } = usePlayer()
 
   const world = getWorld(worldId)
   const av = avatarByEmoji(player.avatar)
@@ -92,6 +94,11 @@ export default function Round() {
   const badgesBefore = useRef(player.unlockedBadges || [])
   const bestComboRef = useRef(0)               // racha máxima de la ronda
   const comboCoinsRef = useRef(0)              // monedas extra acumuladas por racha
+  // ⚡ PODERES en juego
+  const [hint, setHint] = useState('')         // pista de ZOE activa (💡)
+  const [doubleArmed, setDoubleArmed] = useState(false) // ✨ la próxima respuesta vale doble XP
+  const [lastDoubled, setLastDoubled] = useState(false) // para mostrar el x2 en el feedback
+  const doubleXpRef = useRef(0)                // XP extra acumulado por el poder ✨
 
   const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
 
@@ -150,6 +157,15 @@ export default function Round() {
 
   const startRound = () => { sfxPop(); setPhase('playing'); setStage('answer') }
 
+  // ⚡ Usar un poder (si hay stock): ⏳ +15s · 💡 pista de ZOE · ✨ doble XP.
+  const firePower = (id) => {
+    if (!usePower(id)) return
+    sfxSparkle()
+    if (id === 'time') setTimeLeft((s) => s + 15)
+    if (id === 'hint') setHint(localHint(lang, qText.length + qi))
+    if (id === 'double') setDoubleArmed(true)
+  }
+
   const respond = async () => {
     if (!canSend) return
     sfxSend(); if (listening) stopListen(); stopSpeak()
@@ -163,6 +179,9 @@ export default function Round() {
     // La reacción de ZOE ya celebra la respuesta (sin coletillas tipo "¡Vamos por más!").
     setReact(fb)
     setQStars(parsed.stars)
+    // ✨ Poder "XP doble": esta respuesta vale el DOBLE (se acredita al cierre de la ronda).
+    if (doubleArmed) { doubleXpRef.current += ROUND_REWARD[parsed.stars]?.xp || 0; setLastDoubled(true); setDoubleArmed(false) }
+    else setLastDoubled(false)
     setLoading(false)
     // Racha: respuestas con 3★+ encadenadas suben el combo (se corta con 1★ o 2★).
     const nc = parsed.stars >= 3 ? combo + 1 : 0
@@ -191,7 +210,7 @@ export default function Round() {
     if (combo >= 2) comboCoinsRef.current += (combo - 1) // bono de racha: x2→+1, x3→+2…
     trackDaily({ answers: 1, stars: qStars }) // progreso de misión diaria por pregunta
     if (qi + 1 < N) {
-      setQi(qi + 1); setAnswer(''); setReact(''); setStage('answer')
+      setQi(qi + 1); setAnswer(''); setReact(''); setStage('answer'); setHint('')
       window.scrollTo({ top: 0, behavior: 'instant' })
     } else {
       finishRound(all)
@@ -199,7 +218,7 @@ export default function Round() {
   }
 
   const finishRound = (all) => {
-    const totalXp = all.reduce((a, s) => a + (ROUND_REWARD[s]?.xp || 0), 0)
+    const totalXp = all.reduce((a, s) => a + (ROUND_REWARD[s]?.xp || 0), 0) + doubleXpRef.current
     const baseCoins = all.reduce((a, s) => a + (ROUND_REWARD[s]?.coins || 0), 0)
     const comboBonus = comboCoinsRef.current
     const totalCoins = baseCoins + comboBonus
@@ -266,6 +285,10 @@ export default function Round() {
               🔥 {t('comboBest')} x{results.bestCombo} · +{results.comboBonus} 🪙
             </div>
           )}
+
+          {/* 🎁 COFRE SORPRESA: mientras mejor pensaste, mejor el cofre (bronce/plata/ORO) */}
+          <ChestReward tier={chestTierFor(results.totalStars, N * 5)}
+            onClaim={({ coins, power }) => { addCoins(coins); if (power) addPower(power.id, 1) }} />
 
           {/* Estrellas encendidas en tu universo */}
           {results.totalStars > 0 && (
@@ -370,6 +393,37 @@ export default function Round() {
             <p className="mt-2 text-lg font-extrabold leading-snug">{qText}</p>
           </div>
 
+          {/* ⚡ PODERES — estrategia dentro de la ronda: ⏳ +15s · 💡 pista · ✨ doble XP */}
+          <div className="flex items-stretch gap-2">
+            {POWERS.map((pw) => {
+              const count = player.powers?.[pw.id] || 0
+              const spent = (pw.id === 'double' && doubleArmed) || (pw.id === 'hint' && !!hint)
+              const disabled = count <= 0 || spent
+              const name = lang === 'pt' ? pw.name_pt : pw.name_es
+              return (
+                <button key={pw.id} onClick={() => firePower(pw.id)} disabled={disabled} aria-label={name}
+                  className="relative flex-1 rounded-2xl px-1 py-2 text-center active:scale-95 transition disabled:opacity-45 min-h-touch"
+                  style={{ background: spent ? 'rgba(251,191,36,0.16)' : 'rgba(255,255,255,0.06)', border: spent ? '1px solid rgba(251,191,36,0.55)' : '1px solid rgba(255,255,255,0.13)' }}>
+                  <span className="block text-xl leading-none">{pw.emoji}</span>
+                  <span className="block text-[10px] font-black mt-0.5 leading-tight">{spent ? (lang === 'pt' ? 'ATIVO' : 'ACTIVO') : name}</span>
+                  <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full grid place-items-center text-[10px] font-black"
+                    style={{ background: count > 0 ? 'linear-gradient(135deg,#A855F7,#7C3AED)' : 'rgba(255,255,255,0.14)', color: '#fff' }}>{count}</span>
+                </button>
+              )
+            })}
+          </div>
+
+          {/* 💡 Pista de ZOE activa */}
+          {hint && (
+            <div className="card p-3 flex items-center gap-2.5 bounce-in" style={{ boxShadow: 'inset 0 0 0 1px rgba(251,191,36,0.4)' }}>
+              <Zoe size={38} />
+              <p className="text-[13.5px] font-bold leading-snug">{hint}</p>
+            </div>
+          )}
+          {doubleArmed && (
+            <div className="text-center text-xs font-black text-[var(--gold)] animate-pulse">✨ {lang === 'pt' ? 'A próxima resposta vale XP em DOBRO' : 'La próxima respuesta vale XP DOBLE'}</div>
+          )}
+
           <div className="card p-4">
             {micSupported && (
               <button onClick={toggleVoice} aria-label={listening ? t('listening') : t('tapToSpeak')}
@@ -410,7 +464,7 @@ export default function Round() {
               : 'linear-gradient(180deg, rgba(56,189,248,0.15), rgba(255,255,255,0.03))') }}>
             {!loading && qStars >= 4 && <Confetti n={36} />}
             {!loading && (
-              <div key={qi + '-xp'} className="xp-float absolute left-1/2 top-1 font-logo text-xl text-[var(--gold)] text-glow">+{ROUND_REWARD[qStars]?.xp || 0} XP</div>
+              <div key={qi + '-xp'} className="xp-float absolute left-1/2 top-1 font-logo text-xl text-[var(--gold)] text-glow">+{(ROUND_REWARD[qStars]?.xp || 0) * (lastDoubled ? 2 : 1)} XP{lastDoubled ? ' ✨×2' : ''}</div>
             )}
             <div className="grid place-items-center"><Zoe size={72} talking={!loading} /></div>
             {loading ? (

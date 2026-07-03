@@ -12,8 +12,11 @@ const DEFAULT = {
   school: '', team: '',
   xp: 0, level: 0, streak: 0, lastPlayed: null, coins: 0,
   lights: 0, // estrellas encendidas en "Tu Universo" (1 por cada estrella de pensamiento)
+  answers: 0, // total de preguntas respondidas (desbloquea "El arte de preguntar" a las 20)
   completed: {}, unlockedBadges: [], aiInteractions: 0,
   owned: [], pet: '', frame: '',
+  powers: { time: 1, hint: 1, double: 1 }, // ⚡ poderes: arrancás con 1 de cada uno para aprender a usarlos
+  guardians: {}, // guardianes vencidos por mundo (jefes) → corona en el mapa
   daily: { date: '', rounds: 0, stars: 0, answers: 0, claimed: false },
 }
 
@@ -96,17 +99,42 @@ export function PlayerProvider({ children }) {
     setPlayer((p) => ({ ...p, lights: (p.lights || 0) + Math.max(0, n || 0) }))
   }, [])
 
-  // Suma progreso a la misión diaria (resetea solo si cambió el día).
+  // Suma progreso a la misión diaria (resetea solo si cambió el día) y al contador
+  // TOTAL de respuestas (el que desbloquea "El arte de preguntar" a las 20).
   const trackDaily = useCallback((delta) => {
     setPlayer((p) => {
       const d = currentDaily(p)
-      return { ...p, daily: {
-        ...d,
-        rounds: d.rounds + (delta.rounds || 0),
-        stars: d.stars + (delta.stars || 0),
-        answers: d.answers + (delta.answers || 0),
-      } }
+      return { ...p,
+        answers: (p.answers || 0) + (delta.answers || 0),
+        daily: {
+          ...d,
+          rounds: d.rounds + (delta.rounds || 0),
+          stars: d.stars + (delta.stars || 0),
+          answers: d.answers + (delta.answers || 0),
+        } }
     })
+  }, [])
+
+  // ⚡ PODERES (consumibles): suma n poderes de un tipo ('time' | 'hint' | 'double').
+  const addPower = useCallback((type, n = 1) => {
+    setPlayer((p) => ({ ...p, powers: { ...(p.powers || {}), [type]: Math.max(0, (p.powers?.[type] || 0) + n) } }))
+  }, [])
+
+  // Gasta un poder si hay stock. Devuelve true si se pudo usar.
+  const usePower = useCallback((type) => {
+    let ok = false
+    setPlayer((p) => {
+      const have = p.powers?.[type] || 0
+      if (have <= 0) return p
+      ok = true
+      return { ...p, powers: { ...(p.powers || {}), [type]: have - 1 } }
+    })
+    return ok
+  }, [])
+
+  // ⚔️ Marca al guardián de un mundo como VENCIDO (corona en el mapa).
+  const beatGuardian = useCallback((worldId) => {
+    setPlayer((p) => ({ ...p, guardians: { ...(p.guardians || {}), [worldId]: true } }))
   }, [])
 
   // Reclama el premio diario (monedas) si las 3 misiones están completas. Devuelve el bono o 0.
@@ -178,7 +206,7 @@ export function PlayerProvider({ children }) {
     player,
     hasProfile: !!player.name,
     saveProfile, touchStreak, addXP, completeChallenge, addCoins, addLights, buyItem, equip,
-    trackDaily, claimDaily,
+    trackDaily, claimDaily, addPower, usePower, beatGuardian,
     incrementAI, checkBadges, getSchoolXP, generateSchoolCode, resetPlayer,
   }
   return createElement(PlayerContext.Provider, { value }, children)

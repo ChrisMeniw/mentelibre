@@ -19,6 +19,7 @@ import Landing from './pages/Landing'
 import Hub from './pages/Hub'
 import Challenge from './pages/Challenge'
 import Round from './pages/Round'
+import Guardian from './pages/Guardian'
 import Achievements from './pages/Achievements'
 import TeacherPortal from './pages/TeacherPortal'
 import Shop from './pages/Shop'
@@ -29,6 +30,12 @@ import MyUniverse from './pages/MyUniverse'
 function RoundRoute() {
   const { world } = useParams()
   return <Round key={world} />
+}
+
+// La batalla del guardián también se remonta limpia al cambiar de mundo.
+function GuardianRoute() {
+  const { world } = useParams()
+  return <Guardian key={world} />
 }
 
 // Toggle de idioma visible en todas las pantallas (Paso 5)
@@ -69,6 +76,7 @@ export default function App() {
           <Route path="/tienda" element={<Shop />} />
           <Route path="/universo" element={<MyUniverse />} />
           <Route path="/ronda/:world" element={<RoundRoute />} />
+          <Route path="/guardian/:world" element={<GuardianRoute />} />
           <Route path="/desafio/:world" element={<Challenge />} />
           <Route path="/logros" element={<Achievements />} />
           <Route path="/docentes" element={<TeacherPortal />} />

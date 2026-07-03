@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { WORLDS } from '../data/challenges'
-import { isAskUnlocked, ASK_UNLOCK_XP } from '../data/levels'
+import { isAskUnlocked, ASK_UNLOCK_ANSWERS } from '../data/levels'
+import { guardianOf } from '../data/guardians'
 import { avatarByEmoji } from '../components/AvatarPicker'
 import { petById } from '../data/shop'
 import { sfxPop } from '../lib/sfx'
@@ -132,27 +133,47 @@ export default function AdventureMap() {
                 )
               })}
 
-              {/* Cofre al final del bioma */}
-              <div className="relative flex justify-center" style={{ minHeight: 64 }}>
-                <div className="relative grid place-items-center rounded-2xl"
-                  style={{
-                    width: 64, height: 56,
-                    background: worldComplete ? `linear-gradient(135deg, ${wColor}55, ${wColor}22)` : 'rgba(255,255,255,0.05)',
-                    boxShadow: worldComplete ? `0 0 26px -4px ${wColor}` : 'none',
-                    border: `1px solid ${worldComplete ? wColor : 'rgba(255,255,255,0.12)'}`,
-                  }}>
-                  <span className={'text-3xl ' + (worldComplete ? 'floaty' : '')} style={{ filter: worldComplete ? 'none' : 'grayscale(0.7) opacity(0.7)' }}>
-                    {worldComplete ? '🏆' : '🎁'}
-                  </span>
-                </div>
-              </div>
+              {/* ⚔️ GUARDIÁN al final del bioma: se desbloquea al completar los 5 niveles.
+                  Vencerlo corona el planeta 👑 (jefe = propósito del mundo, estilo Mario/Zelda). */}
+              {(() => {
+                const G = guardianOf(w.id)
+                const beaten = !!player.guardians?.[w.id]
+                const ready = worldComplete && !beaten
+                return (
+                  <div className="relative flex flex-col items-center" style={{ minHeight: 76 }}>
+                    <button
+                      type="button"
+                      onClick={worldComplete ? () => { sfxPop(); nav(`/guardian/${w.id}`) } : shake}
+                      aria-label={G ? (lang === 'pt' ? G.name_pt : G.name_es) : 'guardián'}
+                      className={'relative grid place-items-center rounded-2xl jelly-tap ' + (ready ? 'glow-pulse' : '')}
+                      style={{
+                        width: 68, height: 60,
+                        background: beaten ? 'linear-gradient(135deg, rgba(251,191,36,0.4), rgba(251,191,36,0.12))'
+                          : worldComplete ? `linear-gradient(135deg, ${wColor}55, ${wColor}22)` : 'rgba(255,255,255,0.05)',
+                        boxShadow: worldComplete || beaten ? `0 0 26px -4px ${beaten ? '#FBBF24' : wColor}` : 'none',
+                        border: `1px solid ${beaten ? '#FBBF24' : worldComplete ? wColor : 'rgba(255,255,255,0.12)'}`,
+                      }}>
+                      <span className={'text-3xl ' + (ready ? 'boss-breathe' : beaten ? 'floaty' : '')}
+                        style={{ filter: worldComplete || beaten ? 'none' : 'grayscale(0.8) opacity(0.6)' }}>
+                        {beaten ? '👑' : G?.emoji || '⚔️'}
+                      </span>
+                      {ready && (
+                        <span className="absolute -top-1.5 -right-1.5 text-sm" aria-hidden>⚔️</span>
+                      )}
+                    </button>
+                    <div className="text-[10px] font-black mt-1" style={{ color: beaten ? 'var(--gold)' : worldComplete ? wColor : 'var(--text-dim)' }}>
+                      {beaten ? (lang === 'pt' ? 'Coroado' : 'Coronado') : ready ? (lang === 'pt' ? '⚔️ Desafiar!' : '⚔️ ¡Desafiar!') : (lang === 'pt' ? 'Guardião' : 'Guardián')}
+                    </div>
+                  </div>
+                )
+              })()}
             </div>
           )
         })}
 
-        {/* PINÁCULO: El arte de preguntar — se desbloquea en Filósofo (1400 XP) */}
+        {/* PINÁCULO: El arte de preguntar — se desbloquea al responder 20 preguntas */}
         {(() => {
-          const unlocked = isAskUnlocked(player.xp)
+          const unlocked = isAskUnlocked(player)
           return (
             <div className="relative space-y-3">
               <div className="relative z-10 mx-auto w-fit px-4 py-1.5 rounded-full chip text-sm font-extrabold pop-in"
@@ -181,9 +202,9 @@ export default function AdventureMap() {
               {!unlocked && (
                 <div className="text-center">
                   <div className="text-[11px] text-[var(--text-dim)] font-bold">{t('askLockedHint')}</div>
-                  <div className="text-[11px] font-black text-[var(--violet-light)] mt-1">🔒 {t('xpToUnlock').replace('{n}', Math.max(0, ASK_UNLOCK_XP - player.xp))}</div>
+                  <div className="text-[11px] font-black text-[var(--violet-light)] mt-1">🔒 {(ASK_UNLOCK_ANSWERS - (player.answers || 0)) === 1 ? t('answerToUnlockOne') : t('answersToUnlock').replace('{n}', Math.max(0, ASK_UNLOCK_ANSWERS - (player.answers || 0)))}</div>
                   <div className="mx-auto mt-1 h-1.5 w-36 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                    <div className="h-full rounded-full" style={{ width: Math.min(100, Math.round((player.xp / ASK_UNLOCK_XP) * 100)) + '%', background: 'linear-gradient(90deg,#8B5CF6,#FBBF24)' }} />
+                    <div className="h-full rounded-full" style={{ width: Math.min(100, Math.round(((player.answers || 0) / ASK_UNLOCK_ANSWERS) * 100)) + '%', background: 'linear-gradient(90deg,#8B5CF6,#FBBF24)' }} />
                   </div>
                 </div>
               )}

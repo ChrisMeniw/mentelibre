@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { PREMIUM_AVATARS, PETS, FRAMES } from '../data/shop'
+import { POWERS } from '../data/powers'
 import { sfxPop, sfxCorrect, sfxSparkle } from '../lib/sfx'
 
 function CoinPrice({ n }) {
@@ -10,14 +11,15 @@ function CoinPrice({ n }) {
 }
 
 export default function Shop() {
-  const { t } = useLang()
-  const { player, buyItem, equip } = usePlayer()
+  const { t, lang } = useLang()
+  const { player, buyItem, equip, addCoins, addPower } = usePlayer()
   const nav = useNavigate()
-  const [cat, setCat] = useState('avatars')
+  const [cat, setCat] = useState('powers')
   const [toast, setToast] = useState('')
 
   const owned = player.owned || []
   const cats = [
+    { id: 'powers', icon: '⚡', label: lang === 'pt' ? 'Poderes' : 'Poderes' },
     { id: 'avatars', icon: '🧑‍🚀', label: t('catAvatars') },
     { id: 'pets', icon: '🐾', label: t('catPets') },
     { id: 'frames', icon: '✨', label: t('catFrames') },
@@ -32,6 +34,16 @@ export default function Shop() {
       return
     }
     if (buyItem(id, price)) { sfxSparkle(); onBought(); flash(t('boughtToast')) }
+  }
+
+  // ⚡ Los poderes son CONSUMIBLES: se pueden comprar todas las veces que quieras.
+  const tryBuyPower = (pw, el) => {
+    if ((player.coins || 0) < pw.price) {
+      sfxPop(); flash(t('notEnough'))
+      if (el) { el.classList.remove('wiggle'); void el.offsetWidth; el.classList.add('wiggle') }
+      return
+    }
+    addCoins(-pw.price); addPower(pw.id, 1); sfxSparkle(); flash(t('boughtToast'))
   }
 
   return (
@@ -65,6 +77,34 @@ export default function Shop() {
           </button>
         ))}
       </div>
+
+      {/* ⚡ PODERES — consumibles que se usan DURANTE la ronda (estrategia) */}
+      {cat === 'powers' && (
+        <div className="space-y-3 fade-in">
+          <p className="text-center text-[12px] text-[var(--text-dim)] leading-snug">
+            {lang === 'pt' ? 'Use durante a rodada: toque no poder acima da pergunta. Também saem dos baús! 🎁' : 'Se usan durante la ronda: toca el poder arriba de la pregunta. ¡También salen de los cofres! 🎁'}
+          </p>
+          {POWERS.map((pw) => {
+            const count = player.powers?.[pw.id] || 0
+            return (
+              <div key={pw.id} className="card p-3.5 flex items-center gap-3.5 lift">
+                <div className="shrink-0 w-14 h-14 rounded-2xl grid place-items-center text-3xl"
+                  style={{ background: 'linear-gradient(140deg, rgba(168,85,247,0.28), rgba(124,58,237,0.10))', border: '1px solid rgba(168,85,247,0.45)' }}>
+                  {pw.emoji}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="font-extrabold text-[15px] leading-tight">{lang === 'pt' ? pw.name_pt : pw.name_es}</div>
+                  <div className="text-[11.5px] text-[var(--text-dim)] leading-snug mt-0.5">{lang === 'pt' ? pw.desc_pt : pw.desc_es}</div>
+                  <div className="text-[11px] font-black text-[var(--violet-light)] mt-1">{lang === 'pt' ? 'Você tem' : 'Tienes'}: ×{count}</div>
+                </div>
+                <button onClick={(e) => tryBuyPower(pw, e.currentTarget)} className="btn btn-ghost shrink-0 text-xs py-2 px-3">
+                  <CoinPrice n={pw.price} />
+                </button>
+              </div>
+            )
+          })}
+        </div>
+      )}
 
       {/* AVATARES */}
       {cat === 'avatars' && (

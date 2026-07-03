@@ -80,8 +80,8 @@ export default function Ask() {
   // Estás jugando → la música del menú se calla (quedan los efectos de sonido).
   useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
 
-  // Bloqueado hasta Filósofo (1400 XP): si no llegó, vuelve al Hub.
-  useEffect(() => { if (!isAskUnlocked(player.xp)) nav('/hub') }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  // Bloqueado hasta responder 20 preguntas: si no llegó, vuelve al Hub.
+  useEffect(() => { if (!isAskUnlocked(player)) nav('/hub') }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const toggleVoice = () => {
     if (listening) { sfxPop(); stopListen(); return }

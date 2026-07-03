@@ -393,3 +393,13 @@ body {
   #teacher-guide .card { background: #fff !important; border: 1px solid #cbd5e1 !important; box-shadow: none !important; }
   #teacher-guide .chip { border: 1px solid #94a3b8 !important; }
 }
+
+/* 🎁 Cofre sorpresa: se sacude invitando a abrirlo */
+@keyframes chestWiggle { 0%,100%{transform:rotate(0) scale(1)} 6%{transform:rotate(-7deg) scale(1.04)} 12%{transform:rotate(7deg) scale(1.04)} 18%{transform:rotate(-5deg)} 24%{transform:rotate(0) scale(1)} }
+.chest-wiggle { animation: chestWiggle 2.2s ease-in-out infinite; }
+
+/* ⚔️ Guardián: respiración amenazante + golpe recibido */
+@keyframes bossBreathe { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+.boss-breathe { animation: bossBreathe 2.6s ease-in-out infinite; }
+@keyframes bossHit { 0%{transform:translateX(0) scale(1)} 20%{transform:translateX(-7px) scale(0.96)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 100%{transform:translateX(0) scale(1)} }
+.boss-hit { animation: bossHit 0.5s ease-out; }
