@@ -6,7 +6,7 @@ export default function Shin(props) {
   const dark = '#7f140f'
   return (
     <AnimeAvatar
-      id="shin" bg={['#5a1a14', '#140807']} skin="#eec09a" eye="#f59e0b" glow="#f59e0b"
+      id="shin" bg={['#5a1a14', '#140807']} skin="#eec09a" eye="var(--gold-deep)" glow="var(--gold-deep)"
       hairBack={<path d="M30 70 Q26 26 60 22 Q94 26 90 70 L90 54 Q90 34 60 32 Q30 34 30 54 Z" fill={hair} />}
       hairFront={<>
         {/* picos hacia arriba */}

@@ -12,6 +12,11 @@
   --bg-deep: #0F0A1E;
   --text: #F1F5F9;
   --text-dim: #94A3B8;
+  --white: #ffffff;
+  --gold-deep: #f59e0b;
+  --rose-deep: #E11D48;
+  --rose-light: #FB7185;
+  --surface-ink: #2b2b35;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -67,6 +72,18 @@ body {
     will-change: transform;
   }
   .btn:active { transform: scale(0.9); }
+  .btn:disabled, .btn[aria-disabled="true"] {
+    opacity: 0.45; cursor: not-allowed; transform: none;
+    filter: grayscale(0.4) brightness(0.9);
+  }
+  .btn.loading { position: relative; color: transparent !important; pointer-events: none; }
+  .btn.loading::before {
+    content: ''; position: absolute; inset: 0; margin: auto;
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 3px solid rgba(255,255,255,0.35); border-top-color: #fff;
+    animation: ml-spin 0.7s linear infinite;
+  }
+  @keyframes ml-spin { to { transform: rotate(360deg); } }
   .btn-primary {
     background: linear-gradient(135deg, #B06CFF 0%, var(--violet) 55%, #5B21B6 100%);
     color: #fff;
@@ -403,3 +420,13 @@ body {
 .boss-breathe { animation: bossBreathe 2.6s ease-in-out infinite; }
 @keyframes bossHit { 0%{transform:translateX(0) scale(1)} 20%{transform:translateX(-7px) scale(0.96)} 40%{transform:translateX(6px)} 60%{transform:translateX(-4px)} 100%{transform:translateX(0) scale(1)} }
 .boss-hit { animation: bossHit 0.5s ease-out; }
+
+
+/* Rediseño 2026 — piso de calidad: sin movimiento si el sistema lo pide (global) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

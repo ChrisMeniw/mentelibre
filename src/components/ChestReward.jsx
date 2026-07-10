@@ -9,7 +9,7 @@ import { sfxPop, sfxCoins, sfxStarsFanfare } from '../lib/sfx'
 const TIERS = {
   bronze: { emoji: '🎁', name_es: 'Cofre de Bronce', name_pt: 'Baú de Bronze', color: '#CD7F32', coins: [4, 8],  powerChance: 0.15 },
   silver: { emoji: '🎁', name_es: 'Cofre de Plata',  name_pt: 'Baú de Prata',  color: '#C0C4CC', coins: [10, 16], powerChance: 0.35 },
-  gold:   { emoji: '🎁', name_es: 'Cofre de ORO',    name_pt: 'Baú de OURO',   color: '#FBBF24', coins: [18, 30], powerChance: 1 },
+  gold:   { emoji: '🎁', name_es: 'Cofre de ORO',    name_pt: 'Baú de OURO',   color: 'var(--gold)', coins: [18, 30], powerChance: 1 },
 }
 
 export function chestTierFor(totalStars, maxStars) {

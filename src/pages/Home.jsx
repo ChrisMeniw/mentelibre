@@ -70,10 +70,10 @@ export default function Home() {
       <div className="w-full mt-6 fade-in-d3">
         <div className="text-[11px] font-extrabold uppercase tracking-[0.18em] text-[var(--text-dim)] mb-2 text-center">{t('chooseHowToPlay')}</div>
         <div className="space-y-2.5">
-          <ModeCard iconName="solo" accent="#FBBF24" primary
+          <ModeCard iconName="solo" accent="var(--gold)" primary
             title={hasProfile ? t('continueCta') : t('modeSoloTitle')} desc={t('modeSoloDesc')}
             onClick={play} />
-          <ModeCard iconName="group" accent="#A855F7"
+          <ModeCard iconName="group" accent="var(--violet-light)"
             title={t('modeGroupTitle')} desc={t('modeGroupDesc')}
             onClick={() => { sfxPop(); nav('/competencia') }} />
           <ModeCard iconName="ranking" accent="#38BDF8"
@@ -82,7 +82,7 @@ export default function Home() {
           <ModeCard iconName={askUnlocked ? 'ask' : 'lock'} accent="#C084FC"
             title={t('modeAskTitle')} desc={askUnlocked ? t('modeAskDesc') : t('askLockedHint')}
             onClick={() => { sfxPop(); if (askUnlocked) nav('/preguntar') }} />
-          <ModeCard iconName="daily" accent="#FB7185"
+          <ModeCard iconName="daily" accent="var(--rose-light)"
             title={t('modeDailyTitle')} desc={t('modeDailyDesc')}
             onClick={() => { sfxPop(); nav('/reto') }} />
         </div>

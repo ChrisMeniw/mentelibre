@@ -4,7 +4,7 @@ import ChibiAvatar from '../ChibiAvatar'
 export default function Rolo(props) {
   return (
     <ChibiAvatar
-      id="rolo" bg={['#fbbf24', '#ea7a2e']} eyeY={58}
+      id="rolo" bg={['var(--gold)', '#ea7a2e']} eyeY={58}
       body={<g>
         {/* orejas puntiagudas con punta oscura */}
         <path d="M28 16 L18 -8 L50 12 Z" fill="#ea7a2e" />

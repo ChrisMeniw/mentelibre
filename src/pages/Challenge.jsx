@@ -188,8 +188,8 @@ export default function Challenge() {
                 className={'w-full rounded-2xl py-4 px-4 flex items-center justify-center gap-3 font-extrabold text-white transition active:scale-[0.98] ' + (listening ? 'mic-pulse' : '')}
                 style={{
                   background: listening
-                    ? 'linear-gradient(135deg,#FB7185,#E11D48)'
-                    : 'linear-gradient(135deg,#A855F7,#7C3AED)',
+                    ? 'linear-gradient(135deg,var(--rose-light),var(--rose-deep))'
+                    : 'linear-gradient(135deg,var(--violet-light),var(--violet))',
                   boxShadow: listening ? 'none' : '0 10px 28px -10px rgba(124,58,237,0.9)',
                 }}
               >

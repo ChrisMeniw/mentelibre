@@ -3,7 +3,7 @@ import { sfxPop } from '../lib/sfx'
 
 // Sonido GLOBAL + EXPLOSIÓN DE CHISPAS al tocar cualquier botón/enlace (estilo Roblox):
 // ningún botón queda mudo ni sin efecto. El anti-doble de sfxPop evita repetir el sonido.
-const SPARK_COLORS = ['#FBBF24', '#A855F7', '#38BDF8', '#F43F5E', '#34D399', '#ffffff']
+const SPARK_COLORS = ['var(--gold)', 'var(--violet-light)', '#38BDF8', 'var(--rose)', '#34D399', '#ffffff']
 
 function spawnSparks(x, y) {
   try {

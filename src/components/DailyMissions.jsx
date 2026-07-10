@@ -36,7 +36,7 @@ export default function DailyMissions() {
           return (
             <div key={m.key} className="flex items-center gap-2.5">
               <div className="w-8 h-8 shrink-0 rounded-xl grid place-items-center text-base"
-                style={{ background: done ? 'linear-gradient(135deg,#34D399,#10B981)' : 'rgba(255,255,255,0.06)', boxShadow: done ? '0 0 14px -4px #10B981' : 'none' }}>
+                style={{ background: done ? 'linear-gradient(135deg,#34D399,var(--emerald))' : 'rgba(255,255,255,0.06)', boxShadow: done ? '0 0 14px -4px #10B981' : 'none' }}>
                 {done ? '✓' : m.icon}
               </div>
               <div className="flex-1 min-w-0">
@@ -45,7 +45,7 @@ export default function DailyMissions() {
                   <span className="text-[var(--text-dim)] tabular-nums">{val}/{m.target}</span>
                 </div>
                 <div className="h-1.5 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                  <div className="h-full rounded-full transition-all duration-500" style={{ width: pct + '%', background: done ? 'linear-gradient(90deg,#34D399,#10B981)' : 'linear-gradient(90deg,var(--violet-light),var(--gold))' }} />
+                  <div className="h-full rounded-full transition-all duration-500" style={{ width: pct + '%', background: done ? 'linear-gradient(90deg,#34D399,var(--emerald))' : 'linear-gradient(90deg,var(--violet-light),var(--gold))' }} />
                 </div>
               </div>
             </div>

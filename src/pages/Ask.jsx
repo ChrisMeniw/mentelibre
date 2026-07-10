@@ -219,7 +219,7 @@ export default function Ask() {
       {stage === 'answer' && (
         <div className="card p-4 mt-3 fade-in">
           {micSupported && (
-            <button onClick={toggleVoice} aria-label={listening ? t('listening') : t('tapToSpeak')} className={'w-full rounded-2xl py-3.5 px-4 flex items-center justify-center gap-3 font-extrabold text-white transition active:scale-[0.98] min-h-touch ' + (listening ? 'mic-pulse' : '')} style={{ background: listening ? 'linear-gradient(135deg,#FB7185,#E11D48)' : `linear-gradient(135deg,#A855F7,${ACCENT})` }}>
+            <button onClick={toggleVoice} aria-label={listening ? t('listening') : t('tapToSpeak')} className={'w-full rounded-2xl py-3.5 px-4 flex items-center justify-center gap-3 font-extrabold text-white transition active:scale-[0.98] min-h-touch ' + (listening ? 'mic-pulse' : '')} style={{ background: listening ? 'linear-gradient(135deg,var(--rose-light),var(--rose-deep))' : `linear-gradient(135deg,var(--violet-light),${ACCENT})` }}>
               <span className="text-base">{listening ? t('listening') : t('askTapToSpeak')}</span>
             </button>
           )}

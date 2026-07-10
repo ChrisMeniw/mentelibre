@@ -210,7 +210,7 @@ export default function Guardian() {
               <span className="text-xs font-black" style={{ color: G.color }}>{L.hp} {hpLeft}/{GUARDIAN_HP}</span>
             </div>
             <div className="h-3 mt-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-              <div className="h-full rounded-full transition-all duration-700" style={{ width: hpPct + '%', background: `linear-gradient(90deg, ${G.color}, #F43F5E)` }} />
+              <div className="h-full rounded-full transition-all duration-700" style={{ width: hpPct + '%', background: `linear-gradient(90deg, ${G.color}, var(--rose))` }} />
             </div>
           </div>
         </div>
@@ -230,7 +230,7 @@ export default function Guardian() {
               {micSupported && (
                 <button onClick={() => { if (listening) { sfxPop(); stopListen() } else { sfxPop(); const b = answer.trim() ? answer.trim() + ' ' : ''; startListen((tx) => setAnswer(b + tx)) } }}
                   className={'w-full rounded-2xl py-3.5 flex items-center justify-center font-extrabold text-white transition active:scale-[0.98] min-h-touch ' + (listening ? 'mic-pulse' : '')}
-                  style={{ background: listening ? 'linear-gradient(135deg,#FB7185,#E11D48)' : 'linear-gradient(135deg,#A855F7,#7C3AED)' }}>
+                  style={{ background: listening ? 'linear-gradient(135deg,var(--rose-light),var(--rose-deep))' : 'linear-gradient(135deg,var(--violet-light),var(--violet))' }}>
                   {L.speakBtn}
                 </button>
               )}

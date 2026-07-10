@@ -3,12 +3,12 @@ import { PREMIUM_AVATARS } from '../data/shop'
 // Paso 8 — 7 personajes tipo "skins" (estilo Fortnite, no animales)
 export const AVATARS = [
   { emoji: '🥷', name: 'Sombra', color: '#6D28D9' },
-  { emoji: '🤖', name: 'Robo', color: '#0EA5E9' },
+  { emoji: '🤖', name: 'Robo', color: 'var(--sky)' },
   { emoji: '👽', name: 'Nova', color: '#22C55E' },
   { emoji: '🦸', name: 'Titán', color: '#2563EB' },
   { emoji: '🦹', name: 'Vórtex', color: '#A21CAF' },
   { emoji: '🧑‍🚀', name: 'Cosmo', color: '#1E3A5F' },
-  { emoji: '🧙', name: 'Magnus', color: '#F59E0B' },
+  { emoji: '🧙', name: 'Magnus', color: 'var(--gold-deep)' },
 ]
 
 export function avatarByEmoji(e) {

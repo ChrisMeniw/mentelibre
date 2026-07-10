@@ -266,7 +266,7 @@ export default function Classroom() {
       <div className="flex items-center justify-between gap-2 mb-3">
         <button onClick={() => { sfxPop(); setShowEnd(true) }} aria-label={lang === 'pt' ? 'Finalizar' : 'Finalizar'}
           className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-black active:scale-95 transition ' + (matchLeft <= 60 ? 'timer-pulse' : '')}
-          style={{ background: matchLeft <= 60 ? 'rgba(244,63,94,0.2)' : 'rgba(255,255,255,0.06)', border: `1px solid ${matchLeft <= 60 ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.14)'}`, color: matchLeft <= 60 ? '#F43F5E' : 'var(--text)' }}>
+          style={{ background: matchLeft <= 60 ? 'rgba(244,63,94,0.2)' : 'rgba(255,255,255,0.06)', border: `1px solid ${matchLeft <= 60 ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.14)'}`, color: matchLeft <= 60 ? 'var(--rose)' : 'var(--text)' }}>
           ⏳ {mmss(matchLeft)}
         </button>
         <div className="flex items-center gap-3">
@@ -296,12 +296,12 @@ export default function Classroom() {
           <span className={'font-logo text-2xl tabular-nums ' + (low ? 'text-[var(--rose)]' : 'text-[var(--sky)]')}>{stage === 'answer' ? timeLeft : 0}s</span>
         </div>
         <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-          <div className="h-full rounded-full transition-all duration-1000" style={{ width: (stage === 'answer' ? timePct : 0) + '%', background: low ? 'linear-gradient(90deg,#FB7185,#E11D48)' : 'linear-gradient(90deg,var(--sky),var(--violet-light))' }} />
+          <div className="h-full rounded-full transition-all duration-1000" style={{ width: (stage === 'answer' ? timePct : 0) + '%', background: low ? 'linear-gradient(90deg,var(--rose-light),var(--rose-deep))' : 'linear-gradient(90deg,var(--sky),var(--violet-light))' }} />
         </div>
       </div>
 
       {/* Pregunta */}
-      <div className="card p-4" style={{ boxShadow: `inset 0 0 0 1px ${q?.color || '#7C3AED'}44` }}>
+      <div className="card p-4" style={{ boxShadow: `inset 0 0 0 1px ${q?.color || 'var(--violet)'}44` }}>
         <div className="flex items-center justify-between gap-2">
           <div className="text-xs font-extrabold uppercase tracking-wide" style={{ color: q?.color }}>{q?.emoji} {t('question')}</div>
           {speakSupported() && (
@@ -314,7 +314,7 @@ export default function Classroom() {
       {stage === 'answer' && (
         <div className="card p-4 mt-3 fade-in">
           {micSupported && (
-            <button onClick={toggleVoice} aria-label={listening ? t('listening') : t('tapToSpeak')} className={'w-full rounded-2xl py-3.5 px-4 flex items-center justify-center gap-3 font-extrabold text-white transition active:scale-[0.98] min-h-touch ' + (listening ? 'mic-pulse' : '')} style={{ background: listening ? 'linear-gradient(135deg,#FB7185,#E11D48)' : 'linear-gradient(135deg,#A855F7,#7C3AED)' }}>
+            <button onClick={toggleVoice} aria-label={listening ? t('listening') : t('tapToSpeak')} className={'w-full rounded-2xl py-3.5 px-4 flex items-center justify-center gap-3 font-extrabold text-white transition active:scale-[0.98] min-h-touch ' + (listening ? 'mic-pulse' : '')} style={{ background: listening ? 'linear-gradient(135deg,var(--rose-light),var(--rose-deep))' : 'linear-gradient(135deg,var(--violet-light),var(--violet))' }}>
               {listening ? <span className="text-sm">{t('listening')}</span> : <span className="text-base">{t('tapToSpeak')}</span>}
             </button>
           )}

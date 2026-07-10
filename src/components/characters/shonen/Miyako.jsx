@@ -3,10 +3,10 @@ import AnimeAvatar from '../AnimeAvatar'
 // MIYAKO — pelo castaño con puntas violeta, ojos turquesa, auriculares al cuello.
 export default function Miyako(props) {
   const hair = '#6b4a35'
-  const tip = '#a855f7'
+  const tip = 'var(--violet-light)'
   return (
     <AnimeAvatar
-      id="miyako" bg={['#4a3b66', '#16101f']} skin="#f1c9a5" eye="#2dd4bf" glow="#a855f7"
+      id="miyako" bg={['#4a3b66', '#16101f']} skin="#f1c9a5" eye="#2dd4bf" glow="var(--violet-light)"
       hairBack={<>
         <path d="M28 86 Q24 28 60 22 Q96 28 92 86 L92 60 Q92 36 60 32 Q28 36 28 60 Z" fill={hair} />
         <path d="M28 70 L26 92 L36 90 L34 70 Z" fill={tip} />

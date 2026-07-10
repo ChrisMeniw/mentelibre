@@ -150,8 +150,8 @@ export default function AdventureMap() {
                         width: 68, height: 60,
                         background: beaten ? 'linear-gradient(135deg, rgba(251,191,36,0.4), rgba(251,191,36,0.12))'
                           : worldComplete ? `linear-gradient(135deg, ${wColor}55, ${wColor}22)` : 'rgba(255,255,255,0.05)',
-                        boxShadow: worldComplete || beaten ? `0 0 26px -4px ${beaten ? '#FBBF24' : wColor}` : 'none',
-                        border: `1px solid ${beaten ? '#FBBF24' : worldComplete ? wColor : 'rgba(255,255,255,0.12)'}`,
+                        boxShadow: worldComplete || beaten ? `0 0 26px -4px ${beaten ? 'var(--gold)' : wColor}` : 'none',
+                        border: `1px solid ${beaten ? 'var(--gold)' : worldComplete ? wColor : 'rgba(255,255,255,0.12)'}`,
                       }}>
                       <span className={'text-3xl ' + (ready ? 'boss-breathe' : beaten ? 'floaty' : '')}
                         style={{ filter: worldComplete || beaten ? 'none' : 'grayscale(0.8) opacity(0.6)' }}>
@@ -189,7 +189,7 @@ export default function AdventureMap() {
                   style={{
                     width: 84, height: 84,
                     background: unlocked
-                      ? 'radial-gradient(circle at 35% 28%, #A78BFA, #7C3AED)'
+                      ? 'radial-gradient(circle at 35% 28%, #A78BFA, var(--violet))'
                       : 'radial-gradient(circle at 35% 30%, #2A2440, #141022)',
                     boxShadow: unlocked
                       ? 'inset 0 -6px 14px rgba(0,0,0,0.32), inset 0 5px 12px rgba(255,255,255,0.3), 0 0 30px -4px #8B5CF6'
@@ -204,7 +204,7 @@ export default function AdventureMap() {
                   <div className="text-[11px] text-[var(--text-dim)] font-bold">{t('askLockedHint')}</div>
                   <div className="text-[11px] font-black text-[var(--violet-light)] mt-1">🔒 {(ASK_UNLOCK_ANSWERS - (player.answers || 0)) === 1 ? t('answerToUnlockOne') : t('answersToUnlock').replace('{n}', Math.max(0, ASK_UNLOCK_ANSWERS - (player.answers || 0)))}</div>
                   <div className="mx-auto mt-1 h-1.5 w-36 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-                    <div className="h-full rounded-full" style={{ width: Math.min(100, Math.round(((player.answers || 0) / ASK_UNLOCK_ANSWERS) * 100)) + '%', background: 'linear-gradient(90deg,#8B5CF6,#FBBF24)' }} />
+                    <div className="h-full rounded-full" style={{ width: Math.min(100, Math.round(((player.answers || 0) / ASK_UNLOCK_ANSWERS) * 100)) + '%', background: 'linear-gradient(90deg,#8B5CF6,var(--gold))' }} />
                   </div>
                 </div>
               )}

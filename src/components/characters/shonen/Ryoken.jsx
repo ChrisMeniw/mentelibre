@@ -7,7 +7,7 @@ export default function Ryoken(props) {
   const iy = mood === 'sad' ? 60 : mood === 'thinking' ? 53 : 57 // sigue al iris de la base
   return (
     <AnimeAvatar
-      id="ryoken" bg={['#3b2a66', '#0d0820']} skin="#eccaa8" eye="#a855f7" glow="#a855f7"
+      id="ryoken" bg={['#3b2a66', '#0d0820']} skin="#eccaa8" eye="var(--violet-light)" glow="var(--violet-light)"
       idleClass="char-aura-strong"
       hairBack={<path d="M24 120 Q20 26 60 20 Q100 26 96 120 L96 60 Q96 34 60 32 Q24 34 24 60 Z" fill={hair} />}
       hairFront={<>

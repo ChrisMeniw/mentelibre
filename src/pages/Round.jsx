@@ -34,7 +34,7 @@ const answerSecondsFor = (xp, qi = 0) => {
 const countWords = (s) => (s.trim() ? s.trim().split(/\s+/).length : 0)
 
 function Confetti({ n = 36 }) {
-  const colors = ['#7C3AED', '#A855F7', '#FBBF24', '#10B981', '#F43F5E', '#0EA5E9']
+  const colors = ['var(--violet)', 'var(--violet-light)', 'var(--gold)', 'var(--emerald)', 'var(--rose)', 'var(--sky)']
   const pieces = Array.from({ length: n }, (_, i) => ({
     left: (i * 53) % 100, delay: (i % 6) * 0.1, dur: 1.8 + (i % 5) * 0.3, color: colors[i % colors.length], size: 7 + (i % 4) * 2,
   }))
@@ -281,7 +281,7 @@ export default function Round() {
 
           {results.comboBonus > 0 && (
             <div className="bounce-in mt-3 inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-sm font-black mx-auto"
-              style={{ background: 'linear-gradient(135deg,#FBBF24,#F43F5E)', color: '#1a0b2e' }}>
+              style={{ background: 'linear-gradient(135deg,var(--gold),var(--rose))', color: '#1a0b2e' }}>
               🔥 {t('comboBest')} x{results.bestCombo} · +{results.comboBonus} 🪙
             </div>
           )}
@@ -373,11 +373,11 @@ export default function Round() {
           {/* Reloj PROMINENTE arriba: urgencia visible (rojo + pulso cuando queda poco) */}
           <div className="card p-3" style={{ boxShadow: timeLeft <= 10 ? '0 0 0 1.5px rgba(244,63,94,0.55)' : undefined }}>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-extrabold uppercase tracking-wide" style={{ color: timeLeft <= 10 ? '#F43F5E' : 'var(--text-dim)' }}>⏱ {t('thinkTime')}</span>
-              <span className={'font-logo text-2xl ' + (timeLeft <= 5 && timeLeft > 0 ? 'happy-shake' : '')} style={{ color: timeLeft <= 10 ? '#F43F5E' : 'var(--gold)' }}>{timeLeft}s</span>
+              <span className="text-xs font-extrabold uppercase tracking-wide" style={{ color: timeLeft <= 10 ? 'var(--rose)' : 'var(--text-dim)' }}>⏱ {t('thinkTime')}</span>
+              <span className={'font-logo text-2xl ' + (timeLeft <= 5 && timeLeft > 0 ? 'happy-shake' : '')} style={{ color: timeLeft <= 10 ? 'var(--rose)' : 'var(--gold)' }}>{timeLeft}s</span>
             </div>
             <div className="h-3 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-              <div className={'h-full rounded-full transition-all duration-1000 ' + (timeLeft <= 10 ? 'timer-pulse' : '')} style={{ width: timePct + '%', background: timeLeft <= 10 ? 'linear-gradient(90deg,#F43F5E,#fb7185)' : 'linear-gradient(90deg,var(--violet-light),var(--sky))' }} />
+              <div className={'h-full rounded-full transition-all duration-1000 ' + (timeLeft <= 10 ? 'timer-pulse' : '')} style={{ width: timePct + '%', background: timeLeft <= 10 ? 'linear-gradient(90deg,var(--rose),var(--rose-light))' : 'linear-gradient(90deg,var(--violet-light),var(--sky))' }} />
             </div>
             {timeLeft <= 5 && timeLeft > 0 && <div className="text-center text-xs font-black text-[var(--rose)] mt-1.5">⚡ {t('hurry')}</div>}
           </div>
@@ -407,7 +407,7 @@ export default function Round() {
                   <span className="block text-xl leading-none">{pw.emoji}</span>
                   <span className="block text-[10px] font-black mt-0.5 leading-tight">{spent ? (lang === 'pt' ? 'ATIVO' : 'ACTIVO') : name}</span>
                   <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full grid place-items-center text-[10px] font-black"
-                    style={{ background: count > 0 ? 'linear-gradient(135deg,#A855F7,#7C3AED)' : 'rgba(255,255,255,0.14)', color: '#fff' }}>{count}</span>
+                    style={{ background: count > 0 ? 'linear-gradient(135deg,var(--violet-light),var(--violet))' : 'rgba(255,255,255,0.14)', color: '#fff' }}>{count}</span>
                 </button>
               )
             })}
@@ -428,7 +428,7 @@ export default function Round() {
             {micSupported && (
               <button onClick={toggleVoice} aria-label={listening ? t('listening') : t('tapToSpeak')}
                 className={'w-full rounded-2xl py-4 px-4 flex items-center justify-center gap-3 font-extrabold text-white transition active:scale-[0.98] min-h-touch ' + (listening ? 'mic-pulse' : '')}
-                style={{ background: listening ? 'linear-gradient(135deg,#FB7185,#E11D48)' : 'linear-gradient(135deg,#A855F7,#7C3AED)', boxShadow: listening ? 'none' : '0 10px 28px -10px rgba(124,58,237,0.9)' }}>
+                style={{ background: listening ? 'linear-gradient(135deg,var(--rose-light),var(--rose-deep))' : 'linear-gradient(135deg,var(--violet-light),var(--violet))', boxShadow: listening ? 'none' : '0 10px 28px -10px rgba(124,58,237,0.9)' }}>
                 {listening ? (
                   <>
                     <span className="flex items-end gap-1 h-5">
@@ -478,7 +478,7 @@ export default function Round() {
                 <div className="mt-1"><StarsReveal stars={qStars} /></div>
                 {combo >= 2 && (
                   <div key={comboPop} className="combo-burst mx-auto mt-2 inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-black"
-                    style={{ background: 'linear-gradient(135deg,#FBBF24,#F43F5E)', color: '#1a0b2e', boxShadow: '0 8px 24px -6px rgba(251,191,36,0.8)' }}>
+                    style={{ background: 'linear-gradient(135deg,var(--gold),var(--rose))', color: '#1a0b2e', boxShadow: '0 8px 24px -6px rgba(251,191,36,0.8)' }}>
                     🔥 {t('comboLabel')} x{combo}{combo >= 3 ? ' 🚀' : ''}
                   </div>
                 )}

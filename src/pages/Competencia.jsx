@@ -27,7 +27,7 @@ const countTeamPlayers = (fmt) => (fmt === '5v5' ? 5 : 2)
 
 const TEAM_META = [
   { emoji: '🔵', color: '#38BDF8' },
-  { emoji: '🔴', color: '#F43F5E' },
+  { emoji: '🔴', color: 'var(--rose)' },
 ]
 
 // Diccionario bilingüe local (ES / PT) de esta pantalla.
@@ -93,7 +93,7 @@ const DICT = {
 }
 
 function Confetti({ n = 44 }) {
-  const colors = ['#38BDF8', '#F43F5E', '#FBBF24', '#10B981', '#A855F7']
+  const colors = ['#38BDF8', 'var(--rose)', 'var(--gold)', 'var(--emerald)', 'var(--violet-light)']
   const pieces = Array.from({ length: n }, (_, i) => ({ left: (i * 47) % 100, delay: (i % 7) * 0.12, dur: 1.9 + (i % 5) * 0.3, color: colors[i % colors.length], size: 7 + (i % 4) * 2 }))
   return pieces.map((p, i) => (<span key={i} className="confetti-piece" style={{ left: p.left + '%', width: p.size, height: p.size * 1.5, background: p.color, animationDuration: p.dur + 's', animationDelay: p.delay + 's' }} />))
 }
@@ -371,7 +371,7 @@ export default function Competencia() {
         {phase === 'play' ? (
           <button onClick={() => { sfxPop(); setShowEnd(true) }} aria-label={L.finalize}
             className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-black active:scale-95 transition ' + (matchLeft <= 60 ? 'timer-pulse' : '')}
-            style={{ background: matchLeft <= 60 ? 'rgba(244,63,94,0.2)' : 'rgba(255,255,255,0.06)', border: `1px solid ${matchLeft <= 60 ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.14)'}`, color: matchLeft <= 60 ? '#F43F5E' : 'var(--text)' }}>
+            style={{ background: matchLeft <= 60 ? 'rgba(244,63,94,0.2)' : 'rgba(255,255,255,0.06)', border: `1px solid ${matchLeft <= 60 ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.14)'}`, color: matchLeft <= 60 ? 'var(--rose)' : 'var(--text)' }}>
             ⏳ {mmss(matchLeft)}
           </button>
         ) : (
@@ -405,11 +405,11 @@ export default function Competencia() {
           {/* Reloj */}
           <div className="card p-3" style={{ boxShadow: timeLeft <= 8 ? '0 0 0 1.5px rgba(244,63,94,0.55)' : undefined }}>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-extrabold uppercase tracking-wide" style={{ color: timeLeft <= 8 ? '#F43F5E' : 'var(--text-dim)' }}>⏱ {L.think}</span>
-              <span className={'font-logo text-2xl ' + (timeLeft <= 5 && timeLeft > 0 ? 'happy-shake' : '')} style={{ color: timeLeft <= 8 ? '#F43F5E' : 'var(--gold)' }}>{timeLeft}s</span>
+              <span className="text-xs font-extrabold uppercase tracking-wide" style={{ color: timeLeft <= 8 ? 'var(--rose)' : 'var(--text-dim)' }}>⏱ {L.think}</span>
+              <span className={'font-logo text-2xl ' + (timeLeft <= 5 && timeLeft > 0 ? 'happy-shake' : '')} style={{ color: timeLeft <= 8 ? 'var(--rose)' : 'var(--gold)' }}>{timeLeft}s</span>
             </div>
             <div className="h-3 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
-              <div className={'h-full rounded-full transition-all duration-1000 ' + (timeLeft <= 8 ? 'timer-pulse' : '')} style={{ width: timePct + '%', background: timeLeft <= 8 ? 'linear-gradient(90deg,#F43F5E,#fb7185)' : `linear-gradient(90deg,${team.color},var(--gold))` }} />
+              <div className={'h-full rounded-full transition-all duration-1000 ' + (timeLeft <= 8 ? 'timer-pulse' : '')} style={{ width: timePct + '%', background: timeLeft <= 8 ? 'linear-gradient(90deg,var(--rose),var(--rose-light))' : `linear-gradient(90deg,${team.color},var(--gold))` }} />
             </div>
             {timeLeft <= 5 && timeLeft > 0 && <div className="text-center text-xs font-black text-[var(--rose)] mt-1.5">⚡ {L.hurry}</div>}
           </div>
@@ -444,7 +444,7 @@ export default function Competencia() {
               <button onClick={() => { if (listening) { sfxPop(); stopListen() } else { sfxPop(); const b = answer.trim() ? answer.trim() + ' ' : ''; startListen((tx) => setAnswer(b + tx)) } }}
                 aria-label={L.speakAns}
                 className={'w-full rounded-2xl py-3.5 px-4 flex items-center justify-center gap-3 font-extrabold text-white transition active:scale-[0.98] min-h-touch ' + (listening ? 'mic-pulse' : '')}
-                style={{ background: listening ? 'linear-gradient(135deg,#FB7185,#E11D48)' : 'linear-gradient(135deg,#A855F7,#7C3AED)' }}>
+                style={{ background: listening ? 'linear-gradient(135deg,var(--rose-light),var(--rose-deep))' : 'linear-gradient(135deg,var(--violet-light),var(--violet))' }}>
                 <span className="text-base">{L.speakAns}</span>
               </button>
             )}

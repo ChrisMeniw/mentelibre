@@ -15,7 +15,7 @@ function mouth(mood) {
 
 export default function ChibiAvatar({
   size = 96, mood = 'idle', animated = true, idleClass = '',
-  bg = ['#fde68a', '#f59e0b'], id = 'ch', body = null, eyeY = 60,
+  bg = ['#fde68a', 'var(--gold-deep)'], id = 'ch', body = null, eyeY = 60,
 }) {
   const live = animated && !reduce()
   const m = mouth(mood)
@@ -30,8 +30,8 @@ export default function ChibiAvatar({
       <circle cx="60" cy="60" r="56" fill={`url(#cb-${id})`} />
       {body}
       {/* ojos enormes */}
-      <ellipse cx="48" cy={eyeY} rx="7.5" ry="9.5" fill="#2b2b35" />
-      <ellipse cx="72" cy={eyeY} rx="7.5" ry="9.5" fill="#2b2b35" />
+      <ellipse cx="48" cy={eyeY} rx="7.5" ry="9.5" fill="var(--surface-ink)" />
+      <ellipse cx="72" cy={eyeY} rx="7.5" ry="9.5" fill="var(--surface-ink)" />
       <circle cx="50.5" cy={eyeY - 3} r="2.6" fill="#fff" />
       <circle cx="74.5" cy={eyeY - 3} r="2.6" fill="#fff" />
       <circle cx="45.5" cy={eyeY + 3} r="1.3" fill="#fff" opacity="0.8" />

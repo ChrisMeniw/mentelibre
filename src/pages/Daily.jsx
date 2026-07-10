@@ -112,7 +112,7 @@ export default function Daily() {
       </div>
 
       {/* Pregunta del día */}
-      <div className="card p-4 mt-4 fade-in-d1" style={{ boxShadow: `inset 0 0 0 1px ${q?.color || '#7C3AED'}44` }}>
+      <div className="card p-4 mt-4 fade-in-d1" style={{ boxShadow: `inset 0 0 0 1px ${q?.color || 'var(--violet)'}44` }}>
         <div className="flex items-center justify-between gap-2">
           <div className="text-xs font-extrabold uppercase tracking-wide" style={{ color: q?.color }}>{q?.emoji} {t('retoToday')}</div>
           {speakSupported() && (
@@ -126,7 +126,7 @@ export default function Daily() {
       {phase === 'answer' && (
         <div className="card p-4 mt-3 fade-in-d2">
           {micSupported && (
-            <button onClick={toggleVoice} aria-label={listening ? t('listening') : t('tapToSpeak')} className={'w-full rounded-2xl py-3.5 px-4 flex items-center justify-center gap-3 font-extrabold text-white transition active:scale-[0.98] min-h-touch ' + (listening ? 'mic-pulse' : '')} style={{ background: listening ? 'linear-gradient(135deg,#FB7185,#E11D48)' : 'linear-gradient(135deg,#A855F7,#7C3AED)' }}>
+            <button onClick={toggleVoice} aria-label={listening ? t('listening') : t('tapToSpeak')} className={'w-full rounded-2xl py-3.5 px-4 flex items-center justify-center gap-3 font-extrabold text-white transition active:scale-[0.98] min-h-touch ' + (listening ? 'mic-pulse' : '')} style={{ background: listening ? 'linear-gradient(135deg,var(--rose-light),var(--rose-deep))' : 'linear-gradient(135deg,var(--violet-light),var(--violet))' }}>
               <span className="text-base">{listening ? t('listening') : t('tapToSpeak')}</span>
             </button>
           )}

@@ -5,7 +5,7 @@ import CharacterSystem, { levelTitle } from './characters/CharacterSystem'
 import { useLang } from '../i18n'
 import { sfxCoins } from '../lib/sfx'
 
-const COLORS = ['#7C3AED', '#A855F7', '#FBBF24', '#10B981', '#F43F5E', '#0EA5E9', '#FB6424']
+const COLORS = ['var(--violet)', 'var(--violet-light)', 'var(--gold)', 'var(--emerald)', 'var(--rose)', 'var(--sky)', '#FB6424']
 
 function ConfettiBurst() {
   const pieces = Array.from({ length: 70 }, (_, i) => ({

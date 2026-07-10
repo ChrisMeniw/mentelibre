@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 // Compañero animado que reacciona y habla. Sube la diversión para los chicos.
 // mood: 'idle' | 'thinking' | 'happy' | 'celebrate'
-const SPARK_COLORS = ['#FBBF24', '#A855F7', '#10B981', '#0EA5E9', '#F43F5E']
+const SPARK_COLORS = ['var(--gold)', 'var(--violet-light)', 'var(--emerald)', 'var(--sky)', 'var(--rose)']
 
-export default function Mascot({ emoji = '🥷', color = '#7C3AED', name = '', mood = 'idle', message = '', size = 76 }) {
+export default function Mascot({ emoji = '🥷', color = 'var(--violet)', name = '', mood = 'idle', message = '', size = 76 }) {
   const [sparks, setSparks] = useState([])
 
   useEffect(() => {

@@ -62,7 +62,7 @@ const GLYPHS = {
   ),
 }
 
-export default function ModeIcon({ name, accent = '#A855F7', size = 26 }) {
+export default function ModeIcon({ name, accent = 'var(--violet-light)', size = 26 }) {
   const glyph = GLYPHS[name] || GLYPHS.solo
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none"

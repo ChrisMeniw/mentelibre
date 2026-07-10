@@ -12,10 +12,10 @@ import { GUARDIANS } from '../data/guardians'
 // estrellas (rúbrica con ejemplos), niveles, monedas, poderes, cofres, guardianes,
 // competencia por equipos, guía docente y preguntas frecuentes. Secciones desplegables.
 const MODES = [
-  { icon: 'solo', accent: '#FBBF24', t: 'modeSoloTitle', d: 'modeSoloDesc' },
-  { icon: 'group', accent: '#A855F7', t: 'modeGroupTitle', d: 'modeGroupDesc' },
+  { icon: 'solo', accent: 'var(--gold)', t: 'modeSoloTitle', d: 'modeSoloDesc' },
+  { icon: 'group', accent: 'var(--violet-light)', t: 'modeGroupTitle', d: 'modeGroupDesc' },
   { icon: 'ask', accent: '#C084FC', t: 'modeAskTitle', d: 'modeAskDesc' },
-  { icon: 'daily', accent: '#FB7185', t: 'modeDailyTitle', d: 'modeDailyDesc' },
+  { icon: 'daily', accent: 'var(--rose-light)', t: 'modeDailyTitle', d: 'modeDailyDesc' },
 ]
 
 const M = {
@@ -166,7 +166,7 @@ const M = {
 }
 
 // Sección desplegable del manual (nativa <details> = accesible, sin JS extra).
-function Section({ title, children, accent = '#A855F7', open = false }) {
+function Section({ title, children, accent = 'var(--violet-light)', open = false }) {
   return (
     <details className="card overflow-hidden group" open={open}
       style={{ boxShadow: `inset 0 0 0 1px ${accent}33` }}>
@@ -242,7 +242,7 @@ export default function HowItWorks() {
 
       <div className="space-y-2.5 fade-in-d2">
         {/* ⭐ Rúbrica de estrellas con ejemplos */}
-        <Section title={L.stars.title} accent="#FBBF24" open>
+        <Section title={L.stars.title} accent="var(--gold)" open>
           <p>{L.stars.intro}</p>
           <div className="mt-3 space-y-2">
             {L.stars.rows.map(([s, d, e], i) => (
@@ -259,7 +259,7 @@ export default function HowItWorks() {
         </Section>
 
         {/* 🏆 Niveles */}
-        <Section title={L.levels.title} accent="#A855F7">
+        <Section title={L.levels.title} accent="var(--violet-light)">
           <p>{L.levels.intro}</p>
           <div className="mt-3 grid grid-cols-1 gap-1.5">
             {L.levels.rows.map(([n, xp], i) => (
@@ -272,7 +272,7 @@ export default function HowItWorks() {
         </Section>
 
         {/* 🪙 Monedas y poderes */}
-        <Section title={L.coins.title} accent="#FBBF24">
+        <Section title={L.coins.title} accent="var(--gold)">
           <p>{L.coins.intro}</p>
           <p className="mt-2 font-bold text-[13px]">{L.coins.powersLabel}</p>
           <div className="mt-1.5 space-y-1.5">
@@ -293,7 +293,7 @@ export default function HowItWorks() {
         </Section>
 
         {/* ⚔️ Guardianes */}
-        <Section title={L.guardians.title} accent="#F43F5E">
+        <Section title={L.guardians.title} accent="var(--rose)">
           <p>{L.guardians.intro}</p>
           <div className="mt-3 grid grid-cols-2 gap-1.5">
             {Object.entries(GUARDIANS).map(([id, g]) => (
@@ -311,7 +311,7 @@ export default function HowItWorks() {
         </Section>
 
         {/* 🔥 Rachas */}
-        <Section title={L.streak.title} accent="#FB7185">
+        <Section title={L.streak.title} accent="var(--rose-light)">
           <p>{L.streak.body}</p>
         </Section>
 
@@ -328,7 +328,7 @@ export default function HowItWorks() {
         </Section>
 
         {/* 👩‍🏫 Docentes */}
-        <Section title={L.teachers.title} accent="#10B981">
+        <Section title={L.teachers.title} accent="var(--emerald)">
           <p>{L.teachers.body}</p>
           <button onClick={() => { sfxPop(); nav('/docentes') }} className="btn btn-ghost w-full mt-3 text-sm min-h-touch" style={{ boxShadow: 'inset 0 0 0 1px rgba(16,185,129,0.4)' }}>
             🎓 {L.teachers.btn}

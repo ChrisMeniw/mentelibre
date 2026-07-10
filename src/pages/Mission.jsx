@@ -5,11 +5,11 @@ import { usePlayer } from '../hooks/usePlayer'
 import { sfxPop } from '../lib/sfx'
 
 const SECTIONS = [
-  { h: 'missionH1', p: 'missionP1', color: '#7C3AED', icon: '🧠' },
-  { h: 'missionH2', p: 'missionP2', color: '#0EA5E9', icon: '🌟' },
+  { h: 'missionH1', p: 'missionP1', color: 'var(--violet)', icon: '🧠' },
+  { h: 'missionH2', p: 'missionP2', color: 'var(--sky)', icon: '🌟' },
   { h: 'missionH5', p: 'missionP5', color: '#8B5CF6', icon: '🦉' },
-  { h: 'missionH3', p: 'missionP3', color: '#10B981', icon: '🏫' },
-  { h: 'missionH4', p: 'missionP4', color: '#FBBF24', icon: '👩‍🏫' },
+  { h: 'missionH3', p: 'missionP3', color: 'var(--emerald)', icon: '🏫' },
+  { h: 'missionH4', p: 'missionP4', color: 'var(--gold)', icon: '👩‍🏫' },
 ]
 
 export default function Mission() {
