@@ -35,6 +35,12 @@ export const GUARDIANS = {
     taunt_es: 'Shhh… mejor no pienses. Es más fácil no saber…', taunt_pt: 'Shhh… melhor não pensar. É mais fácil não saber…',
     weak_es: 'Se disipa con PENSAMIENTO profundo y porqués.', weak_pt: 'Ela se dissipa com PENSAMENTO profundo e porquês.',
   },
+  convivencia: {
+    emoji: '🧊', color: '#A855F7',
+    name_es: 'Hielo, el Indiferente', name_pt: 'Gelo, o Indiferente',
+    taunt_es: '¿Para qué escuchar a los demás? Cada uno con lo suyo…', taunt_pt: 'Para que escutar os outros? Cada um com o seu…',
+    weak_es: 'Se derrite con EMPATÍA: cuando te pones en el lugar del otro.', weak_pt: 'Ele derrete com EMPATIA: quando você se coloca no lugar do outro.',
+  },
 }
 
 export function guardianOf(worldId) { return GUARDIANS[worldId] || null }
