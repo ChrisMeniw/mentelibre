@@ -20,6 +20,19 @@ function collapseEcho(s) {
   return m ? m[1] : t
 }
 
+// Une los tramos FINALES saltando cualquier tramo idéntico al anterior (el navegador,
+// sobre todo iOS/Safari, re-entrega el mismo final y eso metía texto de más).
+function joinFinals(parts) {
+  const out = []
+  for (const p of parts) {
+    const seg = String(p || '').replace(/\s+/g, ' ').trim()
+    if (!seg) continue
+    if (out.length && out[out.length - 1].toLowerCase() === seg.toLowerCase()) continue
+    out.push(seg)
+  }
+  return out.join(' ')
+}
+
 export function useSpeech(lang = 'es-AR') {
   const [listening, setListening] = useState(false)
   const [supported, setSupported] = useState(true)
@@ -35,11 +48,18 @@ export function useSpeech(lang = 'es-AR') {
     rec.continuous = !isIOS
     rec.interimResults = true
     rec.onresult = (e) => {
-      // SIN estado acumulado: reconstruye el texto completo desde TODOS los resultados
-      // de la sesión en cada evento. Si un final se re-entrega, no se suma dos veces.
-      let full = ''
-      for (let i = 0; i < e.results.length; i++) full += e.results[i][0].transcript + ' '
-      if (onResultRef.current) onResultRef.current(collapseEcho(full))
+      // Separa FINALES de INTERIM. Al campo va SOLO lo finalizado (dedup + colapso de eco):
+      // los interim son predicciones especulativas que suelen agregar palabras de más.
+      // El interim se pasa aparte como vista previa; al finalizar, su final lo reemplaza,
+      // así el texto guardado nunca queda más largo que lo hablado.
+      const finals = [], interim = []
+      for (let i = 0; i < e.results.length; i++) {
+        const r = e.results[i]
+        ;(r.isFinal ? finals : interim).push(r[0].transcript)
+      }
+      const committed = collapseEcho(joinFinals(finals))
+      const preview = interim.join(' ').replace(/\s+/g, ' ').trim()
+      if (onResultRef.current) onResultRef.current(committed, preview)
     }
     rec.onend = () => setListening(false)
     rec.onerror = () => setListening(false)

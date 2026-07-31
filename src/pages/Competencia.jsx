@@ -441,7 +441,7 @@ export default function Competencia() {
           {/* Responder */}
           <div className="card p-4">
             {micSupported && (
-              <button onClick={() => { if (listening) { sfxPop(); stopListen() } else { sfxPop(); const b = answer.trim() ? answer.trim() + ' ' : ''; startListen((tx) => setAnswer(b + tx)) } }}
+              <button onClick={() => { if (listening) { sfxPop(); stopListen() } else { sfxPop(); const b = answer.trim() ? answer.trim() + ' ' : ''; startListen((committed, preview = '') => setAnswer((b + committed + (preview ? ' ' + preview : '')).replace(/\s+/g, ' '))) } }}
                 aria-label={L.speakAns}
                 className={'w-full rounded-2xl py-3.5 px-4 flex items-center justify-center gap-3 font-extrabold text-white transition active:scale-[0.98] min-h-touch ' + (listening ? 'mic-pulse' : '')}
                 style={{ background: listening ? 'linear-gradient(135deg,var(--rose-light),var(--rose-deep))' : 'linear-gradient(135deg,var(--violet-light),var(--violet))' }}>

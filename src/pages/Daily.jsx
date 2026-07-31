@@ -58,7 +58,7 @@ export default function Daily() {
     if (listening) { sfxPop(); stopListen(); return }
     sfxPop()
     const base = answer.trim() ? answer.trim() + ' ' : ''
-    startListen((text) => setAnswer(base + text))
+    startListen((committed, preview = '') => setAnswer((base + committed + (preview ? ' ' + preview : '')).replace(/\s+/g, ' ')))
   }
 
   const respond = async () => {
