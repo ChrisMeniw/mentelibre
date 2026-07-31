@@ -3,6 +3,7 @@
 // → 55 por bucket. Cada ronda saca 5 evitando las ya vistas, así no se repiten.
 import { EXTRA_CHALLENGES } from './challengesExtra'
 import { EXTRA_CHALLENGES_2 } from './challengesExtra2'
+import { EXTRA_CHALLENGES_3 } from './challengesExtra3'
 
 export const WORLDS = [
   { id: 'planeta',   emoji: '🌍', name_es: 'Desafíos del Planeta',  name_pt: 'Desafios do Planeta',   color: '#10B981' },
@@ -227,7 +228,8 @@ export function getQuestions(worldId, ageGroup) {
   const base = CHALLENGES[worldId]?.[ageGroup] || CHALLENGES[worldId]?.['9-11'] || []
   const extra = EXTRA_CHALLENGES[worldId]?.[ageGroup] || EXTRA_CHALLENGES[worldId]?.['9-11'] || []
   const extra2 = EXTRA_CHALLENGES_2[worldId]?.[ageGroup] || EXTRA_CHALLENGES_2[worldId]?.['9-11'] || []
-  return base.concat(extra, extra2)
+  const extra3 = EXTRA_CHALLENGES_3[worldId]?.[ageGroup] || EXTRA_CHALLENGES_3[worldId]?.['9-11'] || []
+  return base.concat(extra, extra2, extra3)
 }
 
 export function pickQuestion(worldId, ageGroup, seed = Math.random()) {
