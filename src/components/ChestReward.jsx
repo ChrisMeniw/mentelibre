@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useLang } from '../i18n'
+import { useLang, pickLang, tri } from '../i18n'
 import { POWERS } from '../data/powers'
 import { sfxPop, sfxCoins, sfxStarsFanfare } from '../lib/sfx'
 
@@ -7,9 +7,9 @@ import { sfxPop, sfxCoins, sfxStarsFanfare } from '../lib/sfx'
 // Duolingo/Brawl Stars): nunca sabés qué te toca, y mientras mejor pensaste,
 // mejor es el cofre. Bronce < Plata < ORO. Da monedas y, con suerte, un PODER.
 const TIERS = {
-  bronze: { emoji: '🎁', name_es: 'Cofre de Bronce', name_pt: 'Baú de Bronze', color: '#CD7F32', coins: [4, 8],  powerChance: 0.15 },
-  silver: { emoji: '🎁', name_es: 'Cofre de Plata',  name_pt: 'Baú de Prata',  color: '#C0C4CC', coins: [10, 16], powerChance: 0.35 },
-  gold:   { emoji: '🎁', name_es: 'Cofre de ORO',    name_pt: 'Baú de OURO',   color: 'var(--gold)', coins: [18, 30], powerChance: 1 },
+  bronze: { emoji: '🎁', name_es: 'Cofre de Bronce', name_pt: 'Baú de Bronze', name_en: 'Bronze Chest', color: '#CD7F32', coins: [4, 8],  powerChance: 0.15 },
+  silver: { emoji: '🎁', name_es: 'Cofre de Plata',  name_pt: 'Baú de Prata',  name_en: 'Silver Chest', color: '#C0C4CC', coins: [10, 16], powerChance: 0.35 },
+  gold:   { emoji: '🎁', name_es: 'Cofre de ORO',    name_pt: 'Baú de OURO',   name_en: 'GOLD Chest',   color: 'var(--gold)', coins: [18, 30], powerChance: 1 },
 }
 
 export function chestTierFor(totalStars, maxStars) {
@@ -42,15 +42,15 @@ export default function ChestReward({ tier = 'bronze', onClaim }) {
     <div className="mt-4 rounded-2xl p-4 text-center"
       style={{ background: `linear-gradient(180deg, ${T.color}1f, rgba(255,255,255,0.03))`, border: `1px solid ${T.color}66` }}>
       <div className="text-[11px] font-extrabold uppercase tracking-[0.18em]" style={{ color: T.color }}>
-        {lang === 'pt' ? T.name_pt : T.name_es}
+        {pickLang(T, lang, 'name_')}
       </div>
 
       {state === 'closed' ? (
-        <button onClick={open} className="mt-1 active:scale-90 transition" aria-label={lang === 'pt' ? 'Abrir baú' : 'Abrir cofre'}>
+        <button onClick={open} className="mt-1 active:scale-90 transition" aria-label={tri(lang, 'Abrir cofre', 'Abrir baú', 'Open chest')}>
           <span className="block text-6xl chest-wiggle" style={{ filter: `drop-shadow(0 10px 22px ${T.color}aa)` }}>{T.emoji}</span>
           <span className="mt-1 inline-block rounded-full px-4 py-1 text-[12px] font-black animate-pulse"
             style={{ background: `linear-gradient(135deg, ${T.color}, ${T.color}aa)`, color: '#1a0b2e' }}>
-            {lang === 'pt' ? '👆 Toque para abrir!' : '👆 ¡Tócalo para abrirlo!'}
+            {tri(lang, '👆 ¡Tócalo para abrirlo!', '👆 Toque para abrir!', '👆 Tap to open it!')}
           </span>
         </button>
       ) : (
@@ -62,13 +62,13 @@ export default function ChestReward({ tier = 'bronze', onClaim }) {
             </span>
             {prize.power && (
               <span className="chip text-sm font-black" style={{ background: 'rgba(168,85,247,0.18)', borderColor: 'rgba(168,85,247,0.55)' }}>
-                {prize.power.emoji} +1 {lang === 'pt' ? prize.power.name_pt : prize.power.name_es}
+                {prize.power.emoji} +1 {pickLang(prize.power, lang, 'name_')}
               </span>
             )}
           </div>
           {!prize.power && (
             <div className="text-[11px] text-[var(--text-dim)] mt-2">
-              {lang === 'pt' ? 'Baús de OURO sempre trazem um poder ⚡ Pense em grande!' : 'Los cofres de ORO siempre traen un poder ⚡ ¡Piensa en grande!'}
+              {tri(lang, 'Los cofres de ORO siempre traen un poder ⚡ ¡Piensa en grande!', 'Baús de OURO sempre trazem um poder ⚡ Pense em grande!', 'GOLD chests always bring a power ⚡ Think big!')}
             </div>
           )}
         </div>

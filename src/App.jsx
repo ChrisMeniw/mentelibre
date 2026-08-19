@@ -47,6 +47,7 @@ function LangToggle() {
     <div className="fixed top-3 right-3 z-50 card flex gap-1 p-1 safe-top">
       <button onClick={() => setLang('es')} aria-label="Español" aria-pressed={lang === 'es'} className="px-3 py-2 rounded-full text-xs font-extrabold min-h-touch" style={lang === 'es' ? on : off}>🇦🇷 ES</button>
       <button onClick={() => setLang('pt')} aria-label="Português" aria-pressed={lang === 'pt'} className="px-3 py-2 rounded-full text-xs font-extrabold min-h-touch" style={lang === 'pt' ? on : off}>🇧🇷 PT</button>
+      <button onClick={() => setLang('en')} aria-label="English" aria-pressed={lang === 'en'} className="px-3 py-2 rounded-full text-xs font-extrabold min-h-touch" style={lang === 'en' ? on : off}>🇺🇸 EN</button>
     </div>
   )
 }

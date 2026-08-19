@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, pickLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { sfxPop } from '../lib/sfx'
 import ModeIcon from '../components/ModeIcon'
@@ -279,8 +279,8 @@ export default function HowItWorks() {
             {POWERS.map((pw) => (
               <div key={pw.id} className="flex items-center gap-2 rounded-xl px-3 py-1.5 text-[12.5px]" style={{ background: 'rgba(255,255,255,0.045)' }}>
                 <span className="text-lg shrink-0">{pw.emoji}</span>
-                <span className="font-extrabold shrink-0">{lang === 'pt' ? pw.name_pt : pw.name_es}:</span>
-                <span className="text-[var(--text-dim)]">{lang === 'pt' ? pw.desc_pt : pw.desc_es}</span>
+                <span className="font-extrabold shrink-0">{pickLang(pw, lang, 'name_')}:</span>
+                <span className="text-[var(--text-dim)]">{pickLang(pw, lang, 'desc_')}</span>
               </div>
             ))}
           </div>
@@ -299,7 +299,7 @@ export default function HowItWorks() {
             {Object.entries(GUARDIANS).map(([id, g]) => (
               <div key={id} className="rounded-xl px-2.5 py-2 text-center" style={{ background: 'rgba(255,255,255,0.045)', border: `1px solid ${g.color}33` }}>
                 <div className="text-2xl">{g.emoji}</div>
-                <div className="text-[11px] font-extrabold leading-tight mt-0.5">{lang === 'pt' ? g.name_pt : g.name_es}</div>
+                <div className="text-[11px] font-extrabold leading-tight mt-0.5">{pickLang(g, lang, 'name_')}</div>
               </div>
             ))}
           </div>

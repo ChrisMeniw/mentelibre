@@ -1,6 +1,6 @@
 import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, pickLang, tri } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { WORLDS } from '../data/challenges'
 import { isAskUnlocked, ASK_UNLOCK_ANSWERS } from '../data/levels'
@@ -58,7 +58,7 @@ export default function AdventureMap() {
       <div className="relative space-y-5 py-2">
         {WORLDS.map((w, wi) => {
           const wColor = w.color
-          const wName = lang === 'pt' ? w.name_pt : w.name_es
+          const wName = pickLang(w, lang, 'name_')
           const worldDone = doneByWorld[wi]
           const worldComplete = worldDone >= NODES_PER_WORLD
 
@@ -144,7 +144,7 @@ export default function AdventureMap() {
                     <button
                       type="button"
                       onClick={worldComplete ? () => { sfxPop(); nav(`/guardian/${w.id}`) } : shake}
-                      aria-label={G ? (lang === 'pt' ? G.name_pt : G.name_es) : 'guardián'}
+                      aria-label={G ? pickLang(G, lang, 'name_') : 'guardián'}
                       className={'relative grid place-items-center rounded-2xl jelly-tap ' + (ready ? 'glow-pulse' : '')}
                       style={{
                         width: 68, height: 60,
@@ -162,7 +162,7 @@ export default function AdventureMap() {
                       )}
                     </button>
                     <div className="text-[10px] font-black mt-1" style={{ color: beaten ? 'var(--gold)' : worldComplete ? wColor : 'var(--text-dim)' }}>
-                      {beaten ? (lang === 'pt' ? 'Coroado' : 'Coronado') : ready ? (lang === 'pt' ? '⚔️ Desafiar!' : '⚔️ ¡Desafiar!') : (lang === 'pt' ? 'Guardião' : 'Guardián')}
+                      {beaten ? tri(lang, 'Coronado', 'Coroado', 'Crowned') : ready ? tri(lang, '⚔️ ¡Desafiar!', '⚔️ Desafiar!', '⚔️ Challenge!') : tri(lang, 'Guardián', 'Guardião', 'Guardian')}
                     </div>
                   </div>
                 )

@@ -1,7 +1,7 @@
 // Texto-a-voz. Voz principal: mujer joven REAL en la nube (proxy /api/tts). Respaldo: navegador.
 import { setPlaybackAudioSession } from './audioUnlock'
 
-const LANGS = { es: 'es-US', pt: 'pt-BR' } // es-US = español neutro latino, pt-BR = portugués de Brasil
+const LANGS = { es: 'es-US', pt: 'pt-BR', en: 'en-US' } // es-US = español neutro latino, pt-BR = portugués de Brasil, en-US = inglés
 
 // Dialectos LATAM (NUNCA España es-ES). Se prioriza esto para que NO suene "española".
 const LATAM = ['es-us', 'es-mx', 'es-419', 'es-ar', 'es-co', 'es-cl', 'es-pe', 'es-uy', 'es-ve', 'es-la', 'es-do', 'es-gt']
@@ -13,6 +13,9 @@ const FEMALE = [
   'esperanza', 'marisol', 'catalina', 'florencia', 'isabela', 'jimena', 'lucia', 'lucía',
   'luciana', 'francisca', 'maria', 'maría', 'joana', 'fernanda', 'camila', 'vitória', 'vitoria',
   'female', 'femenina', 'mujer', 'feminino', 'google español', 'google português', 'google portugues',
+  // Voces femeninas en inglés (para el modo EN)
+  'samantha', 'victoria', 'karen', 'moira', 'tessa', 'fiona', 'serena', 'allison', 'ava', 'susan',
+  'zira', 'google us english', 'google uk english female',
 ]
 const MALE = [
   'juan', 'jorge', 'diego', 'carlos', 'miguel', 'pablo', 'roberto', 'andres', 'andrés', 'felipe',
@@ -76,6 +79,11 @@ function pickVoice(lang) {
 
   if (lang === 'pt') {
     const m = voices.filter((v) => norm(v).startsWith('pt'))
+    return bestVoice(m)
+  }
+
+  if (lang === 'en') {
+    const m = voices.filter((v) => norm(v).startsWith('en'))
     return bestVoice(m)
   }
 

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, pickLang, tri } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { AGE_GROUPS, pickMixedQuestions } from '../data/challenges'
 import { callClaude, scoreSystemPrompt, parseScore } from '../lib/claude'
@@ -43,10 +43,10 @@ export default function Classroom() {
   const [showEnd, setShowEnd] = useState(false) // diálogo Continuar / Finalizar partida
   const usedSecondsRef = useRef(SECONDS)
 
-  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-US')
 
   const q = questions[qi]
-  const qText = q ? (lang === 'pt' ? q.pt : q.es) : ''
+  const qText = q ? (pickLang(q, lang)) : ''
 
   // Timer de 30s basado en reloj real (inmune al doble montaje de StrictMode).
   // Se rearma solo al cambiar de pregunta o de etapa, no en cada tick.
@@ -264,7 +264,7 @@ export default function Classroom() {
       </div>
       {/* Header: reloj de partida (45 min) + progreso + puntaje */}
       <div className="flex items-center justify-between gap-2 mb-3">
-        <button onClick={() => { sfxPop(); setShowEnd(true) }} aria-label={lang === 'pt' ? 'Finalizar' : 'Finalizar'}
+        <button onClick={() => { sfxPop(); setShowEnd(true) }} aria-label={tri(lang, 'Finalizar', 'Finalizar', 'Finish')}
           className={'inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-sm font-black active:scale-95 transition ' + (matchLeft <= 60 ? 'timer-pulse' : '')}
           style={{ background: matchLeft <= 60 ? 'rgba(244,63,94,0.2)' : 'rgba(255,255,255,0.06)', border: `1px solid ${matchLeft <= 60 ? 'rgba(244,63,94,0.6)' : 'rgba(255,255,255,0.14)'}`, color: matchLeft <= 60 ? 'var(--rose)' : 'var(--text)' }}>
           ⏳ {mmss(matchLeft)}
@@ -281,10 +281,10 @@ export default function Classroom() {
         <div className="fixed inset-0 z-[90] grid place-items-center px-6" style={{ background: 'rgba(8,4,20,0.82)', backdropFilter: 'blur(8px)' }} onClick={() => setShowEnd(false)}>
           <div className="card p-6 max-w-xs w-full bounce-in text-center" onClick={(e) => e.stopPropagation()}>
             <div className="text-4xl">⏳</div>
-            <h2 className="font-logo text-2xl grad-text mt-2">{lang === 'pt' ? 'Terminar a partida?' : '¿Terminar la partida?'}</h2>
-            <p className="text-sm text-[var(--text-dim)] mt-2 leading-snug">{lang === 'pt' ? 'Vamos fechar o placar do grupo e mostrar o resultado.' : 'Vamos a cerrar el puntaje del grupo y mostrar el resultado.'}</p>
-            <button onClick={() => { sfxPop(); setShowEnd(false) }} className="btn btn-gold w-full mt-4 min-h-touch">{lang === 'pt' ? 'Seguir jogando' : 'Seguir jugando'}</button>
-            <button onClick={() => { sfxPop(); setShowEnd(false); finish() }} className="btn btn-ghost w-full mt-2 min-h-touch" style={{ color: 'var(--rose)' }}>{lang === 'pt' ? 'Finalizar partida' : 'Finalizar partida'}</button>
+            <h2 className="font-logo text-2xl grad-text mt-2">{tri(lang, '¿Terminar la partida?', 'Terminar a partida?', 'End the match?')}</h2>
+            <p className="text-sm text-[var(--text-dim)] mt-2 leading-snug">{tri(lang, 'Vamos a cerrar el puntaje del grupo y mostrar el resultado.', 'Vamos fechar o placar do grupo e mostrar o resultado.', "We'll close the group's score and show the result.")}</p>
+            <button onClick={() => { sfxPop(); setShowEnd(false) }} className="btn btn-gold w-full mt-4 min-h-touch">{tri(lang, 'Seguir jugando', 'Seguir jogando', 'Keep playing')}</button>
+            <button onClick={() => { sfxPop(); setShowEnd(false); finish() }} className="btn btn-ghost w-full mt-2 min-h-touch" style={{ color: 'var(--rose)' }}>{tri(lang, 'Finalizar partida', 'Finalizar partida', 'End match')}</button>
           </div>
         </div>
       )}

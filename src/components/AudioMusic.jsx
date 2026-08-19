@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { useLang } from '../i18n'
+import { useLang, tri } from '../i18n'
 import { subscribeGameplay, isGameplay } from '../lib/musicBus'
 import { setMusicKick } from '../lib/musicControl'
 import { setPlaybackAudioSession } from '../lib/audioUnlock'
@@ -11,7 +11,7 @@ import { setPlaybackAudioSession } from '../lib/audioUnlock'
 const TARGET_VOL = 0.36
 
 export default function AudioMusic() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const initialOn = (() => { try { return localStorage.getItem('ml_music') !== 'off' } catch { return true } })()
   const [on, setOn] = useState(initialOn)
   const onRef = useRef(initialOn)
@@ -101,7 +101,7 @@ export default function AudioMusic() {
       className="flex items-center gap-1.5 pl-3 pr-3.5 h-11 min-h-touch rounded-full font-black text-sm active:scale-95 transition"
     >
       <span className="text-base leading-none">{on ? '🔊' : '🔇'}</span>
-      <span>Música {on ? 'ON' : 'OFF'}</span>
+      <span>{tri(lang, 'Música', 'Música', 'Music')} {on ? 'ON' : 'OFF'}</span>
     </button>
   )
 }

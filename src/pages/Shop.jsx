@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, pickLang, tri } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { PREMIUM_AVATARS, PETS, FRAMES } from '../data/shop'
 import { POWERS } from '../data/powers'
@@ -19,7 +19,7 @@ export default function Shop() {
 
   const owned = player.owned || []
   const cats = [
-    { id: 'powers', icon: '⚡', label: lang === 'pt' ? 'Poderes' : 'Poderes' },
+    { id: 'powers', icon: '⚡', label: tri(lang, 'Poderes', 'Poderes', 'Powers') },
     { id: 'avatars', icon: '🧑‍🚀', label: t('catAvatars') },
     { id: 'pets', icon: '🐾', label: t('catPets') },
     { id: 'frames', icon: '✨', label: t('catFrames') },
@@ -82,7 +82,7 @@ export default function Shop() {
       {cat === 'powers' && (
         <div className="space-y-3 fade-in">
           <p className="text-center text-[12px] text-[var(--text-dim)] leading-snug">
-            {lang === 'pt' ? 'Use durante a rodada: toque no poder acima da pergunta. Também saem dos baús! 🎁' : 'Se usan durante la ronda: toca el poder arriba de la pregunta. ¡También salen de los cofres! 🎁'}
+            {tri(lang, 'Se usan durante la ronda: toca el poder arriba de la pregunta. ¡También salen de los cofres! 🎁', 'Use durante a rodada: toque no poder acima da pergunta. Também saem dos baús! 🎁', 'Use them during the round: tap the power above the question. They also come from chests! 🎁')}
           </p>
           {POWERS.map((pw) => {
             const count = player.powers?.[pw.id] || 0
@@ -93,9 +93,9 @@ export default function Shop() {
                   {pw.emoji}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <div className="font-extrabold text-[15px] leading-tight">{lang === 'pt' ? pw.name_pt : pw.name_es}</div>
-                  <div className="text-[11.5px] text-[var(--text-dim)] leading-snug mt-0.5">{lang === 'pt' ? pw.desc_pt : pw.desc_es}</div>
-                  <div className="text-[11px] font-black text-[var(--violet-light)] mt-1">{lang === 'pt' ? 'Você tem' : 'Tienes'}: ×{count}</div>
+                  <div className="font-extrabold text-[15px] leading-tight">{pickLang(pw, lang, 'name_')}</div>
+                  <div className="text-[11.5px] text-[var(--text-dim)] leading-snug mt-0.5">{pickLang(pw, lang, 'desc_')}</div>
+                  <div className="text-[11px] font-black text-[var(--violet-light)] mt-1">{tri(lang, 'Tienes', 'Você tem', 'You have')}: ×{count}</div>
                 </div>
                 <button onClick={(e) => tryBuyPower(pw, e.currentTarget)} className="btn btn-ghost shrink-0 text-xs py-2 px-3">
                   <CoinPrice n={pw.price} />

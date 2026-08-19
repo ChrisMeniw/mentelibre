@@ -1,10 +1,11 @@
 // Paso 6 — 5 niveles de progreso
+import { pickLang } from '../i18n'
 export const LEVELS = [
-  { name_es: 'Aprendiz', name_pt: 'Aprendiz', min: 0,    max: 199 },
-  { name_es: 'Curioso',  name_pt: 'Curioso',  min: 200,  max: 499 },
-  { name_es: 'Pensador', name_pt: 'Pensador', min: 500,  max: 899 },
-  { name_es: 'Crítico',  name_pt: 'Crítico',  min: 900,  max: 1399 },
-  { name_es: 'Filósofo', name_pt: 'Filósofo', min: 1400, max: Infinity },
+  { name_es: 'Aprendiz', name_pt: 'Aprendiz', name_en: 'Apprentice',  min: 0,    max: 199 },
+  { name_es: 'Curioso',  name_pt: 'Curioso',  name_en: 'Curious',     min: 200,  max: 499 },
+  { name_es: 'Pensador', name_pt: 'Pensador', name_en: 'Thinker',     min: 500,  max: 899 },
+  { name_es: 'Crítico',  name_pt: 'Crítico',  name_en: 'Critic',      min: 900,  max: 1399 },
+  { name_es: 'Filósofo', name_pt: 'Filósofo', name_en: 'Philosopher', min: 1400, max: Infinity },
 ]
 
 // El mundo "El arte de preguntar" se desbloquea al RESPONDER 20 PREGUNTAS (logro
@@ -33,5 +34,5 @@ export function levelProgress(xp) {
 
 export function levelName(xp, lang) {
   const lvl = LEVELS[levelForXP(xp)]
-  return lang === 'pt' ? lvl.name_pt : lvl.name_es
+  return pickLang(lvl, lang, 'name_')
 }

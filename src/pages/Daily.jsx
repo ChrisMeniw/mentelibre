@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, pickLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { callClaude, roundReactSystemPrompt, parseReact, fallbackReact } from '../lib/claude'
 import { localReact } from '../lib/localZoe'
@@ -30,8 +30,8 @@ export default function Daily() {
 
   const ageGroup = player.ageGroup || '9-11'
   const q = useRef(dailyQuestion(ageGroup)).current
-  const qText = q ? (lang === 'pt' ? q.pt : q.es) : ''
-  const childName = player.name || (lang === 'pt' ? 'amigo' : 'amigo')
+  const qText = q ? (pickLang(q, lang)) : ''
+  const childName = player.name || (lang === 'en' ? 'friend' : 'amigo')
 
   const status = dailyStatus()
   const [phase, setPhase] = useState(status.done ? 'done' : 'answer') // answer | scoring | done
@@ -40,7 +40,7 @@ export default function Daily() {
   const [react, setReact] = useState('')
   const [toast, setToast] = useState('')
 
-  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-US')
 
   // Estás jugando el reto → la música del menú se calla (quedan los efectos de sonido).
   useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])

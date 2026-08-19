@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, pickLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { getWorld, pickQuestion } from '../data/challenges'
 import { callClaude, responseSystemPrompt, hintSystemPrompt, scoreSystemPrompt, parseScore, fallbackResponse, fallbackHint } from '../lib/claude'
@@ -29,7 +29,7 @@ export default function Challenge() {
   const world = getWorld(worldId)
   const av = avatarByEmoji(player.avatar)
   const question = useMemo(() => pickQuestion(worldId, player.ageGroup), [worldId, player.ageGroup])
-  const qText = lang === 'pt' ? question.pt : question.es
+  const qText = pickLang(question, lang)
 
   const [step, setStep] = useState(1)
   const [answer, setAnswer] = useState('')
@@ -42,7 +42,7 @@ export default function Challenge() {
   const [celeb, setCeleb] = useState(null)
   const [score, setScore] = useState(2)
 
-  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-US')
 
   // Estás jugando → la música del menú se calla mientras dura el desafío.
   useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
@@ -60,7 +60,7 @@ export default function Challenge() {
 
   const words = countWords(answer)
   const canSend = answer.trim().length > 0 // se activa apenas hay algo escrito
-  const childName = player.name || (lang === 'pt' ? 'amigo' : 'amigo')
+  const childName = player.name || (lang === 'en' ? 'friend' : 'amigo')
 
   // Botón hablar: agrega lo dicho a lo que ya hay escrito.
   const toggleVoice = () => {
@@ -141,7 +141,7 @@ export default function Challenge() {
         <button onClick={() => { sfxPop(); nav('/') }} aria-label={t('navHome')} className="btn btn-ghost px-3 py-2 text-base">🏠</button>
         <div className="flex items-center gap-2 font-extrabold">
           <span className="text-2xl">{world.emoji}</span>
-          <span>{lang === 'pt' ? world.name_pt : world.name_es}</span>
+          <span>{pickLang(world, lang, 'name_')}</span>
         </div>
       </div>
 

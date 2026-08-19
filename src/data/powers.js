@@ -3,18 +3,18 @@
 export const POWERS = [
   {
     id: 'time', emoji: '⏳', price: 15,
-    name_es: 'Tiempo extra', name_pt: 'Tempo extra',
-    desc_es: '+15 segundos para pensar esa pregunta.', desc_pt: '+15 segundos para pensar nessa pergunta.',
+    name_es: 'Tiempo extra', name_pt: 'Tempo extra', name_en: 'Extra time',
+    desc_es: '+15 segundos para pensar esa pregunta.', desc_pt: '+15 segundos para pensar nessa pergunta.', desc_en: '+15 seconds to think about that question.',
   },
   {
     id: 'hint', emoji: '💡', price: 20,
-    name_es: 'Pista de ZOE', name_pt: 'Dica da ZOE',
-    desc_es: 'ZOE te da una pista para destrabar tu idea.', desc_pt: 'A ZOE dá uma dica para destravar sua ideia.',
+    name_es: 'Pista de ZOE', name_pt: 'Dica da ZOE', name_en: 'ZOE\'s hint',
+    desc_es: 'ZOE te da una pista para destrabar tu idea.', desc_pt: 'A ZOE dá uma dica para destravar sua ideia.', desc_en: 'ZOE gives you a hint to unlock your idea.',
   },
   {
     id: 'double', emoji: '✨', price: 25,
-    name_es: 'XP doble', name_pt: 'XP em dobro',
-    desc_es: 'La próxima respuesta vale el DOBLE de XP.', desc_pt: 'A próxima resposta vale o DOBRO de XP.',
+    name_es: 'XP doble', name_pt: 'XP em dobro', name_en: 'Double XP',
+    desc_es: 'La próxima respuesta vale el DOBLE de XP.', desc_pt: 'A próxima resposta vale o DOBRO de XP.', desc_en: 'Your next answer is worth DOUBLE XP.',
   },
 ]
 

@@ -8,10 +8,10 @@ const wordsOf = (s) => (String(s || '').trim().match(/\S+/g) || [])
 const seedOf = (s) => { let h = 0; const t = String(s || ''); for (let i = 0; i < t.length; i++) h = (h * 31 + t.charCodeAt(i)) | 0; return Math.abs(h) }
 const pick = (arr, seed) => arr[seed % arr.length]
 
-// Marcadores de razonamiento, imaginación y desarrollo (ES + PT).
-const REASON = /(porque|porqu[eé]|ya que|as[ií] que|entonces|por eso|debido|para que|igual que|gracias a|pois|ent[ãa]o|porqu[eê])/i
-const IMAGINE = /(imagin|ser[ií]a|podr[ií]a|tal vez|quiz[áa]s|\by si\b|capaz|invent|sue[ñn]|e se\b|seria|poderia|talvez|sonh)/i
-const DEVELOP = /(adem[áa]s|tambi[ée]n|por ejemplo|aunque|en cambio|primero|segundo|por un lado|al[ée]m disso|tamb[ée]m|por exemplo|embora|por outro lado)/i
+// Marcadores de razonamiento, imaginación y desarrollo (ES + PT + EN).
+const REASON = /(porque|porqu[eé]|ya que|as[ií] que|entonces|por eso|debido|para que|igual que|gracias a|pois|ent[ãa]o|porqu[eê]|because|since|so that|that'?s why|in order to|due to|thanks to)/i
+const IMAGINE = /(imagin|ser[ií]a|podr[ií]a|tal vez|quiz[áa]s|\by si\b|capaz|invent|sue[ñn]|e se\b|seria|poderia|talvez|sonh|\bwould\b|\bcould\b|maybe|perhaps|what if|\bmight\b|\bdream)/i
+const DEVELOP = /(adem[áa]s|tambi[ée]n|por ejemplo|aunque|en cambio|primero|segundo|por un lado|al[ée]m disso|tamb[ée]m|por exemplo|embora|por outro lado|\balso\b|besides|for example|for instance|although|on the other hand|\bfirst\b|\bsecond\b|however|instead)/i
 
 // El listón SUBE con la edad: a un peque le pedimos menos palabras que a un grande para
 // llegar a 3★ (tiny: por debajo y sin razón = 1★; two: alcanza 2★; reason3: con una razón
@@ -94,6 +94,34 @@ const REACT = {
       (n) => `¡Dale, ${n}! Te escucho: ¿qué se te viene a la cabeza con esto? ✨`,
     ],
   },
+  en: {
+    5: [
+      (n) => `Amazing, ${n}! You thought, explained your reason and built on it. That's real thinking! 🌟🚀`,
+      (n) => `Wow, ${n}! A complete answer: with reasons and imagination. You left me speechless! 🧠✨`,
+      (n) => `Incredible, ${n}! You turned it over and put together a whole idea. A 5-star one! 💫`,
+    ],
+    4: [
+      (n) => `Excellent, ${n}! You gave your reasons and it shows you thought it through. 🚀`,
+      (n) => `What a mind, ${n}! Your idea has a reason and lots of imagination. 🧠✨`,
+      (n) => `Very good, ${n}! You explained your idea with energy. Add an example to make it shine? 🌟`,
+    ],
+    3: [
+      (n) => `Well thought, ${n}! Good idea and you gave a reason. Want to tell me a little more? 💡`,
+      (n) => `You're doing great, ${n}! Your idea already has body. What if you add an example? 🌱`,
+      (n) => `I like it, ${n}! You thought nicely. One more detail and you reach 5 stars. ✨`,
+    ],
+    2: [
+      (n) => `Good idea, ${n}! What if you tell me why you think that way? ✨`,
+      (n) => `I like it, ${n}! Add a "because..." and your idea flies higher. 💜`,
+      (n) => `You're doing well, ${n}! What made you think that? Tell me a bit more. 🌱`,
+      (n) => `Nice thinking, ${n}! Can you think of an example for your idea? 💡`,
+    ],
+    1: [
+      (n) => `Good start, ${n}! Tell me a little more: what makes you think that? 💪`,
+      (n) => `Come on, ${n}! A slightly longer idea and you've got it. Why would you say it? 🌱`,
+      (n) => `Go for it, ${n}! I'm listening: what comes to mind with this? ✨`,
+    ],
+  },
   pt: {
     5: [
       (n) => `Incrível, ${n}! Você pensou, explicou o porquê e desenvolveu. Isso é pensar de verdade! 🌟🚀`,
@@ -126,16 +154,16 @@ const REACT = {
 
 // localReact → { stars, text }: igual forma que parseReact, para usar como respaldo directo.
 export function localReact(childName, answer, lang = 'es', ageGroup = '9-11') {
-  const n = childName || (lang === 'pt' ? 'amigo' : 'amigo')
+  const n = childName || (lang === 'en' ? 'friend' : 'amigo')
   const stars = scoreAnswer(answer, ageGroup)
   const pool = (REACT[lang] || REACT.es)[stars]
   return { stars, text: pick(pool, seedOf(answer + n))(n) }
 }
 
 // ---------- El arte de preguntar (calidad de las PREGUNTAS del chico) ----------
-const Q_OPEN = /(qu[eé]\b|c[oó]mo\b|por qu[eé]|cu[aá]l|para qu[eé]|o que|como|por que|qual)/i
-const Q_IMAGINE = /(qu[eé] pasar[ií]a si|c[oó]mo ser[ií]a|\by si\b|por qu[eé] no|o que aconteceria|\be se\b|como seria)/i
-const Q_YESNO = /^(es|son|tiene|tienen|hay|puede|pueden|est[áa]|fue|ser[áa]|tem|pode|existe|você gosta|te gusta)\b/i
+const Q_OPEN = /(qu[eé]\b|c[oó]mo\b|por qu[eé]|cu[aá]l|para qu[eé]|o que|como|por que|qual|\bwhat\b|\bhow\b|\bwhy\b|\bwhich\b|\bwhere\b|\bwhen\b|\bwho\b)/i
+const Q_IMAGINE = /(qu[eé] pasar[ií]a si|c[oó]mo ser[ií]a|\by si\b|por qu[eé] no|o que aconteceria|\be se\b|como seria|what would happen if|what if|how would|why not|imagine if)/i
+const Q_YESNO = /^(es|son|tiene|tienen|hay|puede|pueden|est[áa]|fue|ser[áa]|tem|pode|existe|você gosta|te gusta|is|are|do|does|did|can|could|will|would|has|have|was|were)\b/i
 
 // Calidad de la PREGUNTA del chico, de 1 a 5: 5★ una "¿qué pasaría si...?" desarrollada ·
 // 4★ abierta y rica (o invita a imaginar) · 3★ abierta · 2★ pide info pero no abre · 1★ sí/no o vaga.
@@ -182,6 +210,33 @@ const ASK = {
       (n) => `¡Vamos, ${n}! ¿Y si preguntas "qué pasaría si...?". Esas encienden ideas. 😊`,
     ],
   },
+  en: {
+    5: [
+      (n) => `What a question, ${n}! It opens a thousand paths to imagine and compare. Asking like this is real thinking. 🚀🌟`,
+      (n) => `Incredible, ${n}! That question makes anyone think and has more than one answer. 🦉🚀`,
+      (n) => `Wow, ${n}! A 5-star question: it invites you to imagine brand-new worlds. 💫`,
+    ],
+    4: [
+      (n) => `What a great question, ${n}! It invites you to look at the topic from many sides. 🌟`,
+      (n) => `Very good, ${n}! That one opens the imagination. What if you start it with "what would happen if...?" to make it fly even more? 🚀`,
+      (n) => `I love it, ${n}! It's open and deep. A question that's a joy to think about. 🌟`,
+    ],
+    3: [
+      (n) => `Good question, ${n}! To make it fly more, try starting with "what would happen if...?". 🌟`,
+      (n) => `You're doing great, ${n}! Add a "why?" and your question gets deeper. ✨`,
+      (n) => `I like it, ${n}! What if you make it even more open, to imagine several answers? 💡`,
+    ],
+    2: [
+      (n) => `Good try, ${n}! What if you make it more open, so it can't be answered with yes or no? ✨`,
+      (n) => `You're doing well, ${n}! Try one that starts with "why" or "how". 🌟`,
+      (n) => `Nice one, ${n}! A slightly longer question opens up many ideas. 💡`,
+    ],
+    1: [
+      (n) => `Good try, ${n}! That one is answered quickly. Try one that starts with "why" or "how". 😊`,
+      (n) => `Go for it, ${n}! A question that can't be answered with yes or no opens up much more. 😊`,
+      (n) => `Come on, ${n}! What if you ask "what would happen if...?". Those spark ideas. 😊`,
+    ],
+  },
   pt: {
     5: [
       (n) => `Que pergunta, ${n}! Abre mil caminhos pra imaginar e comparar. Perguntar assim é pensar de verdade. 🚀🌟`,
@@ -213,7 +268,7 @@ const ASK = {
 
 // localAsk → { stars, emoji, feedback }: igual forma que evaluateQuestion.
 export function localAsk(childName, question, lang = 'es', _ageGroup) {
-  const n = childName || (lang === 'pt' ? 'amigo' : 'amigo')
+  const n = childName || (lang === 'en' ? 'friend' : 'amigo')
   const stars = scoreQuestion(question)
   const emoji = stars >= 4 ? '🚀' : stars === 3 ? '🌟' : stars === 2 ? '✨' : '😊'
   const pool = (ASK[lang] || ASK.es)[stars]

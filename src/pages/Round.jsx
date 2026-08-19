@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, pickLang, tri } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { getWorld, getQuestions, pickRoundQuestions, nextWorldId } from '../data/challenges'
 import { getSeen, addSeen, resetSeen } from '../lib/seenQuestions'
@@ -100,7 +100,7 @@ export default function Round() {
   const [lastDoubled, setLastDoubled] = useState(false) // para mostrar el x2 en el feedback
   const doubleXpRef = useRef(0)                // XP extra acumulado por el poder ✨
 
-  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-US')
 
   // Estás jugando → la música del menú se calla mientras dura la ronda.
   useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
@@ -109,8 +109,8 @@ export default function Round() {
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [])
 
   const q = questions[qi]
-  const qText = q ? (lang === 'pt' ? q.pt : q.es) : ''
-  const childName = player.name || (lang === 'pt' ? 'amigo' : 'amigo')
+  const qText = q ? (pickLang(q, lang)) : ''
+  const childName = player.name || (lang === 'en' ? 'friend' : 'amigo')
   const canSend = answer.trim().length > 0
 
   // Leer la pregunta en voz alta (TODOS los chicos, voz de chica joven) y reiniciar el tiempo.
@@ -235,7 +235,7 @@ export default function Round() {
     window.scrollTo({ top: 0, behavior: 'instant' })
   }
 
-  const wName = lang === 'pt' ? world.name_pt : world.name_es
+  const wName = pickLang(world, lang, 'name_')
 
   // ---------- INTRO ----------
   if (phase === 'intro') {
@@ -314,7 +314,7 @@ export default function Round() {
                 {newBadges.map((b) => (
                   <div key={b.id} className="text-center bounce-in">
                     <div className="text-3xl">{b.emoji}</div>
-                    <div className="text-[10px] font-bold">{lang === 'pt' ? b.name_pt : b.name_es}</div>
+                    <div className="text-[10px] font-bold">{pickLang(b, lang, 'name_')}</div>
                   </div>
                 ))}
               </div>
@@ -399,13 +399,13 @@ export default function Round() {
               const count = player.powers?.[pw.id] || 0
               const spent = (pw.id === 'double' && doubleArmed) || (pw.id === 'hint' && !!hint)
               const disabled = count <= 0 || spent
-              const name = lang === 'pt' ? pw.name_pt : pw.name_es
+              const name = pickLang(pw, lang, 'name_')
               return (
                 <button key={pw.id} onClick={() => firePower(pw.id)} disabled={disabled} aria-label={name}
                   className="relative flex-1 rounded-2xl px-1 py-2 text-center active:scale-95 transition disabled:opacity-45 min-h-touch"
                   style={{ background: spent ? 'rgba(251,191,36,0.16)' : 'rgba(255,255,255,0.06)', border: spent ? '1px solid rgba(251,191,36,0.55)' : '1px solid rgba(255,255,255,0.13)' }}>
                   <span className="block text-xl leading-none">{pw.emoji}</span>
-                  <span className="block text-[10px] font-black mt-0.5 leading-tight">{spent ? (lang === 'pt' ? 'ATIVO' : 'ACTIVO') : name}</span>
+                  <span className="block text-[10px] font-black mt-0.5 leading-tight">{spent ? tri(lang, 'ACTIVO', 'ATIVO', 'ACTIVE') : name}</span>
                   <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full grid place-items-center text-[10px] font-black"
                     style={{ background: count > 0 ? 'linear-gradient(135deg,var(--violet-light),var(--violet))' : 'rgba(255,255,255,0.14)', color: '#fff' }}>{count}</span>
                 </button>
@@ -421,7 +421,7 @@ export default function Round() {
             </div>
           )}
           {doubleArmed && (
-            <div className="text-center text-xs font-black text-[var(--gold)] animate-pulse">✨ {lang === 'pt' ? 'A próxima resposta vale XP em DOBRO' : 'La próxima respuesta vale XP DOBLE'}</div>
+            <div className="text-center text-xs font-black text-[var(--gold)] animate-pulse">✨ {tri(lang, 'La próxima respuesta vale XP DOBLE', 'A próxima resposta vale XP em DOBRO', 'The next answer is worth DOUBLE XP')}</div>
           )}
 
           <div className="card p-4">

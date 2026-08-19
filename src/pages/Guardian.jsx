@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, pickLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { getWorld, pickRoundQuestions } from '../data/challenges'
 import { guardianOf, GUARDIAN_HP, GUARDIAN_WIN, GUARDIAN_QUESTIONS, GUARDIAN_SECONDS, GUARDIAN_REWARD } from '../data/guardians'
@@ -67,14 +67,14 @@ export default function Guardian() {
   const [timeLeft, setTimeLeft] = useState(GUARDIAN_SECONDS)
   const [prize, setPrize] = useState(null)
 
-  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-US')
 
   useEffect(() => { enterGameplay(); return () => exitGameplay() }, [])
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [phase])
   useEffect(() => () => stopSpeak(), [])
 
   const q = questionsRef.current[qi]
-  const qText = q ? (lang === 'pt' ? q.pt : q.es) : ''
+  const qText = q ? (pickLang(q, lang)) : ''
   const childName = player.name || 'amigo'
 
   // Reloj de 20s por pregunta (más presión que una ronda normal).
@@ -95,7 +95,7 @@ export default function Guardian() {
   }, [timeLeft, phase, stage])
 
   if (!world || !G) { nav('/hub'); return null }
-  const gName = lang === 'pt' ? G.name_pt : G.name_es
+  const gName = pickLang(G, lang, 'name_')
   const hpLeft = Math.max(0, GUARDIAN_HP - damage)
   const hpPct = Math.round((hpLeft / GUARDIAN_HP) * 100)
 
@@ -150,11 +150,11 @@ export default function Guardian() {
         <div className="text-[11px] font-extrabold tracking-[0.25em] uppercase" style={{ color: G.color }}>{L.boss}</div>
         <div className="boss-breathe text-8xl mt-3" style={{ filter: `drop-shadow(0 14px 34px ${G.color}aa)` }}>{G.emoji}</div>
         <h1 className="font-logo text-3xl grad-text mt-3 leading-tight">{gName}</h1>
-        <p className="mt-2 text-base font-bold italic text-[var(--text-dim)]">“{lang === 'pt' ? G.taunt_pt : G.taunt_es}”</p>
+        <p className="mt-2 text-base font-bold italic text-[var(--text-dim)]">“{pickLang(G, lang, 'taunt_')}”</p>
         <div className="card p-4 mt-5 text-sm leading-snug">
           <p>{L.intro2}</p>
           <p className="mt-2 font-extrabold text-[var(--gold)]">{L.goal}</p>
-          <p className="mt-2 text-[12.5px] text-[var(--text-dim)]">💜 {lang === 'pt' ? G.weak_pt : G.weak_es}</p>
+          <p className="mt-2 text-[12.5px] text-[var(--text-dim)]">💜 {pickLang(G, lang, 'weak_')}</p>
         </div>
         <button onClick={() => { sfxPop(); setPhase('fight') }} className="btn btn-gold w-full max-w-xs mt-6 text-lg min-h-touch glow-pulse">{L.fight}</button>
         <button onClick={() => { sfxPop(); nav('/hub') }} className="btn btn-ghost w-full max-w-xs mt-2 text-sm min-h-touch">{L.backMap}</button>
@@ -178,9 +178,9 @@ export default function Guardian() {
               <div className="mt-1.5 flex items-center justify-center gap-2 flex-wrap">
                 <span className="chip font-black text-[var(--gold)]">+{prize.xp} XP</span>
                 <span className="chip font-black"><span className="coin-spin">🪙</span> +{prize.coins}</span>
-                <span className="chip font-black">{prize.power.emoji} +1 {lang === 'pt' ? prize.power.name_pt : prize.power.name_es}</span>
+                <span className="chip font-black">{prize.power.emoji} +1 {pickLang(prize.power, lang, 'name_')}</span>
               </div>
-              <div className="text-xs font-extrabold text-[var(--violet-light)] mt-2">👑 {L.crowned}: {lang === 'pt' ? world.name_pt : world.name_es}</div>
+              <div className="text-xs font-extrabold text-[var(--violet-light)] mt-2">👑 {L.crowned}: {pickLang(world, lang, 'name_')}</div>
             </div>
           )}
           {won

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, pickLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { pickAskTopics } from '../data/askTopics'
 import { evaluateQuestion } from '../lib/claude'
@@ -36,7 +36,7 @@ export default function Ask() {
 
   const ageGroup = player.ageGroup || '9-11'
   const topics = useRef(pickAskTopics(ageGroup, N)).current
-  const childName = player.name || (lang === 'pt' ? 'amigo' : 'amigo')
+  const childName = player.name || (lang === 'en' ? 'friend' : 'amigo')
 
   const [phase, setPhase] = useState('playing') // arranca DIRECTO (sin pantalla previa)
   const [ti, setTi] = useState(0)
@@ -51,10 +51,10 @@ export default function Ask() {
   const [celeb, setCeleb] = useState(null)
   const levelBefore = useRef(levelForXP(player.xp))
 
-  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-US')
 
   const topic = topics[ti]
-  const topicText = topic ? (lang === 'pt' ? topic.pt : topic.es) : ''
+  const topicText = topic ? (pickLang(topic, lang)) : ''
 
   // Lee el tema en voz alta (chica joven, todos) y reinicia los 30 s al cambiar de tema.
   useEffect(() => {

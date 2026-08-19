@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, pickLang, tri } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { AGE_GROUPS, pickMixedQuestions } from '../data/challenges'
 import { pickAskTopics } from '../data/askTopics'
@@ -127,7 +127,7 @@ export default function Competencia() {
   const [timeLeft, setTimeLeft] = useState(30)
   const [showEnd, setShowEnd] = useState(false) // diálogo Continuar / Finalizar partida
 
-  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : 'es-US')
+  const { listening, supported: micSupported, start: startListen, stop: stopListen } = useSpeech(lang === 'pt' ? 'pt-BR' : lang === 'en' ? 'en-US' : 'es-US')
 
   // ⏳ RELOJ DE LA PARTIDA (10 min). Al agotarse (o al Finalizar) pasa al desafío final de ZOE.
   const endMatch = () => { stopSpeak(); setShowEnd(false); setBi(0); setStage('answer'); setAnswer(''); setReact(''); setGained(0); setPhase('bonus'); window.scrollTo({ top: 0, behavior: 'instant' }) }
@@ -141,13 +141,13 @@ export default function Competencia() {
   const playerLabel = useMemo(() => {
     const perTeam = countTeamPlayers(format)
     const idxInTeam = Math.floor(turn / 2) % perTeam        // rota entre los jugadores del equipo
-    return `${lang === 'pt' ? 'Jogador' : 'Jugador'} ${idxInTeam + 1}`
+    return `${tri(lang, 'Jugador', 'Jogador', 'Player')} ${idxInTeam + 1}`
   }, [turn, format, lang])
 
   const q = questionsRef.current[turn % (questionsRef.current.length || 1)]
-  const qText = q ? (lang === 'pt' ? q.pt : q.es) : ''
+  const qText = q ? (pickLang(q, lang)) : ''
   const topic = topicsRef.current[bi]
-  const topicText = topic ? (lang === 'pt' ? topic.pt : topic.es) : ''
+  const topicText = topic ? (pickLang(topic, lang)) : ''
   const promptText = phase === 'bonus' ? topicText : qText
 
   // Lee en voz alta la consigna al entrar a cada turno + reinicia el reloj.

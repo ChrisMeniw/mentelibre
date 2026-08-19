@@ -1,4 +1,4 @@
-import { useLang } from '../i18n'
+import { useLang, pickLang } from '../i18n'
 import { BADGES } from '../data/badges'
 
 export default function BadgeGrid({ unlocked = [] }) {
@@ -13,10 +13,10 @@ export default function BadgeGrid({ unlocked = [] }) {
               {has ? b.emoji : '🔒'}
             </div>
             <div className="font-extrabold text-[13px] leading-tight">
-              {lang === 'pt' ? b.name_pt : b.name_es}
+              {pickLang(b, lang, 'name_')}
             </div>
             <div className="text-[11px] text-[var(--text-dim)] mt-1 leading-snug">
-              {has ? (lang === 'pt' ? b.desc_pt : b.desc_es) : t('locked')}
+              {has ? pickLang(b, lang, 'desc_') : t('locked')}
             </div>
           </div>
         )

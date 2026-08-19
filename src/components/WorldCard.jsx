@@ -1,8 +1,8 @@
-import { useLang } from '../i18n'
+import { useLang, pickLang } from '../i18n'
 
 export default function WorldCard({ world, completed = 0, onClick }) {
   const { lang, t } = useLang()
-  const name = lang === 'pt' ? world.name_pt : world.name_es
+  const name = pickLang(world, lang, 'name_')
   return (
     <button
       type="button"

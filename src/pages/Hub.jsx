@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useLang } from '../i18n'
+import { useLang, tri } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import { useStreak } from '../hooks/useStreak'
 import { avatarByEmoji } from '../components/AvatarPicker'
@@ -101,7 +101,7 @@ export default function Hub() {
   }
   // Siempre mostrar el inicio (arriba) al entrar al Hub.
   useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }) }, [])
-  const greet = (player.name ? `¡Hola, ${player.name}! ` : '') + (lang === 'pt' ? 'Que mundo vamos explorar? 🚀' : '¿Qué mundo exploramos? 🚀')
+  const greet = (player.name ? `${tri(lang, '¡Hola', 'Olá', 'Hi')}, ${player.name}! ` : '') + tri(lang, '¿Qué mundo exploramos? 🚀', 'Que mundo vamos explorar? 🚀', 'Which world shall we explore? 🚀')
 
   const tabs = [
     { id: 'play', icon: '🎮', label: t('tabPlay') },

@@ -87,18 +87,19 @@ export default function Universe({ lights = 0, size = 320, animated = true }) {
 
 // Hitos del universo: el "rango" sube a medida que encendés más estrellas.
 export const UNIVERSE_MILESTONES = [
-  { at: 0, es: 'Primera chispa', pt: 'Primeira faísca' },
-  { at: 10, es: 'Constelación', pt: 'Constelação' },
-  { at: 30, es: 'Nebulosa', pt: 'Nebulosa' },
-  { at: 60, es: 'Galaxia', pt: 'Galáxia' },
-  { at: 120, es: 'Supernova', pt: 'Supernova' },
-  { at: 250, es: 'Universo entero', pt: 'Universo inteiro' },
+  { at: 0, es: 'Primera chispa', pt: 'Primeira faísca', en: 'First spark' },
+  { at: 10, es: 'Constelación', pt: 'Constelação', en: 'Constellation' },
+  { at: 30, es: 'Nebulosa', pt: 'Nebulosa', en: 'Nebula' },
+  { at: 60, es: 'Galaxia', pt: 'Galáxia', en: 'Galaxy' },
+  { at: 120, es: 'Supernova', pt: 'Supernova', en: 'Supernova' },
+  { at: 250, es: 'Universo entero', pt: 'Universo inteiro', en: 'Whole universe' },
 ]
+const rankLabel = (m, lang) => (m && (m[lang] ?? m.es)) ?? ''
 export function universeRank(lights, lang = 'es') {
   let cur = UNIVERSE_MILESTONES[0], next = null
   for (let i = 0; i < UNIVERSE_MILESTONES.length; i++) {
     if (lights >= UNIVERSE_MILESTONES[i].at) cur = UNIVERSE_MILESTONES[i]
     else { next = UNIVERSE_MILESTONES[i]; break }
   }
-  return { rank: lang === 'pt' ? cur.pt : cur.es, next: next ? { ...next, label: lang === 'pt' ? next.pt : next.es } : null }
+  return { rank: rankLabel(cur, lang), next: next ? { ...next, label: rankLabel(next, lang) } : null }
 }
