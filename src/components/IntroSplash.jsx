@@ -7,8 +7,9 @@ const SLOW = 0.6 // el video va un poco más lento (calmo/cinematográfico)
 // INTRO: el título "Mente Libre" + ZOE + botón aparecen AL INSTANTE, con el VIDEO
 // cósmico (clip libre Pexels, comprimido a 3MB) reproduciéndose de fondo desde que carga.
 export default function IntroSplash({ onClose }) {
-  const { t, lang } = useLang()
+  const { t, lang, setLang } = useLang()
   const appName = lang === 'pt' ? 'Mente Livre' : 'Mente Libre'
+  const LANGS = [['es', '🇦🇷 ES', 'Español'], ['pt', '🇧🇷 PT', 'Português'], ['en', '🇺🇸 EN', 'English']]
   // El TÍTULO aparece AL INSTANTE (pedido de Chris): nada de esperar al video.
   // El video cósmico se reproduce DETRÁS desde que carga; si tarda, el título ya está.
   const [phase, setPhase] = useState('content')
@@ -68,6 +69,23 @@ export default function IntroSplash({ onClose }) {
             animation: `introSpark ${s.dur}s ease-out ${s.delay}s infinite`,
           }} />
         ))}
+      </div>
+
+      {/* Selector de idioma — GRANDE y visible en la portada (ES / PT / EN) */}
+      <div className="absolute top-0 left-0 right-0 z-20 flex flex-col items-center pt-3 safe-top pointer-events-none">
+        <div className="flex items-center gap-1.5 rounded-full px-2.5 py-1.5 pointer-events-auto"
+          style={{ background: 'rgba(11,5,24,0.72)', border: '2px solid var(--gold)', backdropFilter: 'blur(6px)', boxShadow: '0 6px 22px rgba(0,0,0,0.45)' }}>
+          <span className="text-lg pl-0.5" aria-hidden>🌐</span>
+          {LANGS.map(([code, label, name]) => (
+            <button key={code} onClick={(e) => { e.stopPropagation(); setLang(code) }}
+              aria-label={name} aria-pressed={lang === code}
+              className="px-3.5 py-2 rounded-full text-sm font-extrabold min-h-touch transition-colors"
+              style={lang === code ? { background: 'var(--gold)', color: '#3B2A04' } : { color: '#ffffff' }}>
+              {label}
+            </button>
+          ))}
+        </div>
+        <div className="text-[10px] text-white/70 font-bold mt-1 pointer-events-none">🇧🇷 Português disponível</div>
       </div>
 
       {/* Título "Mente Libre" + ZOE + botón — visibles AL INSTANTE, con el video detrás */}

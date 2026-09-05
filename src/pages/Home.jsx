@@ -101,7 +101,12 @@ export default function Home() {
         </button>
       </div>
 
-      <div className="text-[10px] text-[var(--text-dim)] opacity-70 mt-6 leading-snug max-w-xs mx-auto fade-in-d3">{t('legalReg')}</div>
+      <div className="card w-full px-3.5 py-2.5 mt-6 max-w-xs mx-auto fade-in-d3 text-left flex items-start gap-2.5"
+           style={{ borderColor: 'var(--emerald)', background: 'color-mix(in srgb, var(--emerald) 8%, transparent)' }}>
+        <span className="text-base shrink-0" aria-hidden>🔒</span>
+        <span className="text-[11px] leading-snug text-[var(--text-dim)]">{t('dataPrivacy')}</span>
+      </div>
+      <div className="text-[10px] text-[var(--text-dim)] opacity-70 mt-3 leading-snug max-w-xs mx-auto fade-in-d3">{t('legalReg')}</div>
       <div className="text-[9px] text-[var(--text-dim)] opacity-50 mt-2 leading-snug max-w-xs mx-auto">
         Música: “Pixelland” — Kevin MacLeod (incompetech.com), CC BY 4.0
       </div>
