@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useLang, pickLang, tri } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
-import { AGE_GROUPS, pickMixedQuestions } from '../data/challenges'
+import { AGE_GROUPS, AGE_LABELS, pickMixedQuestions } from '../data/challenges'
 import { pickAskTopics } from '../data/askTopics'
 import { callClaude, roundReactSystemPrompt, parseReact, evaluateQuestion } from '../lib/claude'
 import { localReact } from '../lib/localZoe'
@@ -99,14 +99,14 @@ function Confetti({ n = 44 }) {
 }
 
 export default function Competencia() {
-  const { lang } = useLang()
+  const { lang, t } = useLang()
   const L = DICT[lang] || DICT.es
   const nav = useNavigate()
   const { player } = usePlayer()
 
   const [phase, setPhase] = useState('setup') // setup | rules | play | bonus | winner
   const [format, setFormat] = useState('2v2')
-  const [age, setAge] = useState(player.ageGroup || '9-11')
+  const [age, setAge] = useState(player.ageGroup || '12-15')
   const [teams, setTeams] = useState([
     { name: DICT[lang]?.teamA || 'Equipo Azul', ...TEAM_META[0], score: 0, boostUsed: false },
     { name: DICT[lang]?.teamB || 'Equipo Rojo', ...TEAM_META[1], score: 0, boostUsed: false },
@@ -264,11 +264,11 @@ export default function Competencia() {
         {/* Edad */}
         <div className="card p-4 mt-3 fade-in-d1">
           <div className="text-xs font-extrabold uppercase tracking-wide text-[var(--violet-light)] mb-2">{L.age}</div>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-1 gap-2">
             {AGE_GROUPS.map((g) => (
               <button key={g} onClick={() => { sfxPop(); setAge(g) }}
                 className="rounded-2xl px-2 py-3 font-black active:scale-95 transition min-h-touch"
-                style={age === g ? { background: 'linear-gradient(135deg,var(--violet-light),var(--violet))', color: '#fff' } : { background: 'rgba(255,255,255,0.06)', color: 'var(--text)', border: '1px solid rgba(255,255,255,0.12)' }}>{g}</button>
+                style={age === g ? { background: 'linear-gradient(135deg,var(--violet-light),var(--violet))', color: '#fff' } : { background: 'rgba(255,255,255,0.06)', color: 'var(--text)', border: '1px solid rgba(255,255,255,0.12)' }}>{AGE_LABELS[g] || g} {t('yearsWord')}</button>
             ))}
           </div>
         </div>

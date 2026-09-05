@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useLang } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
 import AvatarPicker, { AVATARS } from '../components/AvatarPicker'
-import { AGE_GROUPS } from '../data/challenges'
+import { AGE_GROUPS, AGE_LABELS } from '../data/challenges'
 import LogoHero from '../components/LogoHero'
 
 export default function Landing() {
@@ -13,7 +13,7 @@ export default function Landing() {
 
   const [avatar, setAvatar] = useState(AVATARS[0])
   const [name, setName] = useState('')
-  const [ageGroup, setAgeGroup] = useState('6-8')
+  const [ageGroup, setAgeGroup] = useState('12-15')
   const [school, setSchool] = useState('')
 
   useEffect(() => { if (hasProfile) nav('/hub', { replace: true }) }, [hasProfile, nav])
@@ -48,7 +48,7 @@ export default function Landing() {
         </div>
         <div>
           <label className="text-sm font-extrabold">{t('ageLabel')}</label>
-          <div className="mt-1 grid grid-cols-3 gap-2">
+          <div className="mt-1 grid grid-cols-1 gap-2">
             {AGE_GROUPS.map((g) => (
               <button
                 key={g}
@@ -58,7 +58,7 @@ export default function Landing() {
                   ? { background: 'linear-gradient(135deg,var(--violet-light),var(--violet))', color: '#fff' }
                   : { background: 'rgba(255,255,255,0.06)', color: 'var(--text)' }}
               >
-                {g}
+                {AGE_LABELS[g] || g} {t('yearsWord')}
               </button>
             ))}
           </div>

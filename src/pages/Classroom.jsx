@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { useLang, pickLang, tri } from '../i18n'
 import { usePlayer } from '../hooks/usePlayer'
-import { AGE_GROUPS, pickMixedQuestions } from '../data/challenges'
+import { AGE_GROUPS, AGE_LABELS, pickMixedQuestions } from '../data/challenges'
 import { callClaude, scoreSystemPrompt, parseScore } from '../lib/claude'
 import { localScore } from '../lib/localZoe'
 import { useSpeech } from '../hooks/useSpeech'
@@ -29,7 +29,7 @@ export default function Classroom() {
   const [phase, setPhase] = useState(location.state?.view === 'board' ? 'board' : 'setup')   // setup | playing | results | board
   const [school, setSchool] = useState(player.school || '')
   const [group, setGroup] = useState('')
-  const [age, setAge] = useState(player.ageGroup || '9-11')
+  const [age, setAge] = useState(player.ageGroup || '12-15')
 
   const [questions, setQuestions] = useState([])
   const [qi, setQi] = useState(0)
@@ -159,10 +159,10 @@ export default function Classroom() {
           </div>
           <div>
             <label className="text-sm font-extrabold">{t('caAgeLabel')}</label>
-            <div className="mt-1 grid grid-cols-3 gap-2">
+            <div className="mt-1 grid grid-cols-1 gap-2">
               {AGE_GROUPS.map((g) => (
                 <button key={g} onClick={() => { sfxPop(); setAge(g) }} className="btn text-sm min-h-touch"
-                  style={age === g ? { background: 'linear-gradient(135deg,var(--violet-light),var(--violet))', color: '#fff' } : { background: 'rgba(255,255,255,0.06)', color: 'var(--text)' }}>{g}</button>
+                  style={age === g ? { background: 'linear-gradient(135deg,var(--violet-light),var(--violet))', color: '#fff' } : { background: 'rgba(255,255,255,0.06)', color: 'var(--text)' }}>{AGE_LABELS[g] || g} {t('yearsWord')}</button>
               ))}
             </div>
           </div>

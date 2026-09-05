@@ -14,7 +14,11 @@ export const WORLDS = [
   { id: 'convivencia', emoji: '🤝', name_es: 'El Arte de Convivir',  name_pt: 'A Arte de Conviver',    name_en: 'The Art of Living Together', color: '#A855F7' },
 ]
 
-export const AGE_GROUPS = ['6-8', '9-11', '12-15']
+// MenteLibre es para chicos de 12 a 17 años. El bucket interno '12-15'
+// se conserva (las preguntas ya están calibradas para esa madurez) y se
+// muestra al usuario como "12 a 17".
+export const AGE_GROUPS = ['12-15']
+export const AGE_LABELS = { '12-15': '12–17' }
 
 export const CHALLENGES = {
   planeta: {

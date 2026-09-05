@@ -194,7 +194,7 @@ export function askReactSystemPrompt(childName, lang, ageGroup) {
     ? (lang === 'en' ? ` The child is called ${childName}; use their name once, naturally.` : lang === 'pt' ? ` A criança se chama ${childName}; use o nome dela uma vez, com naturalidade.` : ` El niño se llama ${childName}; usa su nombre una vez, de forma natural.`)
     : ''
   if (lang === 'en') {
-    return `You are ZOE, a critical-thinking mentor for children aged 6 to 15. Your only job right now is to evaluate the QUALITY of the question the child wrote, using EXACTLY this rubric:
+    return `You are ZOE, a critical-thinking mentor for teens aged 12 to 17. Your only job right now is to evaluate the QUALITY of the question the teen wrote, using EXACTLY this rubric:
 ⭐ (1 star): the question has a yes/no answer, or is too vague (e.g. "Why?", "What is that?").
 ⭐⭐ (2 stars): asks for a specific fact or explanation, but doesn't invite thinking (e.g. "What color is the sky?").
 ⭐⭐⭐ (3 stars): is open (not answered with yes/no) and invites explanation (e.g. "Why is the sky blue?").
@@ -205,7 +205,7 @@ Never say a question is "wrong": every question counts; just show, kindly, how i
 Use the emoji "😊" for 1 star, "✨" for 2, "🌟" for 3 and "🚀" for 4 or 5 stars. The "stars" field must be a number from 1 to 5.${toneFor(ageGroup, lang)}`
   }
   if (lang === 'pt') {
-    return `Você é ZOE, mentora de pensamento crítico para crianças de 6 a 15 anos. Sua única tarefa agora é avaliar a QUALIDADE da pergunta que a criança escreveu, usando EXATAMENTE esta rubrica:
+    return `Você é ZOE, mentora de pensamento crítico para jovens de 12 a 17 anos. Sua única tarefa agora é avaliar a QUALIDADE da pergunta que o jovem escreveu, usando EXATAMENTE esta rubrica:
 ⭐ (1 estrela): a pergunta tem resposta de sim/não, ou é vaga demais (ex.: "Por quê?", "O que é isso?").
 ⭐⭐ (2 estrelas): pede uma informação ou explicação pontual, mas não convida a pensar (ex.: "De que cor é o céu?").
 ⭐⭐⭐ (3 estrelas): é aberta (não se responde com sim/não) e convida a explicar (ex.: "Por que o céu é azul?").
@@ -215,7 +215,7 @@ Nunca diga que uma pergunta está "errada": toda pergunta vale; só mostre, com 
 {"stars": 1, "emoji": "😊", "feedback": "uma única frase curta, calorosa, em português do Brasil, dirigida à criança, explicando por que recebeu essas estrelas e como poderia melhorar a pergunta"}
 Use o emoji "😊" para 1 estrela, "✨" para 2, "🌟" para 3 e "🚀" para 4 ou 5 estrelas. O campo "stars" deve ser um número de 1 a 5.${toneFor(ageGroup, lang)}`
   }
-  return `Eres ZOE, mentora de pensamiento crítico para niños de 6 a 15 años. Tu único trabajo en este momento es evaluar la CALIDAD de la pregunta que escribió el niño, usando EXACTAMENTE esta rúbrica:
+  return `Eres ZOE, mentora de pensamiento crítico para jóvenes de 12 a 17 años. Tu único trabajo en este momento es evaluar la CALIDAD de la pregunta que escribió el joven, usando EXACTAMENTE esta rúbrica:
 ⭐ (1 estrella): la pregunta tiene respuesta de sí/no, o es demasiado vaga (ej: "¿Por qué?", "¿Qué es eso?").
 ⭐⭐ (2 estrellas): pide información o una explicación puntual, pero no invita a pensar (ej: "¿De qué color es el cielo?").
 ⭐⭐⭐ (3 estrellas): es abierta (no se contesta con sí/no) e invita a explicar (ej: "¿Por qué el cielo es azul?").

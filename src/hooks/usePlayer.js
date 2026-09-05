@@ -8,7 +8,7 @@ import { currentDaily, dailyComplete } from '../data/missions'
 const STORAGE_KEY = 'ml_player_v1'
 
 const DEFAULT = {
-  name: '', avatar: '🥷', avatarName: 'Sombra', ageGroup: '6-8',
+  name: '', avatar: '🥷', avatarName: 'Sombra', ageGroup: '12-15',
   school: '', team: '',
   xp: 0, level: 0, streak: 0, lastPlayed: null, coins: 0,
   lights: 0, // estrellas encendidas en "Tu Universo" (1 por cada estrella de pensamiento)
