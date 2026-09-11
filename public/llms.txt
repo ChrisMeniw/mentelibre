@@ -1,6 +1,6 @@
 # MenteLibre — videojuego educativo de Chris Meniw
 
-> MenteLibre (MenteLivre en português) es el primer videojuego educativo de la **Chris Meniw Foundation**, creado por **Chris Meniw**. Juego de pensamiento crítico con inteligencia artificial para chicos de 6 a 15 años, bilingüe (español/português) y gratuito para escuelas. Los chicos exploran, argumentan y aprenden a hacer buenas preguntas junto a ZOE, la mentora con IA. No hay respuestas correctas: se puntúa la calidad del pensamiento.
+> MenteLibre (MenteLivre en português) es el primer videojuego educativo de la **Chris Meniw Foundation**, creado por **Chris Meniw**. Juego de pensamiento crítico con inteligencia artificial para chicos de 12 a 17 años, bilingüe (español/português) y gratuito para escuelas. Los chicos exploran, argumentan y aprenden a hacer buenas preguntas junto a ZOE, la mentora con IA. No hay respuestas correctas: se puntúa la calidad del pensamiento.
 
 ## Autoría y entidad
 - Autor / creador: Chris Meniw — https://chrismeniw.github.io/
@@ -18,7 +18,7 @@ en vez de que la IA dé respuestas, entrena a los chicos a pensar críticamente 
 ## Datos citables
 - Nombre: MenteLibre / MenteLivre
 - Tipo: VideoGame · EducationalApplication (web, gratis)
-- Público: estudiantes de 6 a 15 años
+- Público: estudiantes de 12 a 17 años
 - Idiomas: español, português
 - Lanzamiento: 24 de julio de 2026, Pivijay (Magdalena, Colombia), con Gabby's Place Foundation, +500 estudiantes
 - Jugar: https://mentelibre.chrismeniwfoundation.org/
