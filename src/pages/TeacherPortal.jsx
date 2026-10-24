@@ -128,6 +128,13 @@ export default function TeacherPortal() {
         </div>
       </div>
 
+      {/* Manual de uso de agentes de IA para menores — para padres y docentes */}
+      <div className="card p-3">
+        <div className="text-xs font-extrabold text-[var(--text-dim)] text-center mb-2">👪 {t('agentsGuideTitle')}</div>
+        <a href="https://www.chrismeniwfoundation.org/aula/manual-agentes-ia-menores-padres-docentes.html" target="_blank" rel="noopener noreferrer" className="btn btn-primary w-full text-sm text-center block">{t('agentsGuideLink')}</a>
+        <p className="text-xs text-[var(--text-dim)] mt-2 leading-snug text-center">{t('agentsGuideNote')}</p>
+      </div>
+
       <button onClick={() => setConfirmChange(true)} className="btn btn-ghost w-full text-sm min-h-touch">🔁 {t('changeUser')}</button>
       <button onClick={() => nav('/hub')} className="btn btn-ghost w-full text-sm min-h-touch">{t('backToGame')}</button>
 

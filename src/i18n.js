@@ -358,6 +358,9 @@ export const LANG_DATA = {
     // Cambiar usuario
     downloadManual: '📄 Descargar manual para docentes (PDF)',
     manualsTitle: 'Manual de usuario (PDF)',
+    agentsGuideTitle: 'Para padres y docentes',
+    agentsGuideLink: '📘 Manual de uso de agentes de IA para menores',
+    agentsGuideNote: 'Las nueve prohibiciones, cómo comprobarlo en cinco minutos y qué preguntarle a la escuela. Gratis, imprimible, con DOI.',
     manualEs: '📄 Español',
     manualPt: '📄 Português',
     changeUser: 'Cambiar usuario',
@@ -721,6 +724,9 @@ export const LANG_DATA = {
     // Change user
     downloadManual: '📄 Download teacher manual (PDF)',
     manualsTitle: 'User manual (PDF)',
+    agentsGuideTitle: 'For parents and teachers',
+    agentsGuideLink: '📘 Manual on minors\' use of AI agents',
+    agentsGuideNote: 'The nine prohibitions, how to check it in five minutes and what to ask the school. Free, printable, with a DOI.',
     manualEs: '📄 Español',
     manualPt: '📄 Português',
     changeUser: 'Change user',
@@ -1076,6 +1082,9 @@ export const LANG_DATA = {
 
     downloadManual: '📄 Baixar manual para professores (PDF)',
     manualsTitle: 'Manual do usuário (PDF)',
+    agentsGuideTitle: 'Para pais e professores',
+    agentsGuideLink: '📘 Manual de uso de agentes de IA para menores',
+    agentsGuideNote: 'As nove proibições, como verificar em cinco minutos e o que perguntar à escola. Grátis, para imprimir, com DOI.',
     manualEs: '📄 Espanhol',
     manualPt: '📄 Português',
     changeUser: 'Trocar usuário',
