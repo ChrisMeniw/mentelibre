@@ -89,7 +89,11 @@ export default function IntroSplash({ onClose }) {
       </div>
 
       {/* Título "Mente Libre" + ZOE + botón — visibles AL INSTANTE, con el video detrás */}
-      <div className={'relative z-10 h-full flex flex-col items-center justify-center px-6 text-center safe-top transition-all duration-700 ' + (showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none')}>
+      {/* 24-oct: el selector de idioma esta anclado arriba (absolute top-0) y este
+          bloque va centrado vertical, asi que en pantallas bajas el titulo
+          "Mente Libre" quedaba TAPADO por el selector. El `pt-28` reserva
+          justo el alto del selector; en pantallas altas no se nota. */}
+      <div className={'relative z-10 h-full flex flex-col items-center justify-center px-6 pt-28 text-center safe-top transition-all duration-700 ' + (showContent ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none')}>
         <img src="/foundation-logo.webp" alt="Chris Meniw Foundation" width="56" height="56"
           className="rounded-full floaty" style={{ width: 56, height: 56, filter: 'drop-shadow(0 8px 24px rgba(124,58,237,0.75))' }} />
         <div className="text-[10px] uppercase tracking-[0.25em] text-white/80 mt-1.5 font-extrabold">Chris Meniw Foundation</div>

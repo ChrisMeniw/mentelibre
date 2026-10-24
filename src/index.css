@@ -430,3 +430,57 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────────────
+   ESTÉTICA Y EFECTOS · 24-oct-2026
+   Pedido de Silvia: «solo mejorar la estética visual y los efectos
+   especiales; el fondo del juego y el formato NO se tocan».
+   Esto es SOLO CSS y va al final del fichero: no cambia una regla del
+   juego, ni una pantalla, ni un texto, ni un enlace. Borrar este bloque
+   devuelve el juego exactamente a como estaba.
+
+   Rendimiento: el público son escuelas con equipos viejos, así que solo
+   `transform` y `opacity` —las dos que resuelve la tarjeta gráfica—, sin
+   `filter` animado, y todo se apaga con «reducir movimiento».
+   ───────────────────────────────────────────────────────────────────── */
+
+/* 1. Los botones no daban respuesta física al tocarlos. Hundirlos es el
+      efecto que más se siente por menos código. */
+button, .btn, [role="button"] {
+  transition: transform .14s cubic-bezier(.2,.9,.3,1.3), filter .18s ease;
+}
+button:active, .btn:active, [role="button"]:active { transform: translateY(2px) scale(.976); }
+
+/* 2. Las tarjetas de menú entran escalonadas en vez de aparecer de golpe.
+      El retardo por posición da sensación de que el menú "se arma". */
+@keyframes ml-entra { from { opacity:0; transform: translateY(10px) scale(.99) } to { opacity:1; transform:none } }
+.ml-escalonado > * { animation: ml-entra .34s cubic-bezier(.2,.9,.3,1.05) backwards; }
+.ml-escalonado > *:nth-child(1){ animation-delay: .03s }
+.ml-escalonado > *:nth-child(2){ animation-delay: .09s }
+.ml-escalonado > *:nth-child(3){ animation-delay: .15s }
+.ml-escalonado > *:nth-child(4){ animation-delay: .21s }
+.ml-escalonado > *:nth-child(5){ animation-delay: .27s }
+.ml-escalonado > *:nth-child(6){ animation-delay: .33s }
+
+/* 3. Brillo que cruza el botón principal al pasar por encima: señala
+      dónde hay que tocar sin agregar texto ni cambiar el diseño. */
+.ml-brillo { position: relative; overflow: hidden; }
+.ml-brillo::after {
+  content:""; position:absolute; inset:0; pointer-events:none; border-radius:inherit;
+  background: linear-gradient(105deg, transparent 38%, rgba(255,255,255,.22) 48%, transparent 58%);
+  transform: translateX(-120%);
+}
+.ml-brillo:hover::after { animation: ml-barrido 1.05s ease-out; }
+@keyframes ml-barrido { to { transform: translateX(120%) } }
+
+/* 4. Las estrellas ganadas ya no solo aparecen: entran con rebote, que es
+      el momento en que el chico ve que acertó. */
+@keyframes ml-estrella { 0%{transform:scale(0) rotate(-24deg); opacity:0}
+                         62%{transform:scale(1.22) rotate(6deg); opacity:1}
+                         100%{transform:scale(1) rotate(0); opacity:1} }
+.ml-estrella-gana { animation: ml-estrella .46s cubic-bezier(.2,.9,.3,1.4) backwards; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-escalonado > *, .ml-estrella-gana, .ml-brillo:hover::after { animation: none !important; }
+  button:active, .btn:active, [role="button"]:active { transform: none; }
+}
